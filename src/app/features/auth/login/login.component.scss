@@ -1,0 +1,41 @@
+:host {
+  display: block;
+}
+
+.neomorphic-card {
+  box-shadow:
+    20px 20px 60px #e0ddd8,
+    -20px -20px 60px #ffffff;
+}
+
+.neomorphic-inset {
+  box-shadow:
+    inset 6px 6px 12px #dbd8d2,
+    inset -6px -6px 12px #ffffff;
+}
+
+.neomorphic-button-social {
+  box-shadow:
+    6px 6px 12px #e0ddd8,
+    -6px -6px 12px #ffffff;
+}
+
+.neomorphic-button-social:active {
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.05),
+    inset -4px -4px 8px #ffffff;
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  font-feature-settings: 'liga';
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}

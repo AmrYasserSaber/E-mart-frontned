@@ -1,1 +1,32 @@
-<p>modal works!</p>
+@if (open()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+    (click)="onBackdrop()"
+    role="presentation"
+  >
+    <div
+      class="max-h-[90vh] w-full max-w-lg overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-2xl"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'modal-title'"
+    >
+      <div class="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+        <h2 id="modal-title" class="text-lg font-semibold text-slate-100">
+          {{ title() }}
+        </h2>
+        <button
+          type="button"
+          (click)="onClose()"
+          class="rounded-lg p-1 text-2xl leading-none text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
+      <div class="overflow-y-auto p-4 text-slate-200">
+        <ng-content />
+      </div>
+    </div>
+  </div>
+}

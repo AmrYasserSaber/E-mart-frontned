@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-toast',
@@ -6,4 +7,10 @@ import { Component } from '@angular/core';
   templateUrl: './toast.html',
   styleUrl: './toast.css',
 })
-export class Toast {}
+export class Toast {
+  readonly toastService = inject(ToastService);
+
+  dismiss(id: number): void {
+    this.toastService.dismiss(id);
+  }
+}

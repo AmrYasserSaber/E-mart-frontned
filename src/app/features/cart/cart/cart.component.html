@@ -1,0 +1,64 @@
+<div class="space-y-6 py-6">
+  <h1 class="text-2xl font-bold text-slate-100">Your cart</h1>
+  @if (items$ | async; as items) {
+    @if (items.length === 0) {
+      <app-empty-state
+        title="Cart is empty"
+        message="Add items from the product catalog."
+      />
+      <div class="mt-4 text-center">
+        <a routerLink="/products" class="text-emerald-400 hover:underline"
+          >Go to products</a
+        >
+      </div>
+    } @else {
+      <ul class="divide-y divide-slate-800 rounded-xl border border-slate-800">
+        @for (line of items; track line.product.id) {
+          <li class="flex flex-wrap items-center justify-between gap-4 p-4">
+            <div>
+              <p class="font-medium text-slate-100">{{ line.product.name }}</p>
+              <p class="text-sm text-emerald-400">
+                {{ line.product.price | currencyFormat }} each
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="rounded border border-slate-600 px-2 py-1 text-slate-300"
+                (click)="bump(line.product.id, -1, line.quantity)"
+              >
+                −
+              </button>
+              <span class="w-8 text-center text-slate-200">{{ line.quantity }}</span>
+              <button
+                type="button"
+                class="rounded border border-slate-600 px-2 py-1 text-slate-300"
+                (click)="bump(line.product.id, 1, line.quantity)"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                class="ml-2 text-sm text-red-400 hover:underline"
+                (click)="remove(line.product.id)"
+              >
+                Remove
+              </button>
+            </div>
+          </li>
+        }
+      </ul>
+      <div
+        class="flex justify-between rounded-xl border border-slate-800 bg-slate-900/50 p-4 text-lg font-semibold text-slate-100"
+      >
+        <span>Total</span>
+        <span>{{ (total$ | async) ?? 0 | currencyFormat }}</span>
+      </div>
+      <a
+        routerLink="/checkout"
+        class="inline-block rounded-lg bg-emerald-600 px-5 py-2.5 font-semibold text-slate-950 hover:bg-emerald-500"
+        >Checkout</a
+      >
+    }
+  }
+</div>

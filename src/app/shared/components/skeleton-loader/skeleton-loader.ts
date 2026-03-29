@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+
+export type SkeletonVariant = 'text' | 'card' | 'table-row';
 
 @Component({
   selector: 'app-skeleton-loader',
@@ -6,4 +8,10 @@ import { Component } from '@angular/core';
   templateUrl: './skeleton-loader.html',
   styleUrl: './skeleton-loader.css',
 })
-export class SkeletonLoader {}
+export class SkeletonLoader {
+  readonly variant = input<SkeletonVariant>('text');
+  readonly lines = input(3);
+  lineArray(): number[] {
+    return [...Array(this.lines()).keys()];
+  }
+}

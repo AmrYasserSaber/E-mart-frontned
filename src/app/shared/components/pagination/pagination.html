@@ -1,1 +1,36 @@
-<p>pagination works!</p>
+<nav
+  class="flex flex-wrap items-center justify-center gap-2"
+  aria-label="Pagination"
+>
+  <button
+    type="button"
+    class="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-40"
+    [disabled]="page() <= 1"
+    (click)="go(page() - 1)"
+  >
+    Prev
+  </button>
+  @for (p of pages(); track p) {
+    <button
+      type="button"
+      class="min-w-9 rounded-lg border px-2 py-1.5 text-sm"
+      [class.border-emerald-500]="p === page()"
+      [class.bg-emerald-500]="p === page()"
+      [class.text-slate-950]="p === page()"
+      [class.border-slate-700]="p !== page()"
+      [class.text-slate-300]="p !== page()"
+      [class.hover:bg-slate-800]="p !== page()"
+      (click)="go(p)"
+    >
+      {{ p }}
+    </button>
+  }
+  <button
+    type="button"
+    class="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-40"
+    [disabled]="page() >= totalPages()"
+    (click)="go(page() + 1)"
+  >
+    Next
+  </button>
+</nav>

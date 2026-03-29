@@ -1,1 +1,21 @@
-<p>star-rating works!</p>
+<div
+  class="flex items-center gap-0.5"
+  role="group"
+  [attr.aria-label]="'Rating ' + value() + ' of ' + max()"
+>
+  @for (i of stars(); track i) {
+    <button
+      type="button"
+      [disabled]="readonly()"
+      (click)="set(i)"
+      class="text-lg leading-none transition"
+      [class.text-amber-400]="isFilled(i)"
+      [class.text-slate-600]="!isFilled(i)"
+      [class.cursor-default]="readonly()"
+      [class.hover:text-amber-300]="!readonly()"
+      [attr.aria-label]="starButtonLabel(i)"
+    >
+      ★
+    </button>
+  }
+</div>
