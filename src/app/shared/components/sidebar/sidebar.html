@@ -1,1 +1,25 @@
-<p>sidebar works!</p>
+<aside
+  class="flex h-full min-w-[200px] flex-col gap-1 border-r border-slate-800 bg-slate-900/40 p-3"
+  [class.w-16]="collapsed()"
+  [class.min-w-0]="collapsed()"
+>
+  @for (item of items(); track item.path) {
+    <a
+      [routerLink]="item.path"
+      [attr.aria-label]="item.label"
+      routerLinkActive="bg-emerald-500/15 text-emerald-400 border-emerald-500/40"
+      class="rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+    >
+      @if (!collapsed()) {
+        {{ item.label }}
+      } @else {
+        <span class="sr-only">{{ item.label }}</span>
+        <span
+          class="block truncate text-center text-xs"
+          aria-hidden="true"
+          >{{ item.icon ?? item.label.charAt(0) }}</span
+        >
+      }
+    </a>
+  }
+</aside>

@@ -9,7 +9,7 @@ export const appRoutes: Routes = [
   {
     path: 'home',
     loadComponent: () =>
-      import('./features/home/home.component').then((m) => m.HomeComponent),
+      import('./features/home/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'auth',
@@ -26,7 +26,7 @@ export const appRoutes: Routes = [
   {
     path: 'cart',
     loadComponent: () =>
-      import('./features/cart/cart.component').then((m) => m.CartComponent),
+      import('./features/cart/cart/cart.component').then((m) => m.CartComponent),
   },
   {
     path: 'checkout',
@@ -62,4 +62,3 @@ export const appRoutes: Routes = [
     redirectTo: 'home',
   },
 ];
-

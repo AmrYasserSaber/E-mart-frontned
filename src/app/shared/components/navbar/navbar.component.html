@@ -1,0 +1,72 @@
+<header
+  class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40"
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+    <div class="flex items-center gap-6">
+      <a routerLink="/home" class="flex items-center gap-2">
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-lg font-bold text-slate-950"
+          >E</span
+        >
+        <span class="text-lg font-semibold tracking-tight text-slate-50"
+          >E‑Mart</span
+        >
+      </a>
+      <nav class="hidden gap-4 text-sm font-medium md:flex">
+        <a routerLink="/home" class="text-slate-300 hover:text-emerald-400"
+          >Home</a
+        >
+        <a routerLink="/products" class="text-slate-300 hover:text-emerald-400"
+          >Products</a
+        >
+        <a routerLink="/cart" class="text-slate-300 hover:text-emerald-400"
+          >Cart</a
+        >
+        <a routerLink="/profile" class="text-slate-300 hover:text-emerald-400"
+          >Profile</a
+        >
+        @if (showAdmin$ | async) {
+          <a routerLink="/admin" class="text-amber-400 hover:text-amber-300"
+            >Admin</a
+          >
+        }
+      </nav>
+    </div>
+    <div class="flex items-center gap-3 text-sm">
+      <a
+        routerLink="/cart"
+        class="relative rounded-lg px-2 py-1 text-slate-300 hover:bg-slate-800 hover:text-emerald-400"
+      >
+        Cart
+        @if ((cartCount$ | async); as count) {
+          @if (count > 0) {
+            <span
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-slate-950"
+              >{{ count }}</span
+            >
+          }
+        }
+      </a>
+      @if (isAuth$ | async) {
+        @if (user$ | async; as user) {
+          <span class="hidden text-slate-400 sm:inline"
+            >{{ user.firstName }}</span
+          >
+          <button
+            type="button"
+            (click)="logout()"
+            class="rounded-lg bg-slate-800 px-3 py-1.5 font-medium text-slate-200 hover:bg-slate-700"
+          >
+            Log out
+          </button>
+        }
+      } @else {
+        <a
+          routerLink="/auth/login"
+          class="rounded-lg bg-emerald-600 px-3 py-1.5 font-medium text-slate-950 hover:bg-emerald-500"
+          >Sign in</a
+        >
+      }
+    </div>
+  </div>
+</header>
