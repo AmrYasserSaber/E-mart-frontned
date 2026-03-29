@@ -24,6 +24,7 @@ import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { API_BASE_URL } from './core/tokens/app.tokens';
 import { StorageService } from './core/services/storage.service';
+import { environment } from '../environments/environment';
 
 function authHydrateFromStorage(): void {
   try {
@@ -51,7 +52,7 @@ function authHydrateFromStorage(): void {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
-    { provide: API_BASE_URL, useValue: 'http://localhost:3000' },
+    { provide: API_BASE_URL, useValue: environment.apiBaseUrl },
     provideHttpClient(
       withInterceptors([
         authInterceptor,
