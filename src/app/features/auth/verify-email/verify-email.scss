@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
+.neo-shadow-outer {
+  box-shadow:
+    12px 12px 24px rgba(139, 114, 102, 0.1),
+    -12px -12px 24px #ffffff;
+}
+
+.neo-shadow-inner-deep {
+  box-shadow:
+    inset 6px 6px 12px rgba(139, 114, 102, 0.15),
+    inset -6px -6px 12px #ffffff;
+}
+
+.neo-button-extruded {
+  box-shadow:
+    6px 6px 12px rgba(194, 81, 0, 0.3),
+    -4px -4px 8px rgba(255, 255, 255, 0.5);
+}
+
+.neo-button-extruded:active {
+  transform: scale(0.95);
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1;
+  font-feature-settings: 'liga';
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.material-symbols-filled {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}

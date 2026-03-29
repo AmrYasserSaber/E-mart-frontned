@@ -1,17 +1,25 @@
 :host {
   display: block;
+  width: 100%;
+  min-height: 100%;
 }
 
 .neomorphic-card {
   box-shadow:
-    20px 20px 60px #e0ddd8,
+    20px 20px 60px #ebe8e2,
     -20px -20px 60px #ffffff;
 }
 
 .neomorphic-inset {
   box-shadow:
-    inset 6px 6px 12px #dbd8d2,
-    inset -6px -6px 12px #ffffff;
+    inset 4px 4px 8px rgba(139, 114, 102, 0.12),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+}
+
+.neomorphic-inset-checkbox {
+  box-shadow:
+    inset 4px 4px 8px rgba(139, 114, 102, 0.12),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
 }
 
 .neomorphic-button-social {
@@ -26,11 +34,21 @@
     inset -4px -4px 8px #ffffff;
 }
 
+.extruded-button {
+  box-shadow:
+    6px 6px 12px rgba(194, 81, 0, 0.2),
+    -6px -6px 12px rgba(255, 255, 255, 0.5);
+}
+
+.extruded-button:active {
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15);
+  transform: scale(0.98);
+}
+
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined', sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 24px;
   line-height: 1;
   font-feature-settings: 'liga';
   font-variation-settings:

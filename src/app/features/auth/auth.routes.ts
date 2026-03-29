@@ -1,26 +1,37 @@
 import { Routes } from '@angular/router';
-import { guestGuard } from '../../core/guards/guest.guard';
+import { AuthShellComponent } from './auth-shell/auth-shell.component';
 
 export const authRoutes: Routes = [
   {
-    path: 'login',
-    canActivate: [guestGuard],
-    loadComponent: () => import('./login/login').then((m) => m.Login),
+    path: '',
+    component: AuthShellComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'login',
+      },
+      {
+        path: 'login',
+        loadComponent: () => import('./login/login.component').then((m) => m.LoginComponent),
+        data: { animation: 'authLogin' },
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('./register/register').then((m) => m.Register),
+        data: { animation: 'authRegister' },
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import('./forgot-password/forgot-password').then((m) => m.ForgotPassword),
+        data: { animation: 'authPlain' },
+      },
+      {
+        path: 'verify-email',
+        loadComponent: () => import('./verify-email/verify-email').then((m) => m.VerifyEmail),
+        data: { animation: 'authPlain' },
+      },
+    ],
   },
-  {
-    path: 'register',
-    canActivate: [guestGuard],
-    loadComponent: () => import('./register/register').then((m) => m.Register),
-  },
-  {
-    path: 'forgot-password',
-    loadComponent: () =>
-      import('./forgot-password/forgot-password').then((m) => m.ForgotPassword),
-  },
-  {
-    path: 'verify-email',
-    loadComponent: () =>
-      import('./verify-email/verify-email').then((m) => m.VerifyEmail),
-  },
-  { path: '', pathMatch: 'full', redirectTo: 'login' },
 ];

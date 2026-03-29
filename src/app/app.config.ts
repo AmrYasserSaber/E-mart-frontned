@@ -6,6 +6,7 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -20,6 +21,7 @@ import { AuthEffects } from './shared/store/auth/auth.effects';
 import { ProductsEffects } from './shared/store/products/products.effects';
 import { AuthActions } from './shared/store/auth/auth.actions';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { authRefreshInterceptor } from './core/interceptors/auth-refresh.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { API_BASE_URL } from './core/tokens/app.tokens';
@@ -51,15 +53,10 @@ function authHydrateFromStorage(): void {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAnimations(),
     provideZonelessChangeDetection(),
     { provide: API_BASE_URL, useValue: environment.apiBaseUrl },
-    provideHttpClient(
-      withInterceptors([
-        authInterceptor,
-        loadingInterceptor,
-        errorInterceptor,
-      ]),
-    ),
+    provideHttpClient(withInterceptors([authInterceptor, authRefreshInterceptor, loadingInterceptor, errorInterceptor])),
     provideRouter(appRoutes),
     provideStore({
       auth: authReducer,

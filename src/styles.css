@@ -1,3 +1,423 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   "The Tactile Hearth" Design System
+   Tailwind CSS v4 — CSS-based configuration via @theme
+   ============================================================ */
 
+/* 1. Self-hosted fonts (Fontsource) — must precede @import 'tailwindcss' */
+@import '@fontsource/plus-jakarta-sans/400.css';
+@import '@fontsource/plus-jakarta-sans/400-italic.css';
+@import '@fontsource/plus-jakarta-sans/500.css';
+@import '@fontsource/plus-jakarta-sans/600.css';
+@import '@fontsource/plus-jakarta-sans/700.css';
+@import '@fontsource/plus-jakarta-sans/800.css';
+@import '@fontsource/be-vietnam-pro/400.css';
+@import '@fontsource/be-vietnam-pro/400-italic.css';
+@import '@fontsource/be-vietnam-pro/500.css';
+@import '@fontsource/be-vietnam-pro/600.css';
+@import '@fontsource/be-vietnam-pro/700.css';
+@import '@fontsource/material-symbols-outlined/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+/* 2. Tailwind base */
 @import 'tailwindcss';
+
+/* ============================================================
+   3. DESIGN TOKENS
+   @theme generates CSS custom properties + utility classes.
+   e.g. --color-primary → bg-primary, text-primary, etc.
+   ============================================================ */
+@theme {
+  /* ----------------------------------------------------------
+     FONTS
+     font-display → Plus Jakarta Sans (headlines)
+     font-body    → Be Vietnam Pro (body/UI)
+  ---------------------------------------------------------- */
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+
+  /* ----------------------------------------------------------
+     COLORS
+     Surface scale — stacked "sheets of heavy-weight paper"
+  ---------------------------------------------------------- */
+  --color-surface: #fdf9f3; /* Base — warm cream */
+  --color-surface-bright: #fefcf8; /* Frosted glass base */
+  --color-surface-dim: #dddad4; /* Footer grounding */
+  --color-surface-container-lowest: #ffffff; /* Elevated cards */
+  --color-surface-container-low: #f7f3ed; /* Sections */
+  --color-surface-container: #f1ede7; /* In-set content */
+  --color-surface-container-high: #ebe8e2; /* Input backgrounds */
+
+  /* Primary / brand */
+  --color-primary: #9b3f00; /* Hover state, tinted shadows */
+  --color-primary-container: #c25100; /* Main CTA color */
+  --color-on-primary: #ffffff; /* Text on primary buttons */
+  --color-primary-fixed-dim: #ffb693; /* Focus glow */
+  --color-primary-fixed: #ffdbcb; /* Accents, decorative glows */
+  --color-secondary-fixed: #ffdbcb; /* Paired warmth for background blobs */
+
+  /* Content / text */
+  --color-on-surface: #1c1c18; /* Primary body text on cream surfaces */
+  --color-on-surface-variant: #584238; /* Warm earthy grey — replaces #808080 */
+
+  /* Page background alias (matches surface; explicit token for utilities) */
+  --color-background: #fdf9f3;
+
+  /* Borders / outlines */
+  --color-outline: #8b7266; /* Used in tinted shadows */
+  --color-outline-variant: #dfc0b3; /* Ghost border fallback */
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — FONT SIZE
+     Paired line-height via --text-*--line-height companion token
+  ---------------------------------------------------------- */
+  --text-display-lg: 3.5rem;
+  --text-display-lg--line-height: 1.1;
+
+  --text-headline-md: 1.75rem;
+  --text-headline-md--line-height: 1.25;
+
+  --text-title-sm: 0.875rem;
+  --text-title-sm--line-height: 1.4;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.6;
+
+  /* ----------------------------------------------------------
+     BORDER RADIUS
+     Overrides Tailwind defaults to enforce "No Hard Edges" rule.
+     Every rounded-* class now maps to the design spec values.
+  ---------------------------------------------------------- */
+  --radius-sm: 0.5rem; /* Minimum — inputs, small elements */
+  --radius-md: 1.5rem; /* Cards */
+  --radius-lg: 2rem; /* Feature cards */
+  --radius-xl: 3rem; /* Primary buttons / pill shape */
+
+  /* ----------------------------------------------------------
+     SPACING
+     Patches only the 4 named steps from the design spec.
+     All other multiplier steps (1, 2, 5, 6, 8, etc.) remain
+     at the default 0.25rem base — predictable and safe.
+  ---------------------------------------------------------- */
+  --spacing-3: 1rem; /* List item gaps (spacing-3) */
+  --spacing-4: 1.4rem; /* Curated tile image overlap */
+  --spacing-12: 4rem; /* Major section gaps */
+  --spacing-16: 5.5rem; /* Hero-level separation */
+
+  /* ----------------------------------------------------------
+     SHADOWS
+     Tinted with --color-outline (#8b7266) per "Tint Your Shadows" rule.
+     Never pure black.
+  ---------------------------------------------------------- */
+  --shadow-ambient: 0px 4px 20px rgba(139, 114, 102, 0.08), 0px 12px 40px rgba(139, 114, 102, 0.04);
+
+  --shadow-neomorphic: inset 4px 4px 8px rgba(139, 114, 102, 0.08), inset -4px -4px 8px #ffffff;
+}
+
+/* ============================================================
+   4. BASE — Document-level defaults
+   Sets the correct surface background, fonts, and enforces
+   the "No Hard Edges" and "Zero-Divider" rules globally.
+   ============================================================ */
+@layer base {
+  html {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    min-height: 100dvh;
+  }
+
+  /* Display/headline elements use editorial font */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+
+  /* Enforce no-hard-edges on all interactive elements */
+  button,
+  input,
+  select,
+  textarea {
+    border-radius: var(--radius-sm);
+  }
+
+  /* Zero-Divider Rule: <hr> is prohibited */
+  hr {
+    display: none;
+  }
+}
+
+/* ============================================================
+   5. COMPONENTS — Reusable multi-property class abstractions
+   ============================================================ */
+@layer components {
+  /* ----------------------------------------------------------
+     BUTTONS
+  ---------------------------------------------------------- */
+
+  /* Primary CTA: gradient pill with tactile press state */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-xl);
+    background-image: linear-gradient(
+      135deg,
+      var(--color-primary) 0%,
+      var(--color-primary-container) 100%
+    );
+    color: var(--color-on-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-title-sm);
+    line-height: var(--text-title-sm--line-height);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    border: none;
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    text-decoration: none;
+  }
+
+  .btn-primary:hover {
+    background-image: none;
+    background-color: var(--color-primary);
+    box-shadow:
+      0px 4px 12px rgba(139, 114, 102, 0.3),
+      0px 8px 24px rgba(139, 114, 102, 0.15);
+    transform: translateY(-1px);
+  }
+
+  /* Tactile "pressed into paper" state */
+  .btn-primary:active {
+    background-image: none;
+    background-color: var(--color-primary);
+    transform: translateY(0);
+    box-shadow: var(--shadow-neomorphic);
+  }
+
+  .btn-primary:focus-visible {
+    outline: 2px solid var(--color-primary-fixed-dim);
+    outline-offset: 3px;
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Secondary: ghost border style */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-xl);
+    background-color: transparent;
+    color: var(--color-primary-container);
+    font-family: var(--font-body);
+    font-size: var(--text-title-sm);
+    line-height: var(--text-title-sm--line-height);
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    border: 2px solid var(--color-outline-variant);
+    cursor: pointer;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    text-decoration: none;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--color-primary-container);
+    background-color: color-mix(in srgb, var(--color-primary-container) 8%, transparent);
+  }
+
+  .btn-secondary:active {
+    box-shadow: var(--shadow-neomorphic);
+  }
+
+  .btn-secondary:focus-visible {
+    outline: 2px solid var(--color-primary-fixed-dim);
+    outline-offset: 3px;
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ----------------------------------------------------------
+     CARDS
+     surface-container-lowest (#fff) lifted above sections.
+     No borders — depth via color shift + ambient shadow.
+  ---------------------------------------------------------- */
+
+  .card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-ambient);
+    overflow: hidden;
+  }
+
+  .card-lg {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-ambient);
+    overflow: hidden;
+  }
+
+  /* ----------------------------------------------------------
+     INPUTS
+     No border. Recessed feel via inset shadow.
+  ---------------------------------------------------------- */
+
+  .input-soft {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    border: none;
+    box-shadow:
+      inset 0 1px 3px rgba(139, 114, 102, 0.12),
+      inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    outline: none;
+    transition:
+      background-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  .input-soft::placeholder {
+    color: var(--color-outline);
+    opacity: 0.7;
+  }
+
+  .input-soft:focus {
+    background-color: var(--color-surface-container-lowest);
+    box-shadow:
+      inset 0 1px 3px rgba(139, 114, 102, 0.08),
+      0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
+  }
+
+  /* ----------------------------------------------------------
+     FROSTED GLASS
+     For sticky navbars, modals, floating panels.
+  ---------------------------------------------------------- */
+
+  .frosted-glass {
+    background-color: color-mix(in srgb, var(--color-surface-bright) 80%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* ----------------------------------------------------------
+     CURATED TILE
+     Editorial asymmetric product card.
+     Image bleeds upward by 1.4rem (spacing-4) outside the card.
+  ---------------------------------------------------------- */
+
+  .curated-tile {
+    position: relative;
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-ambient);
+    overflow: visible;
+    padding: 1rem;
+    padding-top: calc(var(--spacing-4) + 0.5rem);
+  }
+
+  .curated-tile__image {
+    position: relative;
+    margin-top: calc(var(--spacing-4) * -1); /* -1.4rem upward bleed */
+    border-radius: var(--radius-sm);
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY CLASSES
+     Composable type tokens: font + size + weight in one class.
+  ---------------------------------------------------------- */
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    font-weight: 800;
+    color: var(--color-primary);
+  }
+
+  .headline-md {
+    font-family: var(--font-display);
+    font-size: var(--text-headline-md);
+    line-height: var(--text-headline-md--line-height);
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .title-sm {
+    font-family: var(--font-body);
+    font-size: var(--text-title-sm);
+    line-height: var(--text-title-sm--line-height);
+    font-weight: 600;
+  }
+
+  .body-md {
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    font-weight: 400;
+    color: var(--color-on-surface-variant);
+  }
+}
+
+/* ============================================================
+   6. UTILITIES — Single-purpose helpers
+   ============================================================ */
+@layer utilities {
+  /* Ghost border fallback (accessibility — 15% opacity) */
+  .ghost-border {
+    border: 1px solid color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
+  }
+
+  /* Footer background token */
+  .bg-footer {
+    background-color: var(--color-surface-dim);
+  }
+
+  /* Warm earthy secondary text — never generic grey */
+  .text-secondary {
+    color: var(--color-on-surface-variant);
+  }
+
+  /* Tinted ambient shadow (explicit alias) */
+  .shadow-tinted {
+    box-shadow: var(--shadow-ambient);
+  }
+
+  /* Focus glow — composable with any focusable element */
+  .focus-glow:focus {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
+    outline: none;
+  }
+}

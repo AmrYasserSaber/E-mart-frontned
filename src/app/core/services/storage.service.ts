@@ -2,57 +2,60 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import type { User } from '../models/user.model';
 
-const USER = 'emart_user';
+const ACCESS_TOKEN_KEY = 'emart_access_token';
+const REFRESH_TOKEN_KEY = 'emart_refresh_token';
+const USER_KEY = 'emart_user';
 
-/**
- * Access and refresh tokens must not be stored in localStorage (or sessionStorage):
- * any XSS can exfiltrate them. This service keeps tokens only in memory for the lifetime
- * of the page. For sessions that survive refresh or across tabs, the backend should issue
- * short-lived access tokens and rotate refresh tokens via Secure, HttpOnly, SameSite cookies
- * (BFF or cookie-based OAuth patterns)—not via client-readable storage.
- */
 @Injectable({ providedIn: 'root' })
 export class StorageService {
   private readonly platformId = inject(PLATFORM_ID);
 
-  private accessToken: string | null = null;
-  private refreshToken: string | null = null;
+  private get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
 
-  constructor() {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
+  private readItem(key: string): string | null {
+    if (!this.isBrowser) return null;
     try {
-      localStorage.removeItem('emart_access_token');
-      localStorage.removeItem('emart_refresh_token');
+      return localStorage.getItem(key);
     } catch {
-      // Quota / security / disabled storage
+      return null;
+    }
+  }
+
+  private writeItem(key: string, value: string | null): void {
+    if (!this.isBrowser) return;
+    try {
+      if (value !== null) {
+        localStorage.setItem(key, value);
+      } else {
+        localStorage.removeItem(key);
+      }
+    } catch {
+      // Quota or security errors — fail silently
     }
   }
 
   getAccessToken(): string | null {
-    return this.accessToken;
+    return this.readItem(ACCESS_TOKEN_KEY);
   }
 
   setAccessToken(token: string | null): void {
-    this.accessToken = token;
+    this.writeItem(ACCESS_TOKEN_KEY, token);
   }
 
   getRefreshToken(): string | null {
-    return this.refreshToken;
+    return this.readItem(REFRESH_TOKEN_KEY);
   }
 
   setRefreshToken(token: string | null): void {
-    this.refreshToken = token;
+    this.writeItem(REFRESH_TOKEN_KEY, token);
   }
 
   getUser(): User | null {
-    if (!isPlatformBrowser(this.platformId)) {
-      return null;
-    }
+    const raw = this.readItem(USER_KEY);
+    if (!raw) return null;
     try {
-      const raw = localStorage.getItem(USER);
-      if (!raw) return null;
       return JSON.parse(raw) as User;
     } catch {
       return null;
@@ -60,15 +63,7 @@ export class StorageService {
   }
 
   setUser(user: User | null): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-    try {
-      if (user) localStorage.setItem(USER, JSON.stringify(user));
-      else localStorage.removeItem(USER);
-    } catch {
-      // ignore
-    }
+    this.writeItem(USER_KEY, user ? JSON.stringify(user) : null);
   }
 
   setAuthSession(access: string, refresh: string, user: User | null): void {

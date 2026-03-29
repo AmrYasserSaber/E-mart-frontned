@@ -8,14 +8,12 @@ export const adminRoutes: Routes = [
     path: '',
     canActivate: [authGuard, roleGuard],
     data: { roles: [Role.ADMIN] },
-    loadComponent: () =>
-      import('./admin-layout/admin-layout').then((m) => m.AdminLayout),
+    loadComponent: () => import('./admin-layout/admin-layout').then((m) => m.AdminLayout),
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        loadComponent: () =>
-          import('./dashboard/dashboard').then((m) => m.Dashboard),
+        loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
       },
       {
         path: 'users',
@@ -27,13 +25,11 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'products',
-        loadComponent: () =>
-          import('./products/products').then((m) => m.Products),
+        loadComponent: () => import('./products/products').then((m) => m.Products),
       },
       {
         path: 'categories',
-        loadComponent: () =>
-          import('./categories/categories').then((m) => m.Categories),
+        loadComponent: () => import('./categories/categories').then((m) => m.Categories),
       },
       {
         path: 'banners',
@@ -41,8 +37,7 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'activity-feed',
-        loadComponent: () =>
-          import('./activity-feed/activity-feed').then((m) => m.ActivityFeed),
+        loadComponent: () => import('./activity-feed/activity-feed').then((m) => m.ActivityFeed),
       },
     ],
   },
