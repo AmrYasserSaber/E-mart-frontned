@@ -25,16 +25,20 @@
     <div class="flex-1 flex items-center bg-surface-container-high neomorphic-inset rounded-full px-5 py-3">
       <span class="material-symbols-outlined text-outline mr-3">search</span>
       <input
+        id="users-search-input"
         type="search"
         class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-outline/50 font-medium text-on-surface outline-none"
         placeholder="Search members..."
+        aria-label="Search members"
         [ngModel]="searchInput()"
         (ngModelChange)="searchInput.set($event)"
         (keyup.enter)="applyFilters()"
       />
     </div>
     <select
+      id="users-status-filter"
       class="neomorphic-inset rounded-full bg-surface-container-high border-none px-5 py-3 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary-fixed-dim"
+      aria-label="Member status filter"
       [ngModel]="activeFilter()"
       (ngModelChange)="activeFilter.set($event); applyFilters()"
     >
@@ -125,6 +129,7 @@
             <button
               type="button"
               (click)="openEdit(u)"
+              [attr.aria-label]="'Edit user ' + (((u.firstName || '') + ' ' + (u.lastName || '')).trim() || u.email || u.id)"
               class="text-outline hover:text-primary transition-colors"
             >
               <span class="material-symbols-outlined">more_horiz</span>
@@ -189,7 +194,7 @@
   }
 
   <!-- Edit Modal -->
-  <app-modal [open]="editOpen()" title="Manage user" (closed)="closeEdit()">
+  <app-modal [open]="editOpen()" title="Manage user" [closeOnBackdrop]="!saveLoading()" [disableClose]="saveLoading()" (closed)="closeEdit()">
     @if (editing(); as u) {
       <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-sm">

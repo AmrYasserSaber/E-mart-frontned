@@ -45,6 +45,15 @@ export class Categories implements OnInit {
   readonly deleting = signal<Category | null>(null);
   readonly deleteLoading = signal(false);
 
+  private getErrorMessage(err: unknown): string {
+    if (typeof err === 'string') return err;
+    if (err && typeof err === 'object' && 'message' in err) {
+      const msg = (err as { message?: unknown }).message;
+      if (typeof msg === 'string') return msg;
+    }
+    return 'Please try again.';
+  }
+
   ngOnInit(): void {
     this.load();
   }
@@ -142,7 +151,10 @@ export class Categories implements OnInit {
         this.editing.set(null);
         this.load();
       },
-      error: () => this.saveLoading.set(false),
+      error: (err) => {
+        this.loadError.set(`Failed to save category. ${this.getErrorMessage(err)}`);
+        this.saveLoading.set(false);
+      },
     });
   }
 
@@ -169,7 +181,10 @@ export class Categories implements OnInit {
           this.closeDelete();
           this.load();
         },
-        error: () => this.deleteLoading.set(false),
+        error: (err) => {
+          this.loadError.set(`Failed to delete category. ${this.getErrorMessage(err)}`);
+          this.deleteLoading.set(false);
+        },
       });
   }
 }

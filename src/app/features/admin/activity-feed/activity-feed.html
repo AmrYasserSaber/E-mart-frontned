@@ -6,14 +6,17 @@
 
   @if (loading()) {
     <p class="text-on-surface-variant">Loading…</p>
+  } @else if (feedLoadError(); as errorMessage) {
+    <div class="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
+      {{ errorMessage }}
+    </div>
   } @else if (items().length === 0) {
     <p class="text-on-surface-variant">No recent activity.</p>
   } @else {
     <div class="space-y-3">
       @for (item of items(); track item.id) {
         <div
-          tabindex="0"
-          class="flex items-center gap-5 bg-surface-container-low rounded-2xl px-8 py-5 border border-white/40 hover:translate-y-[-2px] focus-visible:translate-y-[-2px] focus-visible:ring-2 focus-visible:ring-primary-fixed-dim focus-visible:outline-none transition-all duration-300 neomorphic-outset-sm"
+          class="flex items-center gap-5 bg-surface-container-low rounded-2xl px-8 py-5 border border-white/40 hover:translate-y-[-2px] transition-all duration-300 neomorphic-outset-sm"
         >
           <div
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
