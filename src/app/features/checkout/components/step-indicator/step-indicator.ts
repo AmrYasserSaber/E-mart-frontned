@@ -1,9 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { CheckoutService, CheckoutStep } from '../../services/checkout.service';
 
 @Component({
   selector: 'app-step-indicator',
+  standalone: true,
   imports: [],
   templateUrl: './step-indicator.html',
-  styleUrl: './step-indicator.css',
+  styleUrl: './step-indicator.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StepIndicator {}
+export class StepIndicator {
+  private readonly checkoutService = inject(CheckoutService);
+  
+  readonly currentStep = this.checkoutService.currentStep;
+  readonly STEP = CheckoutStep;
+}

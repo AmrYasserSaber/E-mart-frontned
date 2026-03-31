@@ -1,1 +1,86 @@
-<p>address-step works!</p>
+<section class="bg-surface-container-lowest rounded-lg p-8 neomorphic-outset animate-in fade-in slide-in-from-bottom duration-500">
+  <h2 class="font-display text-2xl font-extrabold text-on-surface-variant mb-6 flex items-center gap-3">
+    <span class="material-symbols-outlined text-primary-container">local_shipping</span>
+    Shipping Details
+  </h2>
+
+  <form [formGroup]="addressForm" (ngSubmit)="next()" class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">First Name</label>
+        <input 
+          formControlName="firstName"
+          class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all" 
+          placeholder="Julian" type="text"
+        />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">Last Name</label>
+        <input 
+          formControlName="lastName"
+          class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all" 
+          placeholder="Rivers" type="text"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">Street Address</label>
+      <input 
+        formControlName="street"
+        class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all" 
+        placeholder="42 Artisan Way" type="text"
+      />
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">City</label>
+        <input 
+          formControlName="city"
+          class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all" 
+          placeholder="Portland" type="text"
+        />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">Postal Code</label>
+        <input 
+          formControlName="zip"
+          class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all" 
+          placeholder="97201" type="text"
+        />
+      </div>
+      <div class="space-y-2 col-span-2 md:col-span-1">
+        <label class="text-xs font-bold text-outline uppercase tracking-wider px-1">Country</label>
+        <select 
+          formControlName="country"
+          class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 neomorphic-inset focus:ring-2 focus:ring-primary-fixed-dim/30 focus:bg-surface-container-lowest transition-all appearance-none"
+        >
+          <option value="United States">United States</option>
+          <option value="Canada">Canada</option>
+          <option value="United Kingdom">United Kingdom</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Save Default Toggle -->
+    <div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-outline">home</span>
+        <span class="text-sm font-medium text-on-surface-variant">Save as default address</span>
+      </div>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input type="checkbox" checked class="sr-only peer">
+        <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container neomorphic-inset"></div>
+      </label>
+    </div>
+
+    <button 
+      type="submit"
+      class="w-full bg-primary-container text-white font-headline font-bold py-4 rounded-xl shadow-lg hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2"
+    >
+      Continue to Payment
+      <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+  </form>
+</section>

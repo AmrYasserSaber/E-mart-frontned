@@ -67,6 +67,20 @@
   --color-outline: #8b7266; /* Used in tinted shadows */
   --color-outline-variant: #dfc0b3; /* Ghost border fallback */
 
+  /* Tertiary / Accents */
+  --color-tertiary: #0059b5;
+  --color-tertiary-container: #0371e2;
+  --color-on-tertiary: #ffffff;
+
+  /* Error states */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Secondary variants */
+  --color-secondary-container: #feb28d;
+  --color-on-secondary-container: #794225;
+
   /* ----------------------------------------------------------
      TYPOGRAPHY — FONT SIZE
      Paired line-height via --text-*--line-height companion token
@@ -112,6 +126,7 @@
   --shadow-ambient: 0px 4px 20px rgba(139, 114, 102, 0.08), 0px 12px 40px rgba(139, 114, 102, 0.04);
 
   --shadow-neomorphic: inset 4px 4px 8px rgba(139, 114, 102, 0.08), inset -4px -4px 8px #ffffff;
+  --shadow-neomorphic-flat: 4px 4px 12px rgba(139, 114, 102, 0.08), -4px -4px 12px #ffffff;
 }
 
 /* ============================================================
@@ -413,6 +428,14 @@
   /* Tinted ambient shadow (explicit alias) */
   .shadow-tinted {
     box-shadow: var(--shadow-ambient);
+  }
+
+  .neomorphic-inset {
+    box-shadow: var(--shadow-neomorphic);
+  }
+
+  .neomorphic-flat {
+    box-shadow: var(--shadow-neomorphic-flat);
   }
 
   /* Focus glow — composable with any focusable element */
