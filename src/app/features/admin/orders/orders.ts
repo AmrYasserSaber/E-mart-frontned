@@ -7,6 +7,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   AdminService,
@@ -30,6 +31,7 @@ import { TruncatePipe } from '../../../shared/pipes/truncate.pipe';
 export class Orders implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly reload$ = new Subject<void>();
 
   readonly OrderStatus = OrderStatus;
   readonly statuses = Object.values(OrderStatus);
@@ -46,18 +48,18 @@ export class Orders implements OnInit {
   readonly saveLoading = signal(false);
 
   ngOnInit(): void {
-    this.load();
-  }
-
-  load(): void {
-    this.loading.set(true);
-    this.admin
-      .listOrders({
-        page: this.page(),
-        limit: this.limit,
-        status: this.statusFilter() || undefined,
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.reload$
+      .pipe(
+        tap(() => this.loading.set(true)),
+        switchMap(() =>
+          this.admin.listOrders({
+            page: this.page(),
+            limit: this.limit,
+            status: this.statusFilter() || undefined,
+          }),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (r) => {
           this.result.set(r);
@@ -65,6 +67,11 @@ export class Orders implements OnInit {
         },
         error: () => this.loading.set(false),
       });
+    this.reload$.next();
+  }
+
+  load(): void {
+    this.reload$.next();
   }
 
   applyFilters(): void {

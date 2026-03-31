@@ -7,11 +7,12 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of, catchError } from 'rxjs';
 import { AdminService } from '../services/admin.service';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 
 export interface ActivityItem {
+  id: string;
   kind: 'user' | 'order';
   title: string;
   detail: string;
@@ -34,8 +35,12 @@ export class ActivityFeed implements OnInit {
 
   ngOnInit(): void {
     forkJoin({
-      users: this.admin.listUsers({ page: 1, limit: 10 }),
-      orders: this.admin.listOrders({ page: 1, limit: 10 }),
+      users: this.admin.listUsers({ page: 1, limit: 10 }).pipe(
+        catchError(() => of({ items: [] as never[] })),
+      ),
+      orders: this.admin.listOrders({ page: 1, limit: 10 }).pipe(
+        catchError(() => of({ data: [] as never[] })),
+      ),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -44,6 +49,7 @@ export class ActivityFeed implements OnInit {
 
           for (const u of users.items) {
             activity.push({
+              id: `user-${u.id}`,
               kind: 'user',
               title: `New user: ${u.firstName} ${u.lastName}`,
               detail: u.email,
@@ -53,6 +59,7 @@ export class ActivityFeed implements OnInit {
 
           for (const o of orders.data) {
             activity.push({
+              id: `order-${o.id}`,
               kind: 'order',
               title: `Order placed`,
               detail: `$${o.total.toFixed(2)} · ${o.items.length} item(s) · ${o.status}`,

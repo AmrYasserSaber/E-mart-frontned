@@ -8,6 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin, of, catchError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AdminService, type AdminListUsersResponse } from '../services/admin.service';
 import type { User } from '../../../core/models/user.model';
@@ -15,6 +16,7 @@ import { Role } from '../../../core/models/user.model';
 import { Modal } from '../../../shared/components/modal/modal';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-users',
@@ -26,6 +28,7 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 export class Users implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
 
   readonly RoleEnum = Role;
 
@@ -46,6 +49,7 @@ export class Users implements OnInit {
   readonly selectedIds = signal<Set<string>>(new Set());
   readonly selectedCount = computed(() => this.selectedIds().size);
   readonly hasSelection = computed(() => this.selectedIds().size > 0);
+  readonly hasSingleSelection = computed(() => this.selectedIds().size === 1);
 
   ngOnInit(): void {
     this.load();
@@ -106,6 +110,10 @@ export class Users implements OnInit {
   }
 
   editSelected(): void {
+    if (this.selectedIds().size !== 1) {
+      this.toast.info('Select exactly one user to edit.');
+      return;
+    }
     const items = this.result()?.items ?? [];
     const first = items.find((u) => this.selectedIds().has(u.id));
     if (first) this.openEdit(first);
@@ -114,21 +122,32 @@ export class Users implements OnInit {
   verifySelected(): void {
     const ids = [...this.selectedIds()];
     if (!ids.length) return;
-    let completed = 0;
-    for (const id of ids) {
-      this.admin
-        .verifyUser(id)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            completed++;
-            if (completed === ids.length) {
-              this.selectedIds.set(new Set());
-              this.load();
-            }
-          },
-        });
-    }
+    forkJoin(
+      ids.map((id) =>
+        this.admin.verifyUser(id).pipe(
+          catchError(() => of({ id, failed: true })),
+        ),
+      ),
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (results) => {
+          const failures = results.filter(
+            (r): r is { id: string; failed: true } => 'failed' in r,
+          );
+          if (failures.length > 0) {
+            this.toast.error(`Failed to verify ${failures.length} user(s).`);
+          } else {
+            this.toast.success('Users verified successfully.');
+          }
+          this.selectedIds.set(new Set());
+          this.load();
+        },
+      });
+  }
+
+  removeSelected(): void {
+    this.toast.info('User removal requires backend support. Use the Edit modal to deactivate accounts.');
   }
 
   openEdit(u: User): void {

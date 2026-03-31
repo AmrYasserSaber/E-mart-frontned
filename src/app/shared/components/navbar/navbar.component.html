@@ -35,9 +35,10 @@
     <div class="flex items-center gap-3 text-sm">
       <a
         routerLink="/cart"
+        aria-label="Cart"
         class="relative rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary-container transition-colors"
       >
-        <span class="material-symbols-outlined text-xl">shopping_cart</span>
+        <span class="material-symbols-outlined text-xl" aria-hidden="true">shopping_cart</span>
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
@@ -67,6 +68,33 @@
           >Sign in</a
         >
       }
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        class="md:hidden rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 transition-colors"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-controls="mobile-nav"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
     </div>
   </div>
+
+  <!-- Mobile menu -->
+  @if (mobileMenuOpen()) {
+    <nav
+      id="mobile-nav"
+      class="md:hidden border-t border-outline-variant/20 bg-surface-container-lowest px-6 py-4 space-y-2"
+    >
+      <a routerLink="/home" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Home</a>
+      <a routerLink="/products" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Products</a>
+      <a routerLink="/cart" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Cart</a>
+      <a routerLink="/profile" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Profile</a>
+      @if (showAdmin$ | async) {
+        <a routerLink="/admin" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-primary-container font-bold hover:bg-primary-fixed/20 transition-colors">Admin</a>
+      }
+    </nav>
+  }
 </header>

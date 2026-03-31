@@ -51,29 +51,31 @@
 
       @if (loading()) {
         <p class="text-on-surface-variant">Loading…</p>
+      } @else if (recentActivity().length === 0) {
+        <p class="text-on-surface-variant">No recent activity.</p>
       } @else {
         <div class="space-y-4">
-          @for (u of recentUsers(); track u.id) {
-            <div class="bg-surface-container-low p-4 rounded-xl flex gap-4 soft-outset border-l-4 border-primary-container">
-              <div class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-primary-container">person_add</span>
+          @for (item of recentActivity(); track item.id) {
+            <div
+              class="bg-surface-container-low p-4 rounded-xl flex gap-4 soft-outset border-l-4"
+              [class.border-primary-container]="item.kind === 'user'"
+              [class.border-green-500]="item.kind === 'order'"
+            >
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                [class.bg-orange-100]="item.kind === 'user'"
+                [class.bg-green-50]="item.kind === 'order'"
+              >
+                <span
+                  class="material-symbols-outlined"
+                  [class.text-primary-container]="item.kind === 'user'"
+                  [class.text-green-800]="item.kind === 'order'"
+                >{{ item.kind === 'user' ? 'person_add' : 'shopping_cart_checkout' }}</span>
               </div>
               <div>
-                <p class="text-sm font-bold text-on-surface">New user: {{ u.firstName }} {{ u.lastName }}</p>
-                <p class="text-xs text-on-surface-variant">{{ u.email }}</p>
-                <span class="text-[10px] text-outline font-bold uppercase mt-2 block">{{ u.createdAt | timeAgo }}</span>
-              </div>
-            </div>
-          }
-          @for (o of recentOrders(); track o.id) {
-            <div class="bg-surface-container-low p-4 rounded-xl flex gap-4 soft-outset border-l-4 border-green-500">
-              <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center shrink-0">
-                <span class="material-symbols-outlined text-green-800">shopping_cart_checkout</span>
-              </div>
-              <div>
-                <p class="text-sm font-bold text-on-surface">Order placed</p>
-                <p class="text-xs text-on-surface-variant">{{ o.total | currencyFormat }} &middot; {{ o.items.length }} item(s) &middot; {{ o.status }}</p>
-                <span class="text-[10px] text-outline font-bold uppercase mt-2 block">{{ o.createdAt | timeAgo }}</span>
+                <p class="text-sm font-bold text-on-surface">{{ item.title }}</p>
+                <p class="text-xs text-on-surface-variant">{{ item.detail }}</p>
+                <span class="text-[10px] text-outline font-bold uppercase mt-2 block">{{ item.date | timeAgo }}</span>
               </div>
             </div>
           }

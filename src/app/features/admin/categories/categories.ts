@@ -3,6 +3,7 @@ import {
   DestroyRef,
   inject,
   signal,
+  computed,
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -34,6 +35,10 @@ export class Categories implements OnInit {
   readonly formSlug = signal('');
   readonly formParentId = signal<string | null>(null);
   readonly saveLoading = signal(false);
+
+  readonly isCategoryFormValid = computed(
+    () => this.formName().trim().length > 0 && this.formSlug().trim().length > 0,
+  );
 
   readonly deleteOpen = signal(false);
   readonly deleting = signal<Category | null>(null);

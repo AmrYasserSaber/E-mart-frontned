@@ -7,6 +7,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   AdminService,
@@ -30,6 +31,7 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 export class Products implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly reload$ = new Subject<void>();
 
   readonly page = signal(1);
   readonly limit = 10;
@@ -45,28 +47,25 @@ export class Products implements OnInit {
   readonly deleteLoading = signal(false);
 
   ngOnInit(): void {
-    this.loadCategories();
-    this.load();
-  }
-
-  loadCategories(): void {
     this.admin
       .listCategories()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({ next: (cats) => this.categories.set(cats) });
-  }
 
-  load(): void {
-    this.loading.set(true);
-    this.admin
-      .listProducts({
-        page: this.page(),
-        limit: this.limit,
-        search: this.searchInput().trim() || undefined,
-        categoryId: this.categoryFilter() || undefined,
-        sort: this.sortFilter() || undefined,
-      })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.reload$
+      .pipe(
+        tap(() => this.loading.set(true)),
+        switchMap(() =>
+          this.admin.listProducts({
+            page: this.page(),
+            limit: this.limit,
+            search: this.searchInput().trim() || undefined,
+            categoryId: this.categoryFilter() || undefined,
+            sort: this.sortFilter() || undefined,
+          }),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (r) => {
           this.result.set(r);
@@ -74,6 +73,11 @@ export class Products implements OnInit {
         },
         error: () => this.loading.set(false),
       });
+    this.reload$.next();
+  }
+
+  load(): void {
+    this.reload$.next();
   }
 
   applyFilters(): void {
