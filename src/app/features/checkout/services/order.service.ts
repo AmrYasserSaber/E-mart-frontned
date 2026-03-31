@@ -26,9 +26,9 @@ export class OrderService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
 
-  placeOrder(shippingAddress: ShippingAddress): Observable<CreateOrderResponse> {
+  placeOrder(shippingAddress: ShippingAddress, paymentMethod: string): Observable<CreateOrderResponse> {
     return this.http
-      .post<any>(`${this.baseUrl}/orders`, { shippingAddress })
+      .post<any>(`${this.baseUrl}/orders`, { shippingAddress, paymentMethod })
       .pipe(map((res) => res));
   }
 
