@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -35,7 +35,6 @@ function parsePage(value: string | null): number {
   selector: 'app-product-list',
   imports: [
     AsyncPipe,
-    RouterLink,
     ProductCard,
     Pagination,
     EmptyState,
@@ -126,6 +125,10 @@ export class ProductList {
 
   onAddToCart(product: Product): void {
     this.store.dispatch(CartActions.addToCart({ product }));
+  }
+
+  openProductDetails(product: Product): void {
+    this.router.navigate(['/products', product.id]);
   }
 
   trackByCategory(_: number, category: Category): string {

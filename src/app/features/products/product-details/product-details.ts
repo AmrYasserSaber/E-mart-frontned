@@ -2,8 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import type { Product } from '../../../core/models/product.model';
 import type { Review, PaginatedResponse } from '../../../core/models/review.model';
 import { ProductsService } from '../../../core/services/products.service';
@@ -26,6 +25,8 @@ import { Pagination } from '../../../shared/components/pagination/pagination';
   styleUrl: './product-details.css',
 })
 export class ProductDetails {
+  protected readonly imagePlaceholder =
+    'https://img.freepik.com/premium-vector/picture-icon-isolated-white-background-vector-illustration_736051-240.jpg?semt=ais_incoming&w=740&q=80';
   private readonly route = inject(ActivatedRoute);
   private readonly productsService = inject(ProductsService);
   private readonly destroyRef = inject(DestroyRef);
@@ -43,16 +44,21 @@ export class ProductDetails {
   constructor() {
     this.route.paramMap
       .pipe(
-        switchMap((params) => {
-          const id = params.get('id');
-          if (!id) return of(null);
-          this.loadProduct(id);
-          this.loadReviews(id, 1);
-          return of(id);
-        }),
+        map((params) => params.get('id')),
+        distinctUntilChanged(),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe();
+      .subscribe((id) => {
+        this.resetViewState();
+        if (!id) {
+          this.productLoading = false;
+          this.reviewsLoading = false;
+          this.productError = 'Invalid product id.';
+          return;
+        }
+        this.loadProduct(id);
+        this.loadReviews(id, 1);
+      });
   }
 
   get displayTitle(): string {
@@ -70,9 +76,17 @@ export class ProductDetails {
     this.loadReviews(id, page);
   }
 
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement | null;
+    if (!target) return;
+    target.onerror = null;
+    target.src = this.imagePlaceholder;
+  }
+
   private loadProduct(id: string): void {
     this.productLoading = true;
     this.productError = '';
+    this.product = null;
     this.productsService
       .getProductById(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -112,5 +126,16 @@ export class ProductDetails {
               : 'Failed to load reviews.';
         },
       });
+  }
+
+  private resetViewState(): void {
+    this.product = null;
+    this.productError = '';
+    this.productLoading = true;
+    this.reviews = [];
+    this.reviewsError = '';
+    this.reviewsLoading = true;
+    this.reviewsPage = 1;
+    this.reviewsPages = 1;
   }
 }

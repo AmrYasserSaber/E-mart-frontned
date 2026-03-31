@@ -79,12 +79,11 @@
         @if ((products$ | async)?.length) {
           <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
             @for (product of (products$ | async) ?? []; track product.id) {
-              <div class="space-y-2">
-                <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
-                <a class="block text-center text-sm font-semibold text-primary hover:underline" [routerLink]="['/products', product.id]">
-                  View details
-                </a>
-              </div>
+              <app-product-card
+                [product]="product"
+                (addToCart)="onAddToCart($event)"
+                (open)="openProductDetails($event)"
+              />
             }
           </div>
           <app-pagination

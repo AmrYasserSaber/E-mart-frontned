@@ -1,5 +1,10 @@
 <article
   class="group card flex h-full flex-col bg-surface-container-low transition duration-200 hover:-translate-y-0.5"
+  role="button"
+  tabindex="0"
+  (click)="onOpen()"
+  (keydown.enter)="onOpen()"
+  (keydown.space)="onOpen(); $event.preventDefault()"
 >
   <div
     class="aspect-4/3 overflow-hidden bg-surface-container-high"
@@ -10,6 +15,7 @@
         [alt]="product().title || product().name || 'Product image'"
         class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         loading="lazy"
+        (error)="onImageError($event)"
       />
     } @else {
       <div
@@ -31,7 +37,7 @@
     </p>
     <button
       type="button"
-      (click)="onAdd()"
+      (click)="onAdd($event)"
       class="btn-primary mt-auto w-full py-3 text-sm font-bold"
     >
       Add to cart

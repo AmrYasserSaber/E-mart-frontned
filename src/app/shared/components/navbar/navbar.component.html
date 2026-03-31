@@ -1,32 +1,32 @@
 <header
-  class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40"
+  class="sticky top-0 z-40 border-b border-outline-variant/40 frosted-glass"
 >
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
     <div class="flex items-center gap-6">
       <a routerLink="/home" class="flex items-center gap-2">
         <span
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-lg font-bold text-slate-950"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container text-lg font-bold text-on-primary shadow-tinted"
           >E</span
         >
-        <span class="text-lg font-semibold tracking-tight text-slate-50"
+        <span class="text-lg font-semibold tracking-tight text-on-surface"
           >E‑Mart</span
         >
       </a>
       <nav class="hidden gap-4 text-sm font-medium md:flex">
-        <a routerLink="/home" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/home" class="text-secondary hover:text-primary"
           >Home</a
         >
-        <a routerLink="/products" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/products" class="text-secondary hover:text-primary"
           >Products</a
         >
-        <a routerLink="/cart" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/cart" class="text-secondary hover:text-primary"
           >Cart</a
         >
-        <a routerLink="/profile" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/profile" class="text-secondary hover:text-primary"
           >Profile</a
         >
         @if (showAdmin$ | async) {
-          <a routerLink="/admin" class="text-amber-400 hover:text-amber-300"
+          <a routerLink="/admin" class="text-primary-container hover:text-primary"
             >Admin</a
           >
         }
@@ -35,13 +35,13 @@
     <div class="flex items-center gap-3 text-sm">
       <a
         routerLink="/cart"
-        class="relative rounded-lg px-2 py-1 text-slate-300 hover:bg-slate-800 hover:text-emerald-400"
+        class="relative rounded-full px-3 py-1.5 text-secondary hover:bg-surface-container-high hover:text-primary"
       >
         Cart
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
-              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-slate-950"
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
               >{{ count }}</span
             >
           }
@@ -49,13 +49,13 @@
       </a>
       @if (isAuth$ | async) {
         @if (user$ | async; as user) {
-          <span class="hidden text-slate-400 sm:inline"
+          <span class="hidden text-secondary sm:inline"
             >{{ user.firstName }}</span
           >
           <button
             type="button"
             (click)="logout()"
-            class="rounded-lg bg-slate-800 px-3 py-1.5 font-medium text-slate-200 hover:bg-slate-700"
+            class="rounded-full bg-surface-container-high px-3 py-1.5 font-medium text-on-surface hover:bg-surface-container"
           >
             Log out
           </button>
@@ -63,7 +63,7 @@
       } @else {
         <a
           routerLink="/auth/login"
-          class="rounded-lg bg-emerald-600 px-3 py-1.5 font-medium text-slate-950 hover:bg-emerald-500"
+          class="btn-primary px-3 py-1.5 font-medium"
           >Sign in</a
         >
       }

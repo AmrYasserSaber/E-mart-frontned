@@ -18,6 +18,7 @@
               [src]="displayImage"
               [alt]="displayTitle"
               class="h-full w-full object-cover"
+              (error)="onImageError($event)"
             />
           } @else {
             <div class="flex min-h-64 items-center justify-center text-5xl text-outline">📦</div>
