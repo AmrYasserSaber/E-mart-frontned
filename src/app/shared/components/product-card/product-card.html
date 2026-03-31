@@ -4,10 +4,10 @@
   <div
     class="aspect-[4/3] overflow-hidden bg-slate-800"
   >
-    @if (product().imageUrl) {
+    @if (product().images.length) {
       <img
-        [src]="product().imageUrl"
-        [alt]="product().name"
+        [src]="product().images[0]"
+        [alt]="product().title"
         class="h-full w-full object-cover transition group-hover:scale-105"
         loading="lazy"
       />
@@ -20,9 +20,9 @@
     }
   </div>
   <div class="flex flex-1 flex-col gap-2 p-4">
-    <h3 class="font-semibold text-slate-100 line-clamp-2">{{ product().name }}</h3>
-    @if (product().rating != null) {
-      <app-star-rating [value]="product().rating!" [readonly]="true" />
+    <h3 class="font-semibold text-slate-100 line-clamp-2">{{ product().title }}</h3>
+    @if (product().ratingAvg > 0) {
+      <app-star-rating [value]="product().ratingAvg" [readonly]="true" />
     }
     <p class="text-lg font-bold text-emerald-400">
       {{ product().price | currencyFormat }}

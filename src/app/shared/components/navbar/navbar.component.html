@@ -1,32 +1,32 @@
 <header
-  class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40"
+  class="fixed top-0 left-0 right-0 z-50 frosted-glass shadow-[0px_4px_20px_rgba(139,114,102,0.08)]"
 >
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
     <div class="flex items-center gap-6">
       <a routerLink="/home" class="flex items-center gap-2">
         <span
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500 text-lg font-bold text-slate-950"
+          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container text-lg font-black text-on-primary"
           >E</span
         >
-        <span class="text-lg font-semibold tracking-tight text-slate-50"
-          >E‑Mart</span
+        <span class="text-xl font-black tracking-tight text-primary-container font-display"
+          >E&#8209;Mart</span
         >
       </a>
-      <nav class="hidden gap-4 text-sm font-medium md:flex">
-        <a routerLink="/home" class="text-slate-300 hover:text-emerald-400"
+      <nav class="hidden gap-5 text-sm font-medium md:flex">
+        <a routerLink="/home" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Home</a
         >
-        <a routerLink="/products" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/products" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Products</a
         >
-        <a routerLink="/cart" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/cart" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Cart</a
         >
-        <a routerLink="/profile" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/profile" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Profile</a
         >
         @if (showAdmin$ | async) {
-          <a routerLink="/admin" class="text-amber-400 hover:text-amber-300"
+          <a routerLink="/admin" class="text-primary-container font-bold px-3 py-1"
             >Admin</a
           >
         }
@@ -35,13 +35,14 @@
     <div class="flex items-center gap-3 text-sm">
       <a
         routerLink="/cart"
-        class="relative rounded-lg px-2 py-1 text-slate-300 hover:bg-slate-800 hover:text-emerald-400"
+        aria-label="Cart"
+        class="relative rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary-container transition-colors"
       >
-        Cart
+        <span class="material-symbols-outlined text-xl" aria-hidden="true">shopping_cart</span>
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
-              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-slate-950"
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
               >{{ count }}</span
             >
           }
@@ -49,13 +50,13 @@
       </a>
       @if (isAuth$ | async) {
         @if (user$ | async; as user) {
-          <span class="hidden text-slate-400 sm:inline"
+          <span class="hidden text-on-surface-variant font-medium sm:inline"
             >{{ user.firstName }}</span
           >
           <button
             type="button"
             (click)="logout()"
-            class="rounded-lg bg-slate-800 px-3 py-1.5 font-medium text-slate-200 hover:bg-slate-700"
+            class="rounded-full bg-surface-container-high px-4 py-2 font-semibold text-on-surface-variant hover:bg-surface-container hover:text-primary-container transition-colors"
           >
             Log out
           </button>
@@ -63,10 +64,37 @@
       } @else {
         <a
           routerLink="/auth/login"
-          class="rounded-lg bg-emerald-600 px-3 py-1.5 font-medium text-slate-950 hover:bg-emerald-500"
+          class="btn-primary px-5 py-2.5 text-sm"
           >Sign in</a
         >
       }
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        class="md:hidden rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 transition-colors"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-controls="mobile-nav"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
     </div>
   </div>
+
+  <!-- Mobile menu -->
+  @if (mobileMenuOpen()) {
+    <nav
+      id="mobile-nav"
+      class="md:hidden border-t border-outline-variant/20 bg-surface-container-lowest px-6 py-4 space-y-2"
+    >
+      <a routerLink="/home" (click)="closeMobileMenu()" class="mobile-nav-link">Home</a>
+      <a routerLink="/products" (click)="closeMobileMenu()" class="mobile-nav-link">Products</a>
+      <a routerLink="/cart" (click)="closeMobileMenu()" class="mobile-nav-link">Cart</a>
+      <a routerLink="/profile" (click)="closeMobileMenu()" class="mobile-nav-link">Profile</a>
+      @if (showAdmin$ | async) {
+        <a routerLink="/admin" (click)="closeMobileMenu()" class="mobile-nav-link text-primary-container font-bold">Admin</a>
+      }
+    </nav>
+  }
 </header>

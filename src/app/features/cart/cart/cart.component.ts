@@ -19,7 +19,7 @@ export class CartComponent {
   readonly items$ = this.store.select(selectCartItems);
   readonly total$ = this.store.select(selectCartTotal);
 
-  bump(id: number, delta: number, current: number): void {
+  bump(id: string, delta: number, current: number): void {
     const next = current + delta;
     if (next < 1) {
       this.remove(id);
@@ -33,7 +33,7 @@ export class CartComponent {
     );
   }
 
-  remove(id: number): void {
+  remove(id: string): void {
     this.store.dispatch(CartActions.removeFromCart({ productId: id }));
   }
 }

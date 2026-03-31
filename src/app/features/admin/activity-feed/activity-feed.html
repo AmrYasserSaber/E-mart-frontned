@@ -1,4 +1,36 @@
-<app-empty-state
-  title="Activity feed"
-  message="A live admin activity stream will appear here in a future iteration."
-/>
+<div class="mx-auto max-w-5xl space-y-8">
+  <div>
+    <h2 class="text-4xl font-display font-bold text-on-surface tracking-tight">Activity Feed</h2>
+    <p class="text-on-surface-variant mt-2 max-w-lg font-medium">Recent signups and orders across the platform.</p>
+  </div>
+
+  @if (loading()) {
+    <p class="text-on-surface-variant">Loading…</p>
+  } @else if (items().length === 0) {
+    <p class="text-on-surface-variant">No recent activity.</p>
+  } @else {
+    <div class="space-y-3">
+      @for (item of items(); track item.id) {
+        <div
+          tabindex="0"
+          class="flex items-center gap-5 bg-surface-container-low rounded-2xl px-8 py-5 border border-white/40 hover:translate-y-[-2px] focus-visible:translate-y-[-2px] focus-visible:ring-2 focus-visible:ring-primary-fixed-dim focus-visible:outline-none transition-all duration-300 neomorphic-outset-sm"
+        >
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
+            [class.bg-primary-fixed/30]="item.kind === 'user'"
+            [class.text-primary-container]="item.kind === 'user'"
+            [class.bg-blue-100]="item.kind === 'order'"
+            [class.text-blue-700]="item.kind === 'order'"
+          >
+            <span class="material-symbols-outlined">{{ item.kind === 'user' ? 'person_add' : 'shopping_bag' }}</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="font-bold text-on-surface">{{ item.title }}</p>
+            <p class="text-sm text-on-surface-variant">{{ item.detail }}</p>
+          </div>
+          <span class="shrink-0 text-xs font-bold text-outline uppercase tracking-wider">{{ item.date | timeAgo }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>
