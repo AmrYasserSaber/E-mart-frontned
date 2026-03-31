@@ -1,71 +1,63 @@
 <div class="mx-auto max-w-6xl space-y-8">
   <div>
-    <h1 class="text-2xl font-bold text-slate-100">Admin dashboard</h1>
-    <p class="mt-1 text-slate-400">Overview and latest signups</p>
+    <h1 class="text-2xl font-bold text-on-surface">Admin dashboard</h1>
+    <p class="mt-1 text-on-surface-variant">Overview and latest signups</p>
   </div>
 
   <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <div
-      class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-lg"
-    >
-      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div class="section-shell rounded-xl p-5">
+      <p class="text-xs font-medium uppercase tracking-wide text-outline">
         Total users
       </p>
-      <p class="mt-2 text-3xl font-bold text-emerald-400">{{ totalUsers() }}</p>
+      <p class="mt-2 text-3xl font-bold text-primary">{{ totalUsers() }}</p>
     </div>
-    <div
-      class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-lg"
-    >
-      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div class="section-shell rounded-xl p-5">
+      <p class="text-xs font-medium uppercase tracking-wide text-outline">
         Active users
       </p>
-      <p class="mt-2 text-3xl font-bold text-sky-400">{{ activeUsers() }}</p>
+      <p class="mt-2 text-3xl font-bold text-tertiary">{{ activeUsers() }}</p>
     </div>
-    <div
-      class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-lg"
-    >
-      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div class="section-shell rounded-xl p-5">
+      <p class="text-xs font-medium uppercase tracking-wide text-outline">
         Orders
       </p>
-      <p class="mt-2 text-3xl font-bold text-slate-600">—</p>
-      <p class="mt-1 text-xs text-slate-500">API pending</p>
+      <p class="mt-2 text-3xl font-bold text-outline">—</p>
+      <p class="mt-1 text-xs text-outline">API pending</p>
     </div>
-    <div
-      class="rounded-xl border border-slate-800 bg-slate-900/50 p-5 shadow-lg"
-    >
-      <p class="text-xs font-medium uppercase tracking-wide text-slate-500">
+    <div class="section-shell rounded-xl p-5">
+      <p class="text-xs font-medium uppercase tracking-wide text-outline">
         Products
       </p>
-      <p class="mt-2 text-3xl font-bold text-slate-600">—</p>
-      <p class="mt-1 text-xs text-slate-500">API pending</p>
+      <p class="mt-2 text-3xl font-bold text-outline">—</p>
+      <p class="mt-1 text-xs text-outline">API pending</p>
     </div>
   </div>
 
-  <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-6">
+  <div class="section-shell rounded-xl p-6">
     <div class="mb-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-slate-100">Recent signups</h2>
+      <h2 class="text-lg font-semibold text-on-surface">Recent signups</h2>
       <a
         routerLink="/admin/users"
-        class="text-sm font-medium text-emerald-400 hover:text-emerald-300"
+        class="text-sm font-medium text-primary hover:text-primary-container"
         >Manage users</a
       >
     </div>
     @if (loading()) {
-      <p class="text-slate-500">Loading…</p>
+      <p class="text-outline">Loading…</p>
     } @else if (recentUsers().length === 0) {
-      <p class="text-slate-500">No users yet.</p>
+      <p class="text-outline">No users yet.</p>
     } @else {
-      <ul class="divide-y divide-slate-800">
+      <ul class="divide-y divide-outline-variant/60">
         @for (u of recentUsers(); track u.id) {
           <li class="flex flex-wrap items-center justify-between gap-2 py-3">
             <div>
-              <p class="font-medium text-slate-200">
+              <p class="font-medium text-on-surface">
                 {{ u.firstName }} {{ u.lastName }}
               </p>
-              <p class="text-sm text-slate-500">{{ u.email }}</p>
+              <p class="text-sm text-outline">{{ u.email }}</p>
             </div>
-            <div class="text-right text-sm text-slate-500">
-              <span class="rounded bg-slate-800 px-2 py-0.5 text-xs text-slate-400"
+            <div class="text-right text-sm text-outline">
+              <span class="rounded bg-surface-container-high px-2 py-0.5 text-xs text-on-surface-variant"
                 >{{ u.role }}</span
               >
               <p class="mt-1">{{ u.createdAt | timeAgo }}</p>

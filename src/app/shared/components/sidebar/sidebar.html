@@ -1,5 +1,5 @@
 <aside
-  class="flex h-full min-w-[200px] flex-col gap-1 border-r border-slate-800 bg-slate-900/40 p-3"
+  class="flex h-full min-w-[200px] flex-col gap-1 border-r border-outline-variant/40 bg-surface-container-low p-3"
   [class.w-16]="collapsed()"
   [class.min-w-0]="collapsed()"
 >
@@ -7,8 +7,8 @@
     <a
       [routerLink]="item.path"
       [attr.aria-label]="item.label"
-      routerLinkActive="bg-emerald-500/15 text-emerald-400 border-emerald-500/40"
-      class="rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+      routerLinkActive="panel-chip-active"
+      class="rounded-lg border border-transparent px-3 py-2 text-sm font-medium text-on-surface-variant transition hover:bg-surface-container-high hover:text-primary"
     >
       @if (!collapsed()) {
         {{ item.label }}

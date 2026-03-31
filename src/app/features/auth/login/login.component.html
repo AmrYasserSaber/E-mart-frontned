@@ -27,7 +27,7 @@
           <div
             class="neomorphic-inset bg-surface-container-high rounded-full px-6 py-4 flex items-center"
             [class.ring-2]="form.controls.email.touched && form.controls.email.invalid"
-            [class.ring-red-400]="form.controls.email.touched && form.controls.email.invalid"
+            [class.ring-error]="form.controls.email.touched && form.controls.email.invalid"
           >
             <fa-icon [icon]="emailIcon" class="mr-3 text-outline" aria-hidden="true" />
             <input
@@ -40,7 +40,7 @@
             />
           </div>
           @if (emailError) {
-            <p class="ml-2 text-xs font-medium text-red-700">{{ emailError }}</p>
+            <p class="ml-2 text-xs font-medium text-error">{{ emailError }}</p>
           }
         </div>
 
@@ -63,7 +63,7 @@
           <div
             class="neomorphic-inset bg-surface-container-high rounded-full px-6 py-4 flex items-center"
             [class.ring-2]="form.controls.password.touched && form.controls.password.invalid"
-            [class.ring-red-400]="form.controls.password.touched && form.controls.password.invalid"
+            [class.ring-error]="form.controls.password.touched && form.controls.password.invalid"
           >
             <fa-icon [icon]="lockIcon" class="mr-3 text-outline" aria-hidden="true" />
             <input
@@ -76,14 +76,14 @@
             />
           </div>
           @if (passwordError) {
-            <p class="ml-2 text-xs font-medium text-red-700">{{ passwordError }}</p>
+            <p class="ml-2 text-xs font-medium text-error">{{ passwordError }}</p>
           }
         </div>
 
         <!-- Server-level error (from NgRx) -->
         @if (error$ | async; as serverError) {
           @if (serverError) {
-            <p class="rounded-lg bg-red-50 px-4 py-2 text-sm font-medium text-red-700">
+            <p class="state-error rounded-lg px-4 py-2 text-sm font-medium">
               {{ serverError }}
             </p>
           }

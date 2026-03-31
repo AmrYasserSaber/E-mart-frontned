@@ -37,7 +37,7 @@
       >
         <div class="mb-10 text-center md:text-left">
           <div
-            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container text-white"
+            class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-primary-container text-on-primary"
           >
             <fa-icon [icon]="ecoIcon" class="text-3xl" aria-hidden="true" />
           </div>
@@ -165,10 +165,10 @@
           </div>
 
           @if (formError) {
-            <p class="text-sm font-medium text-red-700" role="alert">{{ formError }}</p>
+            <p class="text-sm font-medium text-error" role="alert">{{ formError }}</p>
           }
           @if (error$ | async; as err) {
-            <p class="text-sm font-medium text-red-700" role="alert">{{ err }}</p>
+            <p class="text-sm font-medium text-error" role="alert">{{ err }}</p>
           }
 
           <div class="pt-4">
