@@ -329,6 +329,30 @@
     -webkit-backdrop-filter: blur(20px);
   }
 
+  .tactile-card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .inner-shadow {
+    box-shadow:
+      inset 4px 4px 8px rgba(0, 0, 0, 0.05),
+      inset -4px -4px 8px #ffffff;
+  }
+
+  .pill-control {
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface-variant);
+    transition: all 180ms ease;
+  }
+
+  .pill-control:hover {
+    background-color: var(--color-surface-container);
+    color: var(--color-primary);
+  }
+
   /* ----------------------------------------------------------
      CURATED TILE
      Editorial asymmetric product card.
@@ -419,5 +443,17 @@
   .focus-glow:focus {
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
     outline: none;
+  }
+
+  .section-shell {
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-container-low);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .panel-chip-active {
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-ambient);
   }
 }

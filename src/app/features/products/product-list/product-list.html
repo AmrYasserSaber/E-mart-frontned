@@ -1,105 +1,129 @@
-<section class="mx-auto max-w-7xl px-4 py-10 md:px-6">
-  <header class="mb-8 text-center md:text-left">
-    <h1 class="font-display text-4xl font-black tracking-tight text-primary-container">
-      Curated Products
-    </h1>
-    <p class="mt-2 text-on-surface-variant">Search and discover items by category.</p>
-  </header>
+<main class="mx-auto flex max-w-[1600px] flex-col gap-12 px-6 pb-16 pt-8 md:flex-row lg:px-12">
+  <aside class="w-full space-y-8 md:w-72 md:shrink-0">
+    <div class="space-y-6">
+      <h3 class="font-display text-xl font-bold tracking-tight text-on-surface">Refine E-Mart</h3>
 
-  <div class="grid grid-cols-1 gap-6 lg:grid-cols-[18rem_1fr]">
-    <aside class="card h-fit bg-surface-container-low p-4 shadow-tinted">
-      <h2 class="font-display text-sm font-bold uppercase tracking-wide text-on-surface-variant">
-        Categories
-      </h2>
-      <div class="mt-4 space-y-2">
-        <button
-          type="button"
-          class="w-full rounded-full px-4 py-2.5 text-left text-sm font-medium transition"
-          [class.bg-primary-container]="selectedCategoryId === ''"
-          [class.text-on-primary]="selectedCategoryId === ''"
-          [class.shadow-tinted]="selectedCategoryId === ''"
-          [class.bg-surface-container-high]="selectedCategoryId !== ''"
-          [class.text-on-surface]="selectedCategoryId !== ''"
-          [class.hover:bg-surface-container]="selectedCategoryId !== ''"
-          (click)="onCategorySelect('')"
-        >
-          All categories
-        </button>
-        @for (category of categories; track trackByCategory($index, category)) {
-          <button
-            type="button"
-            class="w-full rounded-full px-4 py-2.5 text-left text-sm font-medium transition"
-            [class.bg-primary-container]="selectedCategoryId === category.id"
-            [class.text-on-primary]="selectedCategoryId === category.id"
-            [class.shadow-tinted]="selectedCategoryId === category.id"
-            [class.bg-surface-container-high]="selectedCategoryId !== category.id"
-            [class.text-on-surface]="selectedCategoryId !== category.id"
-            [class.hover:bg-surface-container]="selectedCategoryId !== category.id"
-            (click)="onCategorySelect(category.id)"
-          >
-            {{ category.name }}
-          </button>
-        }
-      </div>
-    </aside>
-
-    <div class="space-y-5">
       <form
-        class="card bg-surface-container-low p-4 shadow-tinted"
+        class="section-shell rounded-2xl p-4"
         (submit)="$event.preventDefault(); onSearchSubmit(searchInput.value)"
       >
-        <div class="flex flex-col gap-3 md:flex-row">
+        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-outline">Search</label>
+        <div class="rounded-full bg-surface-container-high px-4 py-2 inner-shadow">
           <input
             #searchInput
             type="search"
-            class="input-soft rounded-full"
             name="search"
             [value]="searchValue"
-            placeholder="Search by title or description..."
+            placeholder="Search curated goods..."
+            class="w-full border-none bg-transparent p-0 text-sm text-on-surface focus:ring-0"
           />
-          <button type="submit" class="btn-primary px-5 py-3">Search</button>
-          <button type="button" class="btn-secondary px-5 py-3" (click)="clearFilters()">
-            Clear
-          </button>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button type="submit" class="btn-primary py-2 text-xs font-bold">Apply</button>
+          <button type="button" class="btn-secondary py-2 text-xs font-bold" (click)="clearFilters()">Clear</button>
         </div>
       </form>
 
-      @if (loading$ | async) {
-        <div class="card bg-surface-container-low p-8 text-center text-secondary">
-          Loading products...
+      <div class="section-shell rounded-2xl p-4">
+        <span class="text-xs font-bold uppercase tracking-widest text-outline">Category</span>
+        <div class="mt-4 space-y-2">
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition"
+            [class.panel-chip-active]="selectedCategoryId === ''"
+            [class.text-on-surface-variant]="selectedCategoryId !== ''"
+            [class.hover:bg-surface-container]="selectedCategoryId !== ''"
+            (click)="onCategorySelect('')"
+          >
+            All Categories
+            <span class="material-symbols-outlined text-xs">check_circle</span>
+          </button>
+          @for (category of categories; track trackByCategory($index, category)) {
+            <button
+              type="button"
+              class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition"
+              [class.panel-chip-active]="selectedCategoryId === category.id"
+              [class.text-on-surface-variant]="selectedCategoryId !== category.id"
+              [class.hover:bg-surface-container]="selectedCategoryId !== category.id"
+              (click)="onCategorySelect(category.id)"
+            >
+              {{ category.name }}
+              <span class="material-symbols-outlined text-xs">chevron_right</span>
+            </button>
+          }
         </div>
-      } @else if (error$ | async; as error) {
-        <app-empty-state
-          title="Could not load products"
-          [message]="error"
-          actionLabel="Retry"
-          (action)="onSearchSubmit(searchValue)"
-        />
-      } @else {
-        @if ((products$ | async)?.length) {
-          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            @for (product of (products$ | async) ?? []; track product.id) {
-              <app-product-card
-                [product]="product"
-                (addToCart)="onAddToCart($event)"
-                (open)="openProductDetails($event)"
-              />
-            }
+      </div>
+
+      <div class="section-shell rounded-2xl p-4">
+        <span class="text-xs font-bold uppercase tracking-widest text-outline">Price Interval</span>
+        <div class="mt-4 rounded-2xl bg-surface-container-high p-5 inner-shadow">
+          <div class="relative h-1.5 rounded-full bg-outline-variant/40">
+            <div class="absolute inset-y-0 left-1/4 right-1/4 rounded-full bg-primary"></div>
           </div>
+          <div class="mt-4 flex justify-between text-xs font-medium text-on-surface-variant">
+            <span>$45</span>
+            <span>$850</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="min-w-0 flex-1">
+    <header class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <h1 class="font-display text-4xl font-extrabold tracking-tight text-on-surface">
+          The Ceramic Collection
+        </h1>
+        <p class="mt-2 text-lg text-on-surface-variant">
+          Curated tactile objects from earth-conscious kilns.
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-medium text-outline">Sort by</span>
+        <div class="tactile-card flex cursor-default items-center gap-2 rounded-full border border-outline-variant/10 px-4 py-2">
+          <span class="text-sm font-bold text-on-surface">Curated Popularity</span>
+          <span class="material-symbols-outlined text-sm">expand_more</span>
+        </div>
+      </div>
+    </header>
+
+    @if (loading$ | async) {
+      <div class="card bg-surface-container-low p-8 text-center text-secondary">Loading products...</div>
+    } @else if (error$ | async; as error) {
+      <app-empty-state
+        title="Could not load products"
+        [message]="error"
+        actionLabel="Retry"
+        (action)="onSearchSubmit(searchValue)"
+      />
+    } @else {
+      @if ((products$ | async)?.length) {
+        <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          @for (product of (products$ | async) ?? []; track product.id) {
+            <app-product-card
+              [product]="product"
+              (addToCart)="onAddToCart($event)"
+              (open)="openProductDetails($event)"
+            />
+          }
+        </div>
+
+        <div class="mt-16">
           <app-pagination
             [page]="(page$ | async) ?? 1"
             [totalPages]="(pages$ | async) ?? 1"
             (pageChange)="onPageChange($event)"
           />
-        } @else {
-          <app-empty-state
-            title="No products found"
-            message="Try a different search or category filter."
-            actionLabel="Clear filters"
-            (action)="clearFilters()"
-          />
-        }
+        </div>
+      } @else {
+        <app-empty-state
+          title="No products found"
+          message="Try a different search or category filter."
+          actionLabel="Clear filters"
+          (action)="clearFilters()"
+        />
       }
-    </div>
-  </div>
-</section>
+    }
+  </section>
+</main>

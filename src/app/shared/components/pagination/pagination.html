@@ -4,22 +4,24 @@
 >
   <button
     type="button"
-    class="rounded-full bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container disabled:opacity-40"
+    class="inner-shadow flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant transition hover:bg-surface-container-lowest disabled:opacity-40"
     [disabled]="page() <= 1"
     (click)="go(page() - 1)"
+    aria-label="Previous page"
   >
-    Prev
+    <span class="material-symbols-outlined">chevron_left</span>
   </button>
   @for (p of pages(); track p) {
     <button
       type="button"
-      class="min-w-10 rounded-full px-3 py-2 text-sm font-semibold transition"
+      class="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold transition"
       [class.bg-primary-container]="p === page()"
       [class.text-on-primary]="p === page()"
-      [class.shadow-tinted]="p === page()"
-      [class.bg-surface-container-high]="p !== page()"
-      [class.text-on-surface]="p !== page()"
-      [class.hover:bg-surface-container]="p !== page()"
+      [class.shadow-md]="p === page()"
+      [class.tactile-card]="p !== page()"
+      [class.bg-surface-container-lowest]="p !== page()"
+      [class.text-on-surface-variant]="p !== page()"
+      [class.hover:text-primary]="p !== page()"
       (click)="go(p)"
     >
       {{ p }}
@@ -27,10 +29,11 @@
   }
   <button
     type="button"
-    class="rounded-full bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container disabled:opacity-40"
+    class="inner-shadow flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant transition hover:bg-surface-container-lowest disabled:opacity-40"
     [disabled]="page() >= totalPages()"
     (click)="go(page() + 1)"
+    aria-label="Next page"
   >
-    Next
+    <span class="material-symbols-outlined">chevron_right</span>
   </button>
 </nav>

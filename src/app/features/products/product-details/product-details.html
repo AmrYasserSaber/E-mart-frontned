@@ -29,6 +29,13 @@
             {{ displayTitle() }}
           </h1>
           <p class="text-2xl font-extrabold text-primary">{{ product()!.price | currencyFormat }}</p>
+          <button
+            type="button"
+            class="btn-primary w-full py-3 text-sm font-bold md:w-auto md:px-6"
+            (click)="onAddToCart()"
+          >
+            Add to cart
+          </button>
           @if (product()!.ratingAvg != null) {
             <div class="flex items-center gap-3">
               <app-star-rating [readonly]="true" [value]="product()!.ratingAvg!" />

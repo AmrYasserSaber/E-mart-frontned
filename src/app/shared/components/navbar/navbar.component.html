@@ -1,71 +1,72 @@
-<header
-  class="sticky top-0 z-40 border-b border-outline-variant/40 frosted-glass"
->
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-    <div class="flex items-center gap-6">
-      <a routerLink="/home" class="flex items-center gap-2">
-        <span
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary-container text-lg font-bold text-on-primary shadow-tinted"
-          >E</span
-        >
-        <span class="text-lg font-semibold tracking-tight text-on-surface"
-          >E‑Mart</span
-        >
+<header class="sticky top-0 z-40 border-b border-outline-variant/30 frosted-glass">
+  <div class="flex items-center justify-between gap-4 px-6 py-4">
+    <div class="flex items-center gap-8">
+      <a routerLink="/home" class="font-display text-2xl font-black tracking-tighter text-primary-container">
+        E-Mart
       </a>
-      <nav class="hidden gap-4 text-sm font-medium md:flex">
-        <a routerLink="/home" class="text-secondary hover:text-primary"
-          >Home</a
-        >
-        <a routerLink="/products" class="text-secondary hover:text-primary"
-          >Products</a
-        >
-        <a routerLink="/cart" class="text-secondary hover:text-primary"
-          >Cart</a
-        >
-        <a routerLink="/profile" class="text-secondary hover:text-primary"
-          >Profile</a
-        >
+      <nav class="hidden gap-6 md:flex">
+        <a routerLink="/products" class="border-b-2 border-primary-container font-bold text-primary">Shop</a>
+        <a routerLink="/home" class="font-medium text-on-surface-variant hover:text-primary">Collections</a>
+        <a routerLink="/profile" class="font-medium text-on-surface-variant hover:text-primary">Artisans</a>
         @if (showAdmin$ | async) {
-          <a routerLink="/admin" class="text-primary-container hover:text-primary"
-            >Admin</a
-          >
+          <a routerLink="/admin" class="font-medium text-on-surface-variant hover:text-primary">Admin</a>
         }
       </nav>
     </div>
-    <div class="flex items-center gap-3 text-sm">
+
+    <div class="flex items-center gap-3">
+      <div class="hidden items-center gap-2 rounded-full bg-surface-container-high px-4 py-2 inner-shadow lg:flex">
+        <span class="material-symbols-outlined text-sm text-outline">search</span>
+        <input
+          type="text"
+          placeholder="Search curated goods..."
+          class="w-56 border-none bg-transparent p-0 text-sm text-on-surface placeholder:text-outline/70 focus:ring-0"
+        />
+      </div>
+
       <a
         routerLink="/cart"
-        class="relative rounded-full px-3 py-1.5 text-secondary hover:bg-surface-container-high hover:text-primary"
+        class="relative p-2 text-on-surface-variant transition-colors hover:text-primary"
+        aria-label="Cart"
       >
-        Cart
+        <span class="material-symbols-outlined">shopping_cart</span>
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
-              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
+              class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
               >{{ count }}</span
             >
           }
         }
       </a>
+
+      <a
+        routerLink="/orders"
+        class="p-2 text-on-surface-variant transition-colors hover:text-primary"
+        aria-label="Orders"
+      >
+        <span class="material-symbols-outlined">notifications</span>
+      </a>
+
       @if (isAuth$ | async) {
         @if (user$ | async; as user) {
-          <span class="hidden text-secondary sm:inline"
-            >{{ user.firstName }}</span
+          <button
+            type="button"
+            class="p-2 text-on-surface-variant transition-colors hover:text-primary"
+            [attr.aria-label]="user.firstName"
           >
+            <span class="material-symbols-outlined">account_circle</span>
+          </button>
           <button
             type="button"
             (click)="logout()"
-            class="rounded-full bg-surface-container-high px-3 py-1.5 font-medium text-on-surface hover:bg-surface-container"
+            class="rounded-full bg-surface-container-high px-3 py-1.5 text-sm font-medium text-on-surface hover:bg-surface-container"
           >
             Log out
           </button>
         }
       } @else {
-        <a
-          routerLink="/auth/login"
-          class="btn-primary px-3 py-1.5 font-medium"
-          >Sign in</a
-        >
+        <a routerLink="/auth/login" class="btn-primary px-4 py-2 text-sm font-semibold">Sign in</a>
       }
     </div>
   </div>

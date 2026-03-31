@@ -1,14 +1,12 @@
 <article
-  class="group card flex h-full flex-col bg-surface-container-low transition duration-200 hover:-translate-y-0.5"
+  class="group relative rounded-2xl bg-surface-container-lowest p-4 pt-0 tactile-card transition-all duration-300 hover:-translate-y-0.5"
   role="button"
   tabindex="0"
   (click)="onOpen()"
   (keydown.enter)="onOpen()"
   (keydown.space)="onOpen(); $event.preventDefault()"
 >
-  <div
-    class="aspect-4/3 overflow-hidden bg-surface-container-high"
-  >
+  <div class="relative -mt-6 aspect-square overflow-hidden rounded-xl shadow-lg transition-transform duration-300 group-hover:-translate-y-1">
     @if (product().images?.length || product().imageUrl) {
       <img
         [src]="product().images?.[0] || product().imageUrl"
@@ -24,21 +22,37 @@
         📦
       </div>
     }
+    <button
+      type="button"
+      aria-label="Favorite"
+      class="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-primary inner-shadow opacity-0 transition-opacity group-hover:opacity-100"
+      (click)="$event.stopPropagation()"
+    >
+      <span class="material-symbols-outlined text-sm">favorite</span>
+    </button>
   </div>
-  <div class="flex flex-1 flex-col gap-2 p-4 md:p-5">
-    <h3 class="line-clamp-2 font-display text-lg font-bold text-on-surface">
-      {{ product().title || product().name || 'Untitled product' }}
-    </h3>
+  <div class="mt-6 flex flex-1 flex-col gap-2">
+    <div class="flex items-start justify-between gap-2">
+      <h3 class="line-clamp-2 font-display text-lg font-bold leading-tight text-on-surface">
+        {{ product().title || product().name || 'Untitled product' }}
+      </h3>
+      <span class="font-display text-lg font-bold text-primary">
+        {{ product().price | currencyFormat }}
+      </span>
+    </div>
+    <p class="text-xs font-medium text-on-surface-variant">Curated handcrafted piece</p>
     @if (product().ratingAvg != null || product().rating != null) {
-      <app-star-rating [value]="product().ratingAvg || product().rating || 0" [readonly]="true" />
+      <div class="flex items-center gap-1">
+        <app-star-rating [value]="product().ratingAvg || product().rating || 0" [readonly]="true" />
+        <span class="text-xs font-bold text-on-surface-variant">
+          {{ product().ratingAvg || product().rating || 0 }}
+        </span>
+      </div>
     }
-    <p class="text-xl font-extrabold text-primary">
-      {{ product().price | currencyFormat }}
-    </p>
     <button
       type="button"
       (click)="onAdd($event)"
-      class="btn-primary mt-auto w-full py-3 text-sm font-bold"
+      class="btn-primary mt-3 w-full py-3 text-sm font-bold tracking-wide"
     >
       Add to cart
     </button>

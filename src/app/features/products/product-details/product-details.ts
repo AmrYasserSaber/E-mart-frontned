@@ -1,15 +1,19 @@
 import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import type { Product } from '../../../core/models/product.model';
 import type { Review, PaginatedResponse } from '../../../core/models/review.model';
+import { sanitizeReturnUrl } from '../../../core/utils/url.utils';
 import { ProductsService } from '../../../core/services/products.service';
 import { CurrencyFormatPipe } from '../../../shared/pipes/currency-format.pipe';
 import { StarRating } from '../../../shared/components/star-rating/star-rating';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { Pagination } from '../../../shared/components/pagination/pagination';
+import { selectIsAuthenticated } from '../../../shared/store/auth/auth.selectors';
+import { CartActions } from '../../../shared/store/cart/cart.actions';
 
 @Component({
   selector: 'app-product-details',
@@ -28,6 +32,8 @@ export class ProductDetails {
   protected readonly imagePlaceholder =
     'https://img.freepik.com/premium-vector/picture-icon-isolated-white-background-vector-illustration_736051-240.jpg?semt=ais_incoming&w=740&q=80';
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
   private readonly productsService = inject(ProductsService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -83,6 +89,23 @@ export class ProductDetails {
     if (!target) return;
     target.onerror = null;
     target.src = this.imagePlaceholder;
+  }
+
+  onAddToCart(): void {
+    const product = this.product();
+    if (!product) return;
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(take(1))
+      .subscribe((isAuthenticated) => {
+        if (isAuthenticated) {
+          this.store.dispatch(CartActions.addToCart({ product }));
+          return;
+        }
+        this.router.navigate(['/auth/login'], {
+          queryParams: { returnUrl: sanitizeReturnUrl(this.router.url) },
+        });
+      });
   }
 
   private loadProduct(id: string): void {
