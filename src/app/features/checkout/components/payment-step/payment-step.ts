@@ -62,10 +62,11 @@ export class PaymentStep implements OnInit {
 
     this.cardSaving.set(true);
     
-    // Ensure numeric types for the backend
+    // Ensure numeric types for the backend and strip whitespace from card number
     const formValue = this.addCardForm.value;
     const saveDto = {
       ...formValue,
+      cardNumber: formValue.cardNumber.replace(/\s+/g, ''),
       expiryMonth: Number(formValue.expiryMonth),
       expiryYear: Number(formValue.expiryYear)
     };
