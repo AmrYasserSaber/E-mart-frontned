@@ -6,7 +6,7 @@ import { Toast } from './shared/components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, Footer, Toast],
+  imports: [RouterOutlet, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
