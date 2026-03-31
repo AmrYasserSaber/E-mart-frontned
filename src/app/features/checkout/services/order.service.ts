@@ -29,10 +29,12 @@ export class OrderService {
   placeOrder(shippingAddress: ShippingAddress, paymentMethod: string): Observable<CreateOrderResponse> {
     return this.http
       .post<any>(`${this.baseUrl}/orders`, { shippingAddress, paymentMethod })
-      .pipe(map((res) => res));
+      .pipe(map((res) => res.data));
   }
 
   getOrderDetails(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/orders/${id}`);
+    return this.http
+      .get<any>(`${this.baseUrl}/orders/${id}`)
+      .pipe(map((res) => res.data));
   }
 }

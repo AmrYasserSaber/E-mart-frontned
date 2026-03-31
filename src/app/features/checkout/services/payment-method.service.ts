@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { API_BASE_URL } from '../../../core/tokens/app.tokens';
 
 export interface UserCard {
@@ -31,14 +31,20 @@ export class PaymentMethodService {
   private readonly baseUrl = inject(API_BASE_URL);
 
   listCards(): Observable<UserCard[]> {
-    return this.http.get<UserCard[]>(`${this.baseUrl}/payments/cards`);
+    return this.http
+      .get<any>(`${this.baseUrl}/payments/cards`)
+      .pipe(map((res) => res.data));
   }
 
   saveCard(dto: SaveCardDto): Observable<UserCard> {
-    return this.http.post<UserCard>(`${this.baseUrl}/payments/cards`, dto);
+    return this.http
+      .post<any>(`${this.baseUrl}/payments/cards`, dto)
+      .pipe(map((res) => res.data));
   }
 
   deleteCard(id: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/payments/cards/${id}/delete`, {});
+    return this.http
+      .post<any>(`${this.baseUrl}/payments/cards/${id}/delete`, {})
+      .pipe(map((res) => res.data));
   }
 }

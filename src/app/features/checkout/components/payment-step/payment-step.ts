@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { CheckoutService, CheckoutStep } from '../../services/checkout.service';
 import { OrderService } from '../../services/order.service';
 import { PaymentMethodService, UserCard } from '../../services/payment-method.service';
+import { Observable, map } from 'rxjs';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -29,9 +30,9 @@ export class PaymentStep implements OnInit {
   readonly addCardForm: FormGroup = this.fb.group({
     cardholderName: ['', [Validators.required, Validators.minLength(2)]],
     cardNumber: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
-    expiryMonth: [null, [Validators.required, Validators.min(1), Validators.max(12)]],
-    expiryYear: [new Date().getFullYear(), [Validators.required, Validators.min(new Date().getFullYear())]],
-    cvv: ['', [Validators.required, Validators.pattern('^[0-9]{3,4}$')]],
+    expiryMonth: ['', [Validators.required, Validators.pattern('^(0[1-9]|1[0-2])$')]],
+    expiryYear: ['', [Validators.required, Validators.pattern('^[0-9]{4}$')]],
+    cvv: ['', [Validators.required, Validators.pattern('^[0-9]{3}$')]],
   });
 
   ngOnInit(): void {
@@ -52,7 +53,7 @@ export class PaymentStep implements OnInit {
   toggleAddCardForm(): void {
     this.showAddCardForm.update(v => !v);
     if (!this.showAddCardForm()) {
-      this.addCardForm.reset({ expiryYear: new Date().getFullYear() });
+      this.addCardForm.reset();
     }
   }
 
@@ -60,7 +61,16 @@ export class PaymentStep implements OnInit {
     if (this.addCardForm.invalid) return;
 
     this.cardSaving.set(true);
-    this.paymentMethodService.saveCard(this.addCardForm.value)
+    
+    // Ensure numeric types for the backend
+    const formValue = this.addCardForm.value;
+    const saveDto = {
+      ...formValue,
+      expiryMonth: Number(formValue.expiryMonth),
+      expiryYear: Number(formValue.expiryYear)
+    };
+
+    this.paymentMethodService.saveCard(saveDto)
       .pipe(finalize(() => this.cardSaving.set(false)))
       .subscribe({
         next: (card) => {
