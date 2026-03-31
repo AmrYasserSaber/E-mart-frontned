@@ -41,6 +41,7 @@ export class Orders implements OnInit {
   readonly statusFilter = signal<OrderStatus | ''>('');
   readonly result = signal<AdminListOrdersResponse | null>(null);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
 
   readonly editOpen = signal(false);
   readonly editing = signal<Order | null>(null);
@@ -50,7 +51,10 @@ export class Orders implements OnInit {
   ngOnInit(): void {
     this.reload$
       .pipe(
-        tap(() => this.loading.set(true)),
+        tap(() => {
+          this.loading.set(true);
+          this.loadError.set(null);
+        }),
         switchMap(() =>
           this.admin.listOrders({
             page: this.page(),
@@ -58,6 +62,8 @@ export class Orders implements OnInit {
             status: this.statusFilter() || undefined,
           }).pipe(
             catchError(() => {
+              this.result.set(null);
+              this.loadError.set('Failed to load orders. Please try again.');
               this.loading.set(false);
               return of(null);
             }),
@@ -69,6 +75,7 @@ export class Orders implements OnInit {
         next: (r) => {
           if (!r) return;
           this.result.set(r);
+          this.loadError.set(null);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
@@ -114,7 +121,22 @@ export class Orders implements OnInit {
       .updateOrderStatus(o.id, this.editStatus())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
+        next: (updated) => {
+          const current = this.result();
+          if (current) {
+            this.result.set({
+              ...current,
+              data: current.data.map((order) =>
+                order.id === o.id
+                  ? {
+                      ...order,
+                      status: updated.status,
+                      updatedAt: updated.updatedAt,
+                    }
+                  : order,
+              ),
+            });
+          }
           this.saveLoading.set(false);
           this.closeEdit();
           this.load();

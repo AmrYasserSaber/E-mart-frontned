@@ -21,6 +21,18 @@ export interface ActivityItem {
   date: string;
 }
 
+type UsersFeedResult = {
+  items: User[];
+  __error?: boolean;
+  __errorDetail?: unknown;
+};
+
+type OrdersFeedResult = {
+  data: Order[];
+  __error?: boolean;
+  __errorDetail?: unknown;
+};
+
 @Component({
   selector: 'app-activity-feed',
   imports: [TimeAgoPipe],
@@ -34,14 +46,27 @@ export class ActivityFeed implements OnInit {
 
   readonly items = signal<ActivityItem[]>([]);
   readonly loading = signal(true);
+  readonly feedLoadError = signal<string | null>(null);
 
   ngOnInit(): void {
     forkJoin({
       users: this.admin.listUsers({ page: 1, limit: 10 }).pipe(
-        catchError(() => of({ items: [] as User[] })),
+        catchError((err) =>
+          of({
+            items: [] as User[],
+            __error: true,
+            __errorDetail: err,
+          } satisfies UsersFeedResult),
+        ),
       ),
       orders: this.admin.listOrders({ page: 1, limit: 10 }).pipe(
-        catchError(() => of({ data: [] as Order[] })),
+        catchError((err) =>
+          of({
+            data: [] as Order[],
+            __error: true,
+            __errorDetail: err,
+          } satisfies OrdersFeedResult),
+        ),
       ),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -74,9 +99,20 @@ export class ActivityFeed implements OnInit {
           );
 
           this.items.set(activity.slice(0, 20));
+          const hasSourceError =
+            ('__error' in users && !!users.__error) ||
+            ('__error' in orders && !!orders.__error);
+          this.feedLoadError.set(
+            hasSourceError && activity.length === 0
+              ? 'Failed to load activity right now. Please try again.'
+              : null,
+          );
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.feedLoadError.set('Failed to load activity right now. Please try again.');
+          this.loading.set(false);
+        },
       });
   }
 }
