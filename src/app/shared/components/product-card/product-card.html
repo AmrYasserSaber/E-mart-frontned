@@ -4,7 +4,7 @@
   <div
     class="aspect-[4/3] overflow-hidden bg-slate-800"
   >
-    @if (product().images.length) {
+    @if (product().images && product().images.length > 0) {
       <img
         [src]="product().images[0]"
         [alt]="product().title"
@@ -21,8 +21,8 @@
   </div>
   <div class="flex flex-1 flex-col gap-2 p-4">
     <h3 class="font-semibold text-slate-100 line-clamp-2">{{ product().title }}</h3>
-    @if (product().ratingAvg > 0) {
-      <app-star-rating [value]="product().ratingAvg" [readonly]="true" />
+    @if (product().ratingAvg != null) {
+      <app-star-rating [value]="product().ratingAvg!" [readonly]="true" />
     }
     <p class="text-lg font-bold text-emerald-400">
       {{ product().price | currencyFormat }}

@@ -1,0 +1,19 @@
+/* Main Checkout Container Styles */
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-outline-variant);
+  border-radius: 10px;
+}

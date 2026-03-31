@@ -1,0 +1,73 @@
+<!-- Modern Checkout Layout -->
+<nav class="fixed top-0 w-full z-50 bg-[#fdf9f3]/80 backdrop-blur-md border-b border-outline-variant/10">
+  <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+    <div routerLink="/home" class="text-2xl font-extrabold tracking-tight text-primary-container font-display cursor-pointer select-none">
+      Nexus Market
+    </div>
+    <div class="flex items-center gap-4 text-on-surface-variant text-sm font-medium">
+      <span class="material-symbols-outlined text-primary-container">lock</span>
+      Secure Checkout
+    </div>
+    <a routerLink="/cart" class="text-primary-container font-bold hover:underline transition-all hidden md:block">
+      Cancel
+    </a>
+  </div>
+</nav>
+
+<main class="pt-24 pb-16 px-6 max-w-7xl mx-auto">
+  <!-- Progress Tracker -->
+  @if (currentStep() !== STEP.CONFIRMATION) {
+    <app-step-indicator />
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start h-full">
+    <!-- Active Step Content Area -->
+    <div class="lg:col-span-8 space-y-8 min-h-[600px] relative">
+      @switch (currentStep()) {
+        @case (STEP.ADDRESS) {
+          <app-address-step />
+        }
+        @case (STEP.PAYMENT) {
+          <app-payment-step />
+        }
+        @case (STEP.CONFIRMATION) {
+          <app-confirmation-step />
+        }
+      }
+    </div>
+
+    <!-- Persistent Sidebar: Order Summary -->
+    <aside class="lg:col-span-4 sticky top-24" [class.hidden]="currentStep() === STEP.CONFIRMATION">
+      <app-order-summary />
+      
+      <!-- Security Badges Footer -->
+      <div class="mt-8 flex items-center justify-center gap-4 text-outline opacity-60">
+        <div class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-3xl">verified_user</span>
+          <p class="text-[8px] uppercase font-bold tracking-widest mt-1">Certified</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-3xl">local_shipping</span>
+          <p class="text-[8px] uppercase font-bold tracking-widest mt-1">Insured</p>
+        </div>
+        <div class="flex flex-col items-center">
+          <span class="material-symbols-outlined text-3xl">autorenew</span>
+          <p class="text-[8px] uppercase font-bold tracking-widest mt-1">30-Day</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- Simple Footer -->
+<footer class="bg-surface-dim pt-12 pb-8 w-full mt-24">
+  <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="font-bold text-primary-container">Nexus Market</div>
+    <div class="flex gap-6">
+      <span class="text-xs text-on-surface-variant cursor-pointer hover:text-primary transition-all">Privacy Policy</span>
+      <span class="text-xs text-on-surface-variant cursor-pointer hover:text-primary transition-all">Terms of Service</span>
+      <span class="text-xs text-on-surface-variant cursor-pointer hover:text-primary transition-all">Help Center</span>
+    </div>
+    <p class="text-xs text-on-surface-variant opacity-60">© 2024 Nexus Market. Curated with care for you.</p>
+  </div>
+</footer>

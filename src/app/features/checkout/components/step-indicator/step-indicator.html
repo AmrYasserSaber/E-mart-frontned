@@ -1,1 +1,39 @@
-<p>step-indicator works!</p>
+<div class="flex justify-center mb-12">
+  <div class="bg-surface-container-low p-2 rounded-full flex gap-2 neomorphic-inset">
+    <!-- Step 1: Address -->
+    <div 
+      class="flex items-center gap-2 px-6 py-2 rounded-full transition-all duration-500"
+      [class.bg-primary-container]="currentStep() === STEP.ADDRESS"
+      [class.text-white]="currentStep() === STEP.ADDRESS"
+      [class.shadow-lg]="currentStep() === STEP.ADDRESS"
+      [class.text-on-surface-variant]="currentStep() !== STEP.ADDRESS"
+    >
+      <span class="text-xs font-bold font-display" [class.opacity-50]="currentStep() !== STEP.ADDRESS">01</span>
+      <span class="text-sm font-semibold">Address</span>
+    </div>
+
+    <!-- Step 2: Payment -->
+    <div 
+      class="flex items-center gap-2 px-6 py-2 rounded-full transition-all duration-500"
+      [class.bg-primary-container]="currentStep() === STEP.PAYMENT"
+      [class.text-white]="currentStep() === STEP.PAYMENT"
+      [class.shadow-lg]="currentStep() === STEP.PAYMENT"
+      [class.text-on-surface-variant]="currentStep() !== STEP.PAYMENT"
+    >
+      <span class="text-xs font-bold font-display" [class.opacity-50]="currentStep() !== STEP.PAYMENT">02</span>
+      <span class="text-sm font-semibold">Payment</span>
+    </div>
+
+    <!-- Step 3: Confirmation -->
+    <div 
+      class="flex items-center gap-2 px-6 py-2 rounded-full transition-all duration-500"
+      [class.bg-primary-container]="currentStep() === STEP.CONFIRMATION"
+      [class.text-white]="currentStep() === STEP.CONFIRMATION"
+      [class.shadow-lg]="currentStep() === STEP.CONFIRMATION"
+      [class.text-on-surface-variant]="currentStep() !== STEP.CONFIRMATION"
+    >
+      <span class="text-xs font-bold font-display" [class.opacity-50]="currentStep() !== STEP.CONFIRMATION">03</span>
+      <span class="text-sm font-semibold">Confirm</span>
+    </div>
+  </div>
+</div>

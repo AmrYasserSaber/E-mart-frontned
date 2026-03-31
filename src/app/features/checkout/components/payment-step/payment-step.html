@@ -1,1 +1,53 @@
-<p>payment-step works!</p>
+<section class="space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
+  <h3 class="text-lg font-display font-bold text-on-surface-variant px-2">Select Payment Method</h3>
+  
+  <div class="grid grid-cols-1 gap-4">
+    <!-- Cash on Delivery (Selected by default) -->
+    <div class="group relative bg-surface-container-lowest p-6 rounded-lg neomorphic-outset border-2 border-primary-container transition-all cursor-pointer">
+      <div class="flex items-center gap-6">
+        <span class="material-symbols-outlined text-primary-container text-4xl">payments</span>
+        <div>
+          <p class="font-bold text-on-surface">Cash on Delivery</p>
+          <p class="text-xs text-on-surface-variant">Pay in cash upon receiving your order.</p>
+        </div>
+      </div>
+      <div class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full bg-primary-container flex items-center justify-center">
+        <div class="h-2 w-2 rounded-full bg-white"></div>
+      </div>
+    </div>
+
+    <!-- Other (Disabled or placeholder) -->
+    <div class="group relative bg-surface-container-low p-6 rounded-lg transition-all opacity-50 grayscale cursor-not-allowed">
+      <div class="flex items-center gap-6">
+        <span class="material-symbols-outlined text-outline text-4xl">credit_card</span>
+        <div>
+          <p class="font-bold text-on-surface-variant">Credit / Debit Card</p>
+          <p class="text-xs text-on-surface-variant">Coming soon to Nexus Market.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-8 flex flex-col md:flex-row gap-4">
+    <button 
+      (click)="back()"
+      class="flex-1 bg-surface-container-low text-on-surface-variant font-bold py-4 rounded-xl shadow-sm hover:bg-surface-container transition-all flex items-center justify-center gap-2"
+    >
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back to Address
+    </button>
+    <button 
+      (click)="completePurchase()"
+      [disabled]="loading()"
+      class="flex-[2] bg-primary-container text-white font-headline font-bold py-4 rounded-xl shadow-lg hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      @if (loading()) {
+        <span class="material-symbols-outlined animate-spin">sync</span>
+        Processing...
+      } @else {
+        Complete Purchase
+        <span class="material-symbols-outlined">check_circle</span>
+      }
+    </button>
+  </div>
+</section>
