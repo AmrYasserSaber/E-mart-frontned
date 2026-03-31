@@ -1,8 +1,10 @@
 import { Component, computed, input, output } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { appIcons } from '../../icons/font-awesome-icons';
 
 @Component({
   selector: 'app-pagination',
-  imports: [],
+  imports: [FontAwesomeModule],
   templateUrl: './pagination.html',
   styleUrl: './pagination.css',
 })
@@ -10,6 +12,8 @@ export class Pagination {
   readonly page = input(1);
   readonly totalPages = input(1);
   readonly pageChange = output<number>();
+  readonly chevronLeftIcon = appIcons['chevronLeft'];
+  readonly chevronRightIcon = appIcons['chevronRight'];
 
   readonly pages = computed(() => {
     const total = Math.max(1, this.totalPages());

@@ -9,7 +9,7 @@
     (click)="go(page() - 1)"
     aria-label="Previous page"
   >
-    <span class="material-symbols-outlined">chevron_left</span>
+    <fa-icon [icon]="chevronLeftIcon" />
   </button>
   @for (p of pages(); track p) {
     <button
@@ -34,6 +34,6 @@
     (click)="go(page() + 1)"
     aria-label="Next page"
   >
-    <span class="material-symbols-outlined">chevron_right</span>
+    <fa-icon [icon]="chevronRightIcon" />
   </button>
 </nav>

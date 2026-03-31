@@ -1,6 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
@@ -8,10 +9,11 @@ import { AuthActions } from '../../../shared/store/auth/auth.actions';
 import { selectAuthError, selectAuthLoading } from '../../../shared/store/auth/auth.selectors';
 import { loginBodySchema } from '../../../core/validation/auth.schemas';
 import { mapZodIssuesToFieldErrors } from '../../../core/validation/auth-error.utils';
+import { appIcons } from '../../../shared/icons/font-awesome-icons';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FontAwesomeModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -22,6 +24,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   readonly loading$ = this.store.select(selectAuthLoading);
   readonly error$ = this.store.select(selectAuthError);
+  readonly emailIcon = appIcons['email'];
+  readonly lockIcon = appIcons['lock'];
 
   readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

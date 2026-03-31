@@ -1,11 +1,13 @@
 import { Component, input, output } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import type { Product } from '../../../core/models/product.model';
 import { CurrencyFormatPipe } from '../../pipes/currency-format.pipe';
 import { StarRating } from '../star-rating/star-rating';
+import { appIcons } from '../../icons/font-awesome-icons';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CurrencyFormatPipe, StarRating],
+  imports: [CurrencyFormatPipe, StarRating, FontAwesomeModule],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })
@@ -15,6 +17,7 @@ export class ProductCard {
   readonly product = input.required<Product>();
   readonly addToCart = output<Product>();
   readonly open = output<Product>();
+  readonly favoriteIcon = appIcons['favorite'];
 
   onOpen(): void {
     this.open.emit(this.product());

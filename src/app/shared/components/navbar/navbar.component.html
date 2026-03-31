@@ -16,7 +16,7 @@
 
     <div class="flex items-center gap-3">
       <div class="hidden items-center gap-2 rounded-full bg-surface-container-high px-4 py-2 inner-shadow lg:flex">
-        <span class="material-symbols-outlined text-sm text-outline">search</span>
+        <fa-icon [icon]="searchIcon" class="text-sm text-outline" />
         <input
           type="text"
           placeholder="Search curated goods..."
@@ -29,7 +29,7 @@
         class="relative p-2 text-on-surface-variant transition-colors hover:text-primary"
         aria-label="Cart"
       >
-        <span class="material-symbols-outlined">shopping_cart</span>
+        <fa-icon [icon]="cartIcon" />
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
@@ -45,7 +45,7 @@
         class="p-2 text-on-surface-variant transition-colors hover:text-primary"
         aria-label="Orders"
       >
-        <span class="material-symbols-outlined">notifications</span>
+        <fa-icon [icon]="notificationsIcon" />
       </a>
 
       @if (isAuth$ | async) {
@@ -55,7 +55,7 @@
             class="p-2 text-on-surface-variant transition-colors hover:text-primary"
             [attr.aria-label]="user.firstName"
           >
-            <span class="material-symbols-outlined">account_circle</span>
+            <fa-icon [icon]="accountIcon" />
           </button>
           <button
             type="button"

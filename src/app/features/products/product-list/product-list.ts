@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Store } from '@ngrx/store';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +22,7 @@ import {
   selectProductsPage,
   selectProductsPages,
 } from '../../../shared/store/products/products.selectors';
+import { appIcons } from '../../../shared/icons/font-awesome-icons';
 
 interface ProductsFilters {
   page: number;
@@ -37,6 +39,7 @@ function parsePage(value: string | null): number {
   selector: 'app-product-list',
   imports: [
     AsyncPipe,
+    FontAwesomeModule,
     ProductCard,
     Pagination,
     EmptyState,
@@ -60,6 +63,9 @@ export class ProductList {
   protected searchValue = '';
   protected selectedCategoryId = '';
   protected categories: Category[] = [];
+  protected readonly checkCircleIcon = appIcons['checkCircle'];
+  protected readonly chevronRightIcon = appIcons['chevronRight'];
+  protected readonly chevronDownIcon = appIcons['chevronDown'];
 
   constructor() {
     this.productsService

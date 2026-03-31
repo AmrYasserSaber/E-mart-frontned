@@ -29,7 +29,7 @@
             [class.ring-2]="form.controls.email.touched && form.controls.email.invalid"
             [class.ring-red-400]="form.controls.email.touched && form.controls.email.invalid"
           >
-            <span class="material-symbols-outlined text-outline mr-3" aria-hidden="true">mail</span>
+            <fa-icon [icon]="emailIcon" class="mr-3 text-outline" aria-hidden="true" />
             <input
               id="email"
               type="email"
@@ -65,7 +65,7 @@
             [class.ring-2]="form.controls.password.touched && form.controls.password.invalid"
             [class.ring-red-400]="form.controls.password.touched && form.controls.password.invalid"
           >
-            <span class="material-symbols-outlined text-outline mr-3" aria-hidden="true">lock</span>
+            <fa-icon [icon]="lockIcon" class="mr-3 text-outline" aria-hidden="true" />
             <input
               id="password"
               type="password"

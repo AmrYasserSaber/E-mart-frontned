@@ -36,7 +36,7 @@
             (click)="onCategorySelect('')"
           >
             All Categories
-            <span class="material-symbols-outlined text-xs">check_circle</span>
+            <fa-icon [icon]="checkCircleIcon" class="text-xs" />
           </button>
           @for (category of categories; track trackByCategory($index, category)) {
             <button
@@ -48,7 +48,7 @@
               (click)="onCategorySelect(category.id)"
             >
               {{ category.name }}
-              <span class="material-symbols-outlined text-xs">chevron_right</span>
+              <fa-icon [icon]="chevronRightIcon" class="text-xs" />
             </button>
           }
         </div>
@@ -83,7 +83,7 @@
         <span class="text-sm font-medium text-outline">Sort by</span>
         <div class="tactile-card flex cursor-default items-center gap-2 rounded-full border border-outline-variant/10 px-4 py-2">
           <span class="text-sm font-bold text-on-surface">Curated Popularity</span>
-          <span class="material-symbols-outlined text-sm">expand_more</span>
+          <fa-icon [icon]="chevronDownIcon" class="text-sm" />
         </div>
       </div>
     </header>

@@ -12,6 +12,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs/operators';
 import { ApiService } from '../../../core/services/api.service';
@@ -25,13 +26,14 @@ import {
   parseHttpAuthError,
   mapZodIssuesToMessage,
 } from '../../../core/validation/auth-error.utils';
+import { appIcons } from '../../../shared/icons/font-awesome-icons';
 
 const DIGIT_COUNT = 6;
 const RESEND_SECONDS = 60;
 
 @Component({
   selector: 'app-verify-email',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FontAwesomeModule],
   templateUrl: './verify-email.html',
   styleUrl: './verify-email.scss',
 })
@@ -65,6 +67,15 @@ export class VerifyEmail implements AfterViewInit, OnDestroy {
   isResending = false;
   errorMessage = '';
   infoMessage = '';
+  readonly storefrontIcon = appIcons['storefront'];
+  readonly errorIcon = appIcons['error'];
+  readonly checkCircleIcon = appIcons['checkCircle'];
+  readonly arrowRightIcon = appIcons['arrowRight'];
+  readonly scheduleIcon = appIcons['schedule'];
+  readonly refreshIcon = appIcons['refresh'];
+  readonly verifiedUserIcon = appIcons['verifiedUser'];
+  readonly lockIcon = appIcons['lock'];
+  readonly shieldIcon = appIcons['shield'];
 
   private resendTimerId: ReturnType<typeof setInterval> | null = null;
 
