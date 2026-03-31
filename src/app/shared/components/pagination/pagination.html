@@ -4,7 +4,7 @@
 >
   <button
     type="button"
-    class="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-40"
+    class="rounded-full bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container disabled:opacity-40"
     [disabled]="page() <= 1"
     (click)="go(page() - 1)"
   >
@@ -13,13 +13,13 @@
   @for (p of pages(); track p) {
     <button
       type="button"
-      class="min-w-9 rounded-lg border px-2 py-1.5 text-sm"
-      [class.border-emerald-500]="p === page()"
-      [class.bg-emerald-500]="p === page()"
-      [class.text-slate-950]="p === page()"
-      [class.border-slate-700]="p !== page()"
-      [class.text-slate-300]="p !== page()"
-      [class.hover:bg-slate-800]="p !== page()"
+      class="min-w-10 rounded-full px-3 py-2 text-sm font-semibold transition"
+      [class.bg-primary-container]="p === page()"
+      [class.text-on-primary]="p === page()"
+      [class.shadow-tinted]="p === page()"
+      [class.bg-surface-container-high]="p !== page()"
+      [class.text-on-surface]="p !== page()"
+      [class.hover:bg-surface-container]="p !== page()"
       (click)="go(p)"
     >
       {{ p }}
@@ -27,7 +27,7 @@
   }
   <button
     type="button"
-    class="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-40"
+    class="rounded-full bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface transition hover:bg-surface-container disabled:opacity-40"
     [disabled]="page() >= totalPages()"
     (click)="go(page() + 1)"
   >

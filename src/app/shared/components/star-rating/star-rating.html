@@ -9,10 +9,10 @@
       [disabled]="readonly()"
       (click)="set(i)"
       class="text-lg leading-none transition"
-      [class.text-amber-400]="isFilled(i)"
-      [class.text-slate-600]="!isFilled(i)"
+      [class.text-primary-container]="isFilled(i)"
+      [class.text-outline-variant]="!isFilled(i)"
       [class.cursor-default]="readonly()"
-      [class.hover:text-amber-300]="!readonly()"
+      [class.hover:text-primary]="!readonly()"
       [attr.aria-label]="starButtonLabel(i)"
     >
       ★

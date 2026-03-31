@@ -9,6 +9,21 @@ export const selectAllProducts = createSelector(
   (s) => s.products,
 );
 
+export const selectProductsTotal = createSelector(
+  selectProductsState,
+  (s) => s.total,
+);
+
+export const selectProductsPage = createSelector(
+  selectProductsState,
+  (s) => s.page,
+);
+
+export const selectProductsPages = createSelector(
+  selectProductsState,
+  (s) => s.pages,
+);
+
 export const selectProductsLoading = createSelector(
   selectProductsState,
   (s) => s.loading,

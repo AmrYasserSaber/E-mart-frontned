@@ -1,1 +1,106 @@
-<p>product-list works!</p>
+<section class="mx-auto max-w-7xl px-4 py-10 md:px-6">
+  <header class="mb-8 text-center md:text-left">
+    <h1 class="font-display text-4xl font-black tracking-tight text-primary-container">
+      Curated Products
+    </h1>
+    <p class="mt-2 text-on-surface-variant">Search and discover items by category.</p>
+  </header>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-[18rem_1fr]">
+    <aside class="card h-fit bg-surface-container-low p-4 shadow-tinted">
+      <h2 class="font-display text-sm font-bold uppercase tracking-wide text-on-surface-variant">
+        Categories
+      </h2>
+      <div class="mt-4 space-y-2">
+        <button
+          type="button"
+          class="w-full rounded-full px-4 py-2.5 text-left text-sm font-medium transition"
+          [class.bg-primary-container]="selectedCategoryId === ''"
+          [class.text-on-primary]="selectedCategoryId === ''"
+          [class.shadow-tinted]="selectedCategoryId === ''"
+          [class.bg-surface-container-high]="selectedCategoryId !== ''"
+          [class.text-on-surface]="selectedCategoryId !== ''"
+          [class.hover:bg-surface-container]="selectedCategoryId !== ''"
+          (click)="onCategorySelect('')"
+        >
+          All categories
+        </button>
+        @for (category of categories; track trackByCategory($index, category)) {
+          <button
+            type="button"
+            class="w-full rounded-full px-4 py-2.5 text-left text-sm font-medium transition"
+            [class.bg-primary-container]="selectedCategoryId === category.id"
+            [class.text-on-primary]="selectedCategoryId === category.id"
+            [class.shadow-tinted]="selectedCategoryId === category.id"
+            [class.bg-surface-container-high]="selectedCategoryId !== category.id"
+            [class.text-on-surface]="selectedCategoryId !== category.id"
+            [class.hover:bg-surface-container]="selectedCategoryId !== category.id"
+            (click)="onCategorySelect(category.id)"
+          >
+            {{ category.name }}
+          </button>
+        }
+      </div>
+    </aside>
+
+    <div class="space-y-5">
+      <form
+        class="card bg-surface-container-low p-4 shadow-tinted"
+        (submit)="$event.preventDefault(); onSearchSubmit(searchInput.value)"
+      >
+        <div class="flex flex-col gap-3 md:flex-row">
+          <input
+            #searchInput
+            type="search"
+            class="input-soft rounded-full"
+            name="search"
+            [value]="searchValue"
+            placeholder="Search by title or description..."
+          />
+          <button type="submit" class="btn-primary px-5 py-3">Search</button>
+          <button type="button" class="btn-secondary px-5 py-3" (click)="clearFilters()">
+            Clear
+          </button>
+        </div>
+      </form>
+
+      @if (loading$ | async) {
+        <div class="card bg-surface-container-low p-8 text-center text-secondary">
+          Loading products...
+        </div>
+      } @else if (error$ | async; as error) {
+        <app-empty-state
+          title="Could not load products"
+          [message]="error"
+          actionLabel="Retry"
+          (action)="onSearchSubmit(searchValue)"
+        />
+      } @else {
+        @if ((products$ | async)?.length) {
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            @for (product of (products$ | async) ?? []; track product.id) {
+              <div class="space-y-2">
+                <app-product-card [product]="product" (addToCart)="onAddToCart($event)" />
+                <a class="block text-center text-sm font-semibold text-primary hover:underline" [routerLink]="['/products', product.id]">
+                  View details
+                </a>
+              </div>
+            }
+          </div>
+          <app-pagination
+            [page]="(page$ | async) ?? 1"
+            [totalPages]="(pages$ | async) ?? 1"
+            (pageChange)="onPageChange($event)"
+          />
+        } @else {
+          <app-empty-state
+            title="No products found"
+            message="Try a different search or category filter."
+            actionLabel="Clear filters"
+            (action)="clearFilters()"
+          />
+        }
+      }
+    </div>
+  </div>
+</section>
