@@ -472,6 +472,18 @@
       inset -4px -4px 8px rgba(255, 255, 255, 0.8);
   }
 
+  .neomorphic-outset {
+    box-shadow:
+      8px 8px 16px rgba(139, 114, 102, 0.08),
+      -8px -8px 16px #ffffff;
+  }
+
+  .neomorphic-outset {
+    box-shadow:
+      8px 8px 16px rgba(139, 114, 102, 0.08),
+      -8px -8px 16px #ffffff;
+  }
+
   .neomorphic-outset-sm {
     box-shadow:
       4px 4px 8px rgba(139, 114, 102, 0.05),

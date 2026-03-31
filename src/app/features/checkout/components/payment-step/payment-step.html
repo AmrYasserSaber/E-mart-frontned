@@ -1,31 +1,167 @@
-<section class="space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
-  <h3 class="text-lg font-display font-bold text-on-surface-variant px-2">Select Payment Method</h3>
+<section class="space-y-6 animate-in fade-in slide-in-from-bottom duration-500">
+  <div class="flex justify-between items-end px-2">
+    <div>
+      <h3 class="text-xl font-display font-bold text-on-surface">Payment Method</h3>
+      <p class="text-xs text-on-surface-variant">Choose how you'd like to pay for your order.</p>
+    </div>
+    <button 
+      (click)="toggleAddCardForm()"
+      class="flex items-center gap-2 text-sm font-bold text-primary-container hover:text-primary transition-all px-4 py-2 rounded-lg bg-surface-container-low neomorphic-outset active:neomorphic-inset"
+    >
+      <span class="material-symbols-outlined text-sm">{{ showAddCardForm() ? 'close' : 'add_card' }}</span>
+      {{ showAddCardForm() ? 'Cancel' : 'Add New Card' }}
+    </button>
+  </div>
   
+  @if (showAddCardForm()) {
+    <div class="bg-surface-container-lowest p-8 rounded-2xl neomorphic-inset space-y-6 animate-in zoom-in-95 duration-300">
+      <h4 class="font-bold text-on-surface-variant flex items-center gap-2">
+        <span class="material-symbols-outlined">credit_card</span>
+        Card Details
+      </h4>
+      
+      <form [formGroup]="addCardForm" (ngSubmit)="saveNewCard()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-outline px-1">Cardholder Name</label>
+          <input 
+            type="text" 
+            formControlName="cardholderName"
+            placeholder="John Doe"
+            class="w-full bg-surface-container-low border-none rounded-xl p-4 neomorphic-inset focus:ring-2 focus:ring-primary-container outline-none transition-all"
+          />
+        </div>
+        
+        <div class="md:col-span-2 space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-outline px-1">Card Number</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              formControlName="cardNumber"
+              placeholder="0000 0000 0000 0000"
+              maxlength="16"
+              class="w-full bg-surface-container-low border-none rounded-xl p-4 neomorphic-inset focus:ring-2 focus:ring-primary-container outline-none transition-all pl-12"
+            />
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">credit_card</span>
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-outline px-1">Expiry Date</label>
+          <div class="flex gap-2">
+            <input 
+              type="number" 
+              formControlName="expiryMonth"
+              placeholder="MM"
+              min="1" max="12"
+              class="w-full bg-surface-container-low border-none rounded-xl p-4 neomorphic-inset focus:ring-2 focus:ring-primary-container outline-none transition-all text-center"
+            />
+            <input 
+              type="number" 
+              formControlName="expiryYear"
+              placeholder="YYYY"
+              class="w-full bg-surface-container-low border-none rounded-xl p-4 neomorphic-inset focus:ring-2 focus:ring-primary-container outline-none transition-all text-center"
+            />
+          </div>
+        </div>
+        
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-outline px-1">CVV</label>
+          <input 
+            type="password" 
+            formControlName="cvv"
+            placeholder="***"
+            maxlength="4"
+            class="w-full bg-surface-container-low border-none rounded-xl p-4 neomorphic-inset focus:ring-2 focus:ring-primary-container outline-none transition-all text-center"
+          />
+        </div>
+
+        <div class="md:col-span-2 pt-4">
+          <button 
+            type="submit"
+            [disabled]="addCardForm.invalid || cardSaving()"
+            class="w-full bg-primary-container text-white font-bold py-4 rounded-xl neomorphic-outset hover:bg-primary transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+          >
+            @if (cardSaving()) {
+              <span class="material-symbols-outlined animate-spin">sync</span>
+              Saving Card...
+            } @else {
+              Save Card & Continue
+              <span class="material-symbols-outlined">save</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+
   <div class="grid grid-cols-1 gap-4">
-    <!-- Cash on Delivery (Selected by default) -->
-    <div class="group relative bg-surface-container-lowest p-6 rounded-lg neomorphic-outset border-2 border-primary-container transition-all cursor-pointer">
+    <!-- Cash on Delivery Option -->
+    <div 
+      (click)="selectMethod('cod')"
+      [class.border-primary-container]="selectedMethod() === 'cod'"
+      [class.neomorphic-inset]="selectedMethod() === 'cod'"
+      class="group relative bg-surface-container-lowest p-6 rounded-2xl neomorphic-outset border-2 border-transparent transition-all cursor-pointer hover:border-primary-container/30"
+    >
       <div class="flex items-center gap-6">
-        <span class="material-symbols-outlined text-primary-container text-4xl">payments</span>
+        <div class="h-14 w-14 rounded-full bg-primary-container/10 flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary-container text-3xl">payments</span>
+        </div>
         <div>
           <p class="font-bold text-on-surface">Cash on Delivery</p>
-          <p class="text-xs text-on-surface-variant">Pay in cash upon receiving your order.</p>
+          <p class="text-xs text-on-surface-variant">Pay when you receive your items.</p>
         </div>
       </div>
-      <div class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full bg-primary-container flex items-center justify-center">
-        <div class="h-2 w-2 rounded-full bg-white"></div>
+      <div 
+        class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full border-2 border-outline flex items-center justify-center transition-all"
+        [class.border-primary-container]="selectedMethod() === 'cod'"
+        [class.bg-primary-container]="selectedMethod() === 'cod'"
+      >
+        @if (selectedMethod() === 'cod') {
+          <div class="h-2 w-2 rounded-full bg-white"></div>
+        }
       </div>
     </div>
 
-    <!-- Other (Disabled or placeholder) -->
-    <div class="group relative bg-surface-container-low p-6 rounded-lg transition-all opacity-50 grayscale cursor-not-allowed">
-      <div class="flex items-center gap-6">
-        <span class="material-symbols-outlined text-outline text-4xl">credit_card</span>
-        <div>
-          <p class="font-bold text-on-surface-variant">Credit / Debit Card</p>
-          <p class="text-xs text-on-surface-variant">Coming soon to Nexus Market.</p>
+    <!-- Saved Cards List -->
+    @for (card of savedCards(); track card.id) {
+      <div 
+        (click)="selectMethod(card.id)"
+        [class.border-primary-container]="selectedMethod() === card.id"
+        [class.neomorphic-inset]="selectedMethod() === card.id"
+        class="group relative bg-surface-container-lowest p-6 rounded-2xl neomorphic-outset border-2 border-transparent transition-all cursor-pointer hover:border-primary-container/30"
+      >
+        <div class="flex items-center gap-6">
+          <div class="h-14 w-14 rounded-full bg-surface-container-low flex items-center justify-center neomorphic-outset-sm">
+            <span class="material-symbols-outlined text-on-surface-variant text-3xl">credit_card</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <p class="font-bold text-on-surface">{{ card.brand }}</p>
+              <span class="text-[10px] bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter">Debit</span>
+            </div>
+            <p class="text-xs text-on-surface-variant font-mono">•••• •••• •••• {{ card.last4 }}</p>
+            <p class="text-[10px] text-outline mt-1 font-bold uppercase tracking-widest">Expires {{ card.expMonth }}/{{ card.expYear }}</p>
+          </div>
+        </div>
+        <div 
+          class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full border-2 border-outline flex items-center justify-center transition-all"
+          [class.border-primary-container]="selectedMethod() === card.id"
+          [class.bg-primary-container]="selectedMethod() === card.id"
+        >
+          @if (selectedMethod() === card.id) {
+            <div class="h-2 w-2 rounded-full bg-white"></div>
+          }
         </div>
       </div>
-    </div>
+    } @empty {
+      @if (!showAddCardForm()) {
+        <div class="bg-surface-container-low/30 border-2 border-dashed border-outline-variant/30 rounded-2xl p-12 text-center opacity-80 animate-in fade-in duration-700">
+          <span class="material-symbols-outlined text-outline-variant text-5xl mb-4 opacity-40">credit_card_off</span>
+          <p class="text-on-surface-variant font-bold">No saved cards found</p>
+          <p class="text-xs text-outline mt-1">Add a card above to speed up your checkout.</p>
+        </div>
+      }
+    }
   </div>
 
   <div class="pt-8 flex flex-col md:flex-row gap-4">
@@ -38,14 +174,14 @@
     </button>
     <button 
       (click)="completePurchase()"
-      [disabled]="loading()"
+      [disabled]="loading() || showAddCardForm()"
       class="flex-[2] bg-primary-container text-white font-headline font-bold py-4 rounded-xl shadow-lg hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       @if (loading()) {
         <span class="material-symbols-outlined animate-spin">sync</span>
-        Processing...
+        Processing Order...
       } @else {
-        Complete Purchase
+        Confirm & Pay
         <span class="material-symbols-outlined">check_circle</span>
       }
     </button>

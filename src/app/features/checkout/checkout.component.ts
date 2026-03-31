@@ -11,7 +11,6 @@ import { OrderSummary } from './components/order-summary/order-summary';
   selector: 'app-checkout',
   standalone: true,
   imports: [
-    RouterLink,
     StepIndicator,
     AddressStep,
     PaymentStep,
