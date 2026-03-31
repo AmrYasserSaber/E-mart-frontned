@@ -4,16 +4,13 @@
 >
   @for (t of toastService.toasts(); track t.id) {
     <div
-      class="pointer-events-auto flex items-start justify-between gap-3 rounded-lg border px-4 py-3 text-sm shadow-lg"
-      [class.border-emerald-600/50]="t.kind === 'success'"
-      [class.bg-emerald-950/90]="t.kind === 'success'"
-      [class.text-emerald-100]="t.kind === 'success'"
-      [class.border-red-600/50]="t.kind === 'error'"
-      [class.bg-red-950/90]="t.kind === 'error'"
-      [class.text-red-100]="t.kind === 'error'"
-      [class.border-slate-600]="t.kind === 'info'"
-      [class.bg-slate-900/95]="t.kind === 'info'"
-      [class.text-slate-100]="t.kind === 'info'"
+      class="pointer-events-auto flex items-start justify-between gap-3 rounded-xl px-4 py-3 text-sm shadow-tinted"
+      [class.bg-green-50]="t.kind === 'success'"
+      [class.text-green-800]="t.kind === 'success'"
+      [class.bg-red-50]="t.kind === 'error'"
+      [class.text-red-800]="t.kind === 'error'"
+      [class.bg-surface-container-lowest]="t.kind === 'info'"
+      [class.text-on-surface]="t.kind === 'info'"
     >
       <span>{{ t.message }}</span>
       <button

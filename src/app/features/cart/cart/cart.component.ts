@@ -18,7 +18,7 @@ import { CartItem } from '../../../core/models/cart.model';
 })
 export class CartComponent implements OnInit {
   private readonly store = inject(Store);
-  
+
   readonly items$: Observable<CartItem[]> = this.store.select(selectCartItems);
   readonly subtotal$: Observable<number> = this.store.select(selectCartTotal);
   readonly loading$: Observable<boolean> = this.store.select(selectCartLoading);

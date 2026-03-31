@@ -31,18 +31,18 @@
               <div class="w-32 h-32 md:-ml-10 flex-shrink-0 bg-surface-container rounded-sm overflow-hidden shadow-lg transform group-hover:scale-105 transition-transform duration-300">
                 <img [src]="item.product.images[0]" [alt]="item.product.title" class="w-full h-full object-cover">
               </div>
-              
+
               <div class="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4 items-center w-full">
                 <div class="md:col-span-1">
                   <h3 class="font-display font-bold text-lg text-on-surface leading-tight">{{ item.product.title }}</h3>
                   <p class="text-xs text-on-surface-variant font-medium">Category: {{ item.product.categoryId }}</p>
                 </div>
-                
+
                 <div class="flex flex-col">
                   <span class="text-xs text-outline font-bold uppercase tracking-widest">Price</span>
                   <span class="font-display font-bold text-on-surface">{{ item.product.price | currencyFormat }}</span>
                 </div>
-                
+
                 <div class="flex flex-col gap-1">
                   <span class="text-xs text-outline font-bold uppercase tracking-widest">Quantity</span>
                   <div class="neomorphic-inset bg-surface-container-low rounded-xl px-3 py-1 flex items-center justify-between w-28">
@@ -55,7 +55,7 @@
                     </button>
                   </div>
                 </div>
-                
+
                 <div class="flex flex-col items-end">
                   <span class="text-xs text-outline font-bold uppercase tracking-widest">Total</span>
                   <span class="font-display font-bold text-xl text-primary-container">{{ item.product.price * item.quantity | currencyFormat }}</span>
@@ -73,7 +73,7 @@
         <aside class="w-full lg:w-96 sticky top-32">
           <div class="bg-surface-container-lowest p-8 rounded-md shadow-tinted flex flex-col gap-8">
             <h2 class="font-display text-2xl font-bold text-on-surface">Order Summary</h2>
-            
+
             <div class="space-y-4">
               <div class="flex justify-between items-center text-on-surface-variant">
                 <span>Subtotal</span>

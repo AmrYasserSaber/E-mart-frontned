@@ -3,10 +3,12 @@ import {
   DestroyRef,
   inject,
   signal,
+  computed,
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { forkJoin, of, catchError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AdminService, type AdminListUsersResponse } from '../services/admin.service';
 import type { User } from '../../../core/models/user.model';
@@ -14,6 +16,8 @@ import { Role } from '../../../core/models/user.model';
 import { Modal } from '../../../shared/components/modal/modal';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
+import { ToastService } from '../../../core/services/toast.service';
+
 @Component({
   selector: 'app-users',
   imports: [FormsModule, Modal, Pagination, TimeAgoPipe],
@@ -24,8 +28,15 @@ import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 export class Users implements OnInit {
   private readonly admin = inject(AdminService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
 
   readonly RoleEnum = Role;
+  readonly roleOptions: ReadonlyArray<{ value: Role | ''; label: string }> = [
+    { value: '', label: 'All' },
+    { value: Role.USER, label: 'Customers' },
+    { value: Role.SELLER, label: 'Sellers' },
+    { value: Role.ADMIN, label: 'Admins' },
+  ];
 
   readonly page = signal(1);
   readonly limit = 10;
@@ -40,6 +51,11 @@ export class Users implements OnInit {
   readonly editRole = signal<Role>(Role.USER);
   readonly editActive = signal(true);
   readonly saveLoading = signal(false);
+
+  readonly selectedIds = signal<Set<string>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly hasSelection = computed(() => this.selectedIds().size > 0);
+  readonly hasSingleSelection = computed(() => this.selectedIds().size === 1);
 
   ngOnInit(): void {
     this.load();
@@ -71,12 +87,73 @@ export class Users implements OnInit {
 
   applyFilters(): void {
     this.page.set(1);
+    this.selectedIds.set(new Set());
     this.load();
   }
 
   onPageChange(p: number): void {
     this.page.set(p);
+    this.selectedIds.set(new Set());
     this.load();
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedIds().has(id);
+  }
+
+  toggleSelect(id: string): void {
+    const next = new Set(this.selectedIds());
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    this.selectedIds.set(next);
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  editSelected(): void {
+    if (this.selectedIds().size !== 1) {
+      this.toast.info('Select exactly one user to edit.');
+      return;
+    }
+    const items = this.result()?.items ?? [];
+    const first = items.find((u) => this.selectedIds().has(u.id));
+    if (first) this.openEdit(first);
+  }
+
+  verifySelected(): void {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    forkJoin(
+      ids.map((id) =>
+        this.admin.verifyUser(id).pipe(
+          catchError(() => of({ id, failed: true })),
+        ),
+      ),
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (results) => {
+          const failures = results.filter(
+            (r): r is { id: string; failed: true } => 'failed' in r,
+          );
+          if (failures.length > 0) {
+            this.toast.error(`Failed to verify ${failures.length} user(s).`);
+          } else {
+            this.toast.success('Users verified successfully.');
+          }
+          this.selectedIds.set(new Set());
+          this.load();
+        },
+      });
+  }
+
+  removeSelected(): void {
+    this.toast.info('User removal requires backend support. Use the Edit modal to deactivate accounts.');
   }
 
   openEdit(u: User): void {
@@ -106,6 +183,7 @@ export class Users implements OnInit {
         next: () => {
           this.saveLoading.set(false);
           this.closeEdit();
+          this.selectedIds.set(new Set());
           this.load();
         },
         error: () => {
