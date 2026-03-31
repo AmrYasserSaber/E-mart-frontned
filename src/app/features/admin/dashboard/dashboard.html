@@ -133,7 +133,7 @@
               <li class="flex items-center justify-between gap-3 py-3">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-xs border-2 border-white">
-                    {{ u.firstName.charAt(0) }}{{ u.lastName.charAt(0) }}
+                    {{ ((u.firstName || '').charAt(0) + (u.lastName || '').charAt(0)) || u.email.charAt(0).toUpperCase() || 'U' }}
                   </div>
                   <div>
                     <p class="text-sm font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>

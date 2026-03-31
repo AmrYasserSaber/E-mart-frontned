@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, switchMap, tap } from 'rxjs';
+import { Subject, catchError, of, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   AdminService,
@@ -56,12 +56,18 @@ export class Orders implements OnInit {
             page: this.page(),
             limit: this.limit,
             status: this.statusFilter() || undefined,
-          }),
+          }).pipe(
+            catchError(() => {
+              this.loading.set(false);
+              return of(null);
+            }),
+          ),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (r) => {
+          if (!r) return;
           this.result.set(r);
           this.loading.set(false);
         },
@@ -99,6 +105,10 @@ export class Orders implements OnInit {
   saveEdit(): void {
     const o = this.editing();
     if (!o) return;
+    if (o.status === this.editStatus()) {
+      this.closeEdit();
+      return;
+    }
     this.saveLoading.set(true);
     this.admin
       .updateOrderStatus(o.id, this.editStatus())

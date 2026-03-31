@@ -31,6 +31,12 @@ export class Users implements OnInit {
   private readonly toast = inject(ToastService);
 
   readonly RoleEnum = Role;
+  readonly roleOptions: ReadonlyArray<{ value: Role | ''; label: string }> = [
+    { value: '', label: 'All' },
+    { value: Role.USER, label: 'Customers' },
+    { value: Role.SELLER, label: 'Sellers' },
+    { value: Role.ADMIN, label: 'Admins' },
+  ];
 
   readonly page = signal(1);
   readonly limit = 10;

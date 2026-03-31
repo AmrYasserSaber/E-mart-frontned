@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, switchMap, tap } from 'rxjs';
+import { Subject, catchError, of, switchMap, tap } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
   AdminService,
@@ -50,7 +50,12 @@ export class Products implements OnInit {
     this.admin
       .listCategories()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({ next: (cats) => this.categories.set(cats) });
+      .subscribe({
+        next: (cats) => this.categories.set(cats),
+        error: () => {
+          // Keep existing category options when category request fails.
+        },
+      });
 
     this.reload$
       .pipe(
@@ -62,12 +67,18 @@ export class Products implements OnInit {
             search: this.searchInput().trim() || undefined,
             categoryId: this.categoryFilter() || undefined,
             sort: this.sortFilter() || undefined,
-          }),
+          }).pipe(
+            catchError(() => {
+              this.loading.set(false);
+              return of(null);
+            }),
+          ),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (r) => {
+          if (!r) return;
           this.result.set(r);
           this.loading.set(false);
         },

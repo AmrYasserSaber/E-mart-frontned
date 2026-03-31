@@ -5,42 +5,19 @@
       <p class="text-on-surface-variant mt-2 max-w-lg font-medium">Coordinate your artisan community and customer base through this tactile central hub.</p>
     </div>
     <nav class="flex p-1 bg-surface-container neomorphic-inset rounded-2xl">
-      <button
-        type="button"
-        class="px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
-        [class.text-primary-container]="roleFilter() === ''"
-        [class.bg-surface-container-lowest]="roleFilter() === ''"
-        [class.soft-glow]="roleFilter() === ''"
-        [class.text-on-surface-variant]="roleFilter() !== ''"
-        (click)="roleFilter.set(''); applyFilters()"
-      >All</button>
-      <button
-        type="button"
-        class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors hover:text-primary-container"
-        [class.text-primary-container]="roleFilter() === RoleEnum.USER"
-        [class.bg-surface-container-lowest]="roleFilter() === RoleEnum.USER"
-        [class.soft-glow]="roleFilter() === RoleEnum.USER"
-        [class.text-on-surface-variant]="roleFilter() !== RoleEnum.USER"
-        (click)="roleFilter.set(RoleEnum.USER); applyFilters()"
-      >Customers</button>
-      <button
-        type="button"
-        class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors hover:text-primary-container"
-        [class.text-primary-container]="roleFilter() === RoleEnum.SELLER"
-        [class.bg-surface-container-lowest]="roleFilter() === RoleEnum.SELLER"
-        [class.soft-glow]="roleFilter() === RoleEnum.SELLER"
-        [class.text-on-surface-variant]="roleFilter() !== RoleEnum.SELLER"
-        (click)="roleFilter.set(RoleEnum.SELLER); applyFilters()"
-      >Sellers</button>
-      <button
-        type="button"
-        class="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors hover:text-primary-container"
-        [class.text-primary-container]="roleFilter() === RoleEnum.ADMIN"
-        [class.bg-surface-container-lowest]="roleFilter() === RoleEnum.ADMIN"
-        [class.soft-glow]="roleFilter() === RoleEnum.ADMIN"
-        [class.text-on-surface-variant]="roleFilter() !== RoleEnum.ADMIN"
-        (click)="roleFilter.set(RoleEnum.ADMIN); applyFilters()"
-      >Admins</button>
+      @for (opt of roleOptions; track opt.label) {
+        <button
+          type="button"
+          class="px-5 py-2.5 rounded-xl text-sm transition-colors hover:text-primary-container"
+          [class.font-bold]="roleFilter() === opt.value"
+          [class.font-semibold]="roleFilter() !== opt.value"
+          [class.text-primary-container]="roleFilter() === opt.value"
+          [class.bg-surface-container-lowest]="roleFilter() === opt.value"
+          [class.soft-glow]="roleFilter() === opt.value"
+          [class.text-on-surface-variant]="roleFilter() !== opt.value"
+          (click)="roleFilter.set(opt.value); applyFilters()"
+        >{{ opt.label }}</button>
+      }
     </nav>
   </div>
 
@@ -91,6 +68,9 @@
             <button
               type="button"
               (click)="toggleSelect(u.id)"
+              role="checkbox"
+              [attr.aria-checked]="isSelected(u.id)"
+              [attr.aria-label]="'Select user ' + (((u.firstName || '') + ' ' + (u.lastName || '')).trim() || u.id)"
               class="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
               [class.border-primary]="isSelected(u.id)"
               [class.bg-primary/10]="isSelected(u.id)"
@@ -105,7 +85,7 @@
           <div class="col-span-5 flex items-center gap-4">
             <div class="relative">
               <div class="w-12 h-12 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-sm border-2 border-white shadow-sm">
-                {{ u.firstName.charAt(0) }}{{ u.lastName.charAt(0) }}
+                {{ (u.firstName || '').charAt(0) }}{{ (u.lastName || '').charAt(0) }}
               </div>
               @if (u.emailVerifiedAt) {
                 <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-white flex items-center justify-center" title="Email verified">
@@ -165,7 +145,7 @@
 
   <!-- Floating Bulk Action Toolbar -->
   @if (hasSelection()) {
-    <div class="fixed bottom-10 left-1/2 -translate-x-1/2 md:left-[calc(50%+128px)] z-50">
+    <div class="bulk-toolbar fixed bottom-10 left-1/2 -translate-x-1/2 z-50">
       <div class="flex items-center gap-4 px-6 py-4 bg-orange-50/95 backdrop-blur-xl rounded-full shadow-2xl border border-white/60">
         <div class="flex items-center gap-2 pr-4 border-r border-orange-200/50">
           <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-[10px] font-bold">{{ selectedCount() }}</span>
@@ -213,7 +193,7 @@
     @if (editing(); as u) {
       <div class="flex items-center gap-3 mb-6">
         <div class="w-10 h-10 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-sm">
-          {{ u.firstName.charAt(0) }}{{ u.lastName.charAt(0) }}
+          {{ (u.firstName || '').charAt(0) }}{{ (u.lastName || '').charAt(0) }}
         </div>
         <div>
           <p class="font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>

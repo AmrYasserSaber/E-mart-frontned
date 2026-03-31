@@ -88,12 +88,12 @@
       id="mobile-nav"
       class="md:hidden border-t border-outline-variant/20 bg-surface-container-lowest px-6 py-4 space-y-2"
     >
-      <a routerLink="/home" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Home</a>
-      <a routerLink="/products" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Products</a>
-      <a routerLink="/cart" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Cart</a>
-      <a routerLink="/profile" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-on-surface-variant font-medium hover:bg-primary-fixed/20 hover:text-primary-container transition-colors">Profile</a>
+      <a routerLink="/home" (click)="closeMobileMenu()" class="mobile-nav-link">Home</a>
+      <a routerLink="/products" (click)="closeMobileMenu()" class="mobile-nav-link">Products</a>
+      <a routerLink="/cart" (click)="closeMobileMenu()" class="mobile-nav-link">Cart</a>
+      <a routerLink="/profile" (click)="closeMobileMenu()" class="mobile-nav-link">Profile</a>
       @if (showAdmin$ | async) {
-        <a routerLink="/admin" (click)="closeMobileMenu()" class="block px-3 py-2 rounded-lg text-primary-container font-bold hover:bg-primary-fixed/20 transition-colors">Admin</a>
+        <a routerLink="/admin" (click)="closeMobileMenu()" class="mobile-nav-link text-primary-container font-bold">Admin</a>
       }
     </nav>
   }

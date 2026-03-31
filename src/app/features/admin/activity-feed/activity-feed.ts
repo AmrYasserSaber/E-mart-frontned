@@ -9,6 +9,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { forkJoin, of, catchError } from 'rxjs';
 import { AdminService } from '../services/admin.service';
+import type { User } from '../../../core/models/user.model';
+import type { Order } from '../../../core/models/order.model';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
 
 export interface ActivityItem {
@@ -36,10 +38,10 @@ export class ActivityFeed implements OnInit {
   ngOnInit(): void {
     forkJoin({
       users: this.admin.listUsers({ page: 1, limit: 10 }).pipe(
-        catchError(() => of({ items: [] as never[] })),
+        catchError(() => of({ items: [] as User[] })),
       ),
       orders: this.admin.listOrders({ page: 1, limit: 10 }).pipe(
-        catchError(() => of({ data: [] as never[] })),
+        catchError(() => of({ data: [] as Order[] })),
       ),
     })
       .pipe(takeUntilDestroyed(this.destroyRef))

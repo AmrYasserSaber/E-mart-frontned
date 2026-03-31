@@ -27,6 +27,7 @@ export class Categories implements OnInit {
 
   readonly categories = signal<Category[]>([]);
   readonly loading = signal(false);
+  readonly loadError = signal<string | null>(null);
 
   readonly formOpen = signal(false);
   readonly formTitle = signal('Create category');
@@ -50,15 +51,20 @@ export class Categories implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.loadError.set(null);
     this.admin
       .listCategories()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (cats) => {
           this.categories.set(cats);
+          this.loadError.set(null);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loadError.set('Failed to load categories. Please try again.');
+          this.loading.set(false);
+        },
       });
   }
 
@@ -87,9 +93,21 @@ export class Categories implements OnInit {
   }
 
   closeForm(): void {
+    if (this.saveLoading()) return;
     this.saveLoading.set(false);
     this.formOpen.set(false);
     this.editing.set(null);
+  }
+
+  isDescendant(childId: string, ancestorId: string | null | undefined): boolean {
+    if (!ancestorId || childId === ancestorId) return false;
+    const byId = new Map(this.categories().map((c) => [c.id, c] as const));
+    let current = byId.get(childId);
+    while (current?.parentId) {
+      if (current.parentId === ancestorId) return true;
+      current = byId.get(current.parentId);
+    }
+    return false;
   }
 
   onNameInput(value: string): void {
@@ -119,7 +137,9 @@ export class Categories implements OnInit {
 
     op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.closeForm();
+        this.saveLoading.set(false);
+        this.formOpen.set(false);
+        this.editing.set(null);
         this.load();
       },
       error: () => this.saveLoading.set(false),
@@ -139,7 +159,7 @@ export class Categories implements OnInit {
 
   confirmDelete(): void {
     const cat = this.deleting();
-    if (!cat) return;
+    if (!cat || this.deleteLoading()) return;
     this.deleteLoading.set(true);
     this.admin
       .deleteCategory(cat.id)
