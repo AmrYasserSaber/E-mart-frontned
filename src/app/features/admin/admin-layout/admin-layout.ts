@@ -10,12 +10,12 @@ import { Sidebar, type SidebarNavItem } from '../../../shared/components/sidebar
 })
 export class AdminLayout {
   readonly nav: SidebarNavItem[] = [
-    { label: 'Dashboard', path: '/admin/dashboard' },
-    { label: 'Users', path: '/admin/users' },
-    { label: 'Orders', path: '/admin/orders' },
-    { label: 'Products', path: '/admin/products' },
-    { label: 'Categories', path: '/admin/categories' },
-    { label: 'Banners', path: '/admin/banners' },
-    { label: 'Activity', path: '/admin/activity-feed' },
+    { label: 'Dashboard', path: '/admin/dashboard', icon: 'dashboard' },
+    { label: 'Users', path: '/admin/users', icon: 'group' },
+    { label: 'Orders', path: '/admin/orders', icon: 'shopping_cart' },
+    { label: 'Products', path: '/admin/products', icon: 'inventory_2' },
+    { label: 'Categories', path: '/admin/categories', icon: 'category' },
+    { label: 'Sellers', path: '/admin/sellers', icon: 'storefront' },
+    { label: 'Activity', path: '/admin/activity-feed', icon: 'insights' },
   ];
 }

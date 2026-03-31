@@ -4,23 +4,23 @@
   [closeOnBackdrop]="false"
   (closed)="onModalClose()"
 >
-  <p class="text-sm text-slate-400">{{ message() }}</p>
-  <div class="mt-6 flex justify-end gap-2">
+  <p class="text-sm text-on-surface-variant">{{ message() }}</p>
+  <div class="mt-6 flex justify-end gap-3">
     <button
       type="button"
       (click)="onCancel()"
-      class="rounded-lg border border-slate-600 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
+      class="btn-secondary px-5 py-2.5 text-sm"
     >
       {{ cancelLabel() }}
     </button>
     <button
       type="button"
       (click)="onConfirm()"
-      class="rounded-lg px-4 py-2 text-sm font-semibold text-slate-950"
-      [class.bg-emerald-600]="!dangerous()"
-      [class.hover:bg-emerald-500]="!dangerous()"
+      class="rounded-full px-5 py-2.5 text-sm font-bold text-white transition-all"
+      [class.bg-primary-container]="!dangerous()"
+      [class.hover:bg-primary]="!dangerous()"
       [class.bg-red-600]="dangerous()"
-      [class.hover:bg-red-500]="dangerous()"
+      [class.hover:bg-red-700]="dangerous()"
     >
       {{ confirmLabel() }}
     </button>

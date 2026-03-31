@@ -3,6 +3,7 @@ import {
   DestroyRef,
   inject,
   signal,
+  computed,
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
@@ -14,6 +15,7 @@ import { Role } from '../../../core/models/user.model';
 import { Modal } from '../../../shared/components/modal/modal';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { TimeAgoPipe } from '../../../shared/pipes/time-ago.pipe';
+
 @Component({
   selector: 'app-users',
   imports: [FormsModule, Modal, Pagination, TimeAgoPipe],
@@ -40,6 +42,10 @@ export class Users implements OnInit {
   readonly editRole = signal<Role>(Role.USER);
   readonly editActive = signal(true);
   readonly saveLoading = signal(false);
+
+  readonly selectedIds = signal<Set<string>>(new Set());
+  readonly selectedCount = computed(() => this.selectedIds().size);
+  readonly hasSelection = computed(() => this.selectedIds().size > 0);
 
   ngOnInit(): void {
     this.load();
@@ -71,12 +77,58 @@ export class Users implements OnInit {
 
   applyFilters(): void {
     this.page.set(1);
+    this.selectedIds.set(new Set());
     this.load();
   }
 
   onPageChange(p: number): void {
     this.page.set(p);
+    this.selectedIds.set(new Set());
     this.load();
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedIds().has(id);
+  }
+
+  toggleSelect(id: string): void {
+    const next = new Set(this.selectedIds());
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+    this.selectedIds.set(next);
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  editSelected(): void {
+    const items = this.result()?.items ?? [];
+    const first = items.find((u) => this.selectedIds().has(u.id));
+    if (first) this.openEdit(first);
+  }
+
+  verifySelected(): void {
+    const ids = [...this.selectedIds()];
+    if (!ids.length) return;
+    let completed = 0;
+    for (const id of ids) {
+      this.admin
+        .verifyUser(id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            completed++;
+            if (completed === ids.length) {
+              this.selectedIds.set(new Set());
+              this.load();
+            }
+          },
+        });
+    }
   }
 
   openEdit(u: User): void {
@@ -106,6 +158,7 @@ export class Users implements OnInit {
         next: () => {
           this.saveLoading.set(false);
           this.closeEdit();
+          this.selectedIds.set(new Set());
           this.load();
         },
         error: () => {

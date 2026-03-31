@@ -16,7 +16,7 @@
         @for (line of items; track line.product.id) {
           <li class="flex flex-wrap items-center justify-between gap-4 p-4">
             <div>
-              <p class="font-medium text-slate-100">{{ line.product.name }}</p>
+              <p class="font-medium text-slate-100">{{ line.product.title }}</p>
               <p class="text-sm text-emerald-400">
                 {{ line.product.price | currencyFormat }} each
               </p>

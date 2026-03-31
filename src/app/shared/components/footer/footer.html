@@ -1,35 +1,35 @@
-<footer class="mt-auto border-t border-slate-800 bg-slate-900/60">
+<footer class="mt-auto bg-surface-dim">
   <div
-    class="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 sm:flex-row sm:justify-between"
+    class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 sm:flex-row sm:justify-between"
   >
     <div>
-      <p class="text-lg font-semibold text-slate-100">E‑Mart</p>
-      <p class="mt-1 max-w-sm text-sm text-slate-400">
+      <p class="text-lg font-black text-primary-container font-display">E&#8209;Mart</p>
+      <p class="mt-1 max-w-sm text-sm text-on-surface-variant">
         Everything you need, delivered with care.
       </p>
     </div>
     <div class="flex gap-8 text-sm">
       <div class="flex flex-col gap-2">
-        <span class="font-medium text-slate-500">Shop</span>
-<a routerLink="/products" class="text-slate-300 hover:text-emerald-400"
+        <span class="font-semibold text-on-surface-variant uppercase text-xs tracking-widest">Shop</span>
+        <a routerLink="/products" class="text-on-surface-variant hover:text-primary-container transition-colors"
           >Products</a
         >
-        <a routerLink="/cart" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/cart" class="text-on-surface-variant hover:text-primary-container transition-colors"
           >Cart</a
         >
       </div>
       <div class="flex flex-col gap-2">
-        <span class="font-medium text-slate-500">Account</span>
-        <a routerLink="/profile" class="text-slate-300 hover:text-emerald-400"
+        <span class="font-semibold text-on-surface-variant uppercase text-xs tracking-widest">Account</span>
+        <a routerLink="/profile" class="text-on-surface-variant hover:text-primary-container transition-colors"
           >Profile</a
         >
-        <a routerLink="/auth/login" class="text-slate-300 hover:text-emerald-400"
+        <a routerLink="/auth/login" class="text-on-surface-variant hover:text-primary-container transition-colors"
           >Sign in</a
         >
       </div>
     </div>
   </div>
-  <div class="border-t border-slate-800 py-4 text-center text-xs text-slate-500">
-    &copy; {{ year }} E‑Mart. All rights reserved.
+  <div class="border-t border-outline-variant/20 py-4 text-center text-xs text-outline">
+    &copy; {{ year }} E&#8209;Mart. All rights reserved.
   </div>
 </footer>

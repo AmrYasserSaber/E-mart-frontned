@@ -1,4 +1,113 @@
-<app-empty-state
-  title="Categories"
-  message="Category administration will be available when the categories API is ready."
-/>
+<div class="mx-auto max-w-5xl space-y-8">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+      <h2 class="text-4xl font-display font-bold text-on-surface tracking-tight">Categories</h2>
+      <p class="text-on-surface-variant mt-2 max-w-lg font-medium">Manage product categories and their hierarchy.</p>
+    </div>
+    <button
+      type="button"
+      (click)="openCreate()"
+      class="btn-primary px-6 py-3 text-sm flex items-center gap-2"
+    >
+      <span class="material-symbols-outlined text-xl">add</span>
+      New category
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p class="text-on-surface-variant">Loading…</p>
+  } @else if (categories().length === 0) {
+    <p class="text-on-surface-variant">No categories yet. Create one to get started.</p>
+  } @else {
+    <div class="w-full space-y-3">
+      <div class="grid grid-cols-12 px-8 text-xs font-bold text-outline uppercase tracking-widest">
+        <div class="col-span-4">Name</div>
+        <div class="col-span-3">Slug</div>
+        <div class="col-span-3">Parent</div>
+        <div class="col-span-2 text-right">Actions</div>
+      </div>
+
+      @for (cat of categories(); track cat.id) {
+        <div class="grid grid-cols-12 items-center bg-surface-container-low rounded-2xl px-8 py-5 border border-white/40 hover:translate-y-[-2px] transition-all duration-300 neomorphic-outset-sm">
+          <div class="col-span-4 font-bold text-on-surface">{{ cat.name }}</div>
+          <div class="col-span-3 font-mono text-xs text-outline">{{ cat.slug }}</div>
+          <div class="col-span-3 text-sm text-on-surface-variant font-medium">{{ parentName(cat.parentId) }}</div>
+          <div class="col-span-2 flex justify-end gap-2">
+            <button
+              type="button"
+              (click)="openEdit(cat)"
+              class="text-outline hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined text-xl">edit</span>
+            </button>
+            <button
+              type="button"
+              (click)="openDelete(cat)"
+              class="text-outline hover:text-red-600 transition-colors"
+            >
+              <span class="material-symbols-outlined text-xl">delete</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <app-modal [open]="formOpen()" [title]="formTitle()" (closed)="closeForm()">
+    <div class="space-y-5">
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Name</label>
+        <div class="neomorphic-inset rounded-2xl bg-surface-container-high px-5 py-3">
+          <input
+            type="text"
+            class="w-full border-none bg-transparent font-medium text-on-surface placeholder:text-outline/50 focus:ring-0 outline-none"
+            [ngModel]="formName()"
+            (ngModelChange)="onNameInput($event)"
+            placeholder="Category name"
+          />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Slug</label>
+        <div class="neomorphic-inset rounded-2xl bg-surface-container-high px-5 py-3">
+          <input
+            type="text"
+            class="w-full border-none bg-transparent font-medium text-on-surface placeholder:text-outline/50 focus:ring-0 outline-none font-mono text-sm"
+            [ngModel]="formSlug()"
+            (ngModelChange)="formSlug.set($event)"
+            placeholder="category-slug"
+          />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Parent category</label>
+        <select
+          class="w-full neomorphic-inset rounded-2xl bg-surface-container-high border-none px-5 py-3 font-medium text-on-surface"
+          [ngModel]="formParentId()"
+          (ngModelChange)="formParentId.set($event)"
+        >
+          <option [ngValue]="null">None (root)</option>
+          @for (cat of categories(); track cat.id) {
+            @if (cat.id !== editing()?.id) {
+              <option [ngValue]="cat.id">{{ cat.name }}</option>
+            }
+          }
+        </select>
+      </div>
+      <div class="flex justify-end gap-3 pt-3">
+        <button type="button" (click)="closeForm()" class="btn-secondary px-6 py-3 text-sm">Cancel</button>
+        <button type="button" [disabled]="saveLoading()" (click)="saveForm()" class="btn-primary px-6 py-3 text-sm disabled:opacity-50">Save</button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-confirm-dialog
+    [open]="deleteOpen()"
+    title="Delete category"
+    [message]="'Permanently delete &quot;' + (deleting()?.name ?? '') + '&quot;? This cannot be undone.'"
+    confirmLabel="Delete"
+    [dangerous]="true"
+    (confirmed)="confirmDelete()"
+    (cancelled)="closeDelete()"
+  />
+</div>
