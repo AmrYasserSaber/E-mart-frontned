@@ -3,20 +3,20 @@
     Back to products
   </a>
 
-  @if (productLoading) {
+  @if (productLoading()) {
     <div class="card mt-4 bg-surface-container-low p-8 text-center text-secondary">
       Loading product details...
     </div>
-  } @else if (productError) {
-    <app-empty-state title="Failed to load product" [message]="productError" />
-  } @else if (product) {
+  } @else if (productError()) {
+    <app-empty-state title="Failed to load product" [message]="productError()" />
+  } @else if (product()) {
     <article class="card mt-4 bg-surface-container-low p-6 shadow-tinted md:p-8">
       <div class="grid grid-cols-1 gap-6 md:grid-cols-[minmax(0,22rem)_1fr]">
         <div class="overflow-hidden rounded-xl bg-surface-container-high">
-          @if (displayImage) {
+          @if (displayImage()) {
             <img
-              [src]="displayImage"
-              [alt]="displayTitle"
+              [src]="displayImage()"
+              [alt]="displayTitle()"
               class="h-full w-full object-cover"
               (error)="onImageError($event)"
             />
@@ -26,22 +26,22 @@
         </div>
         <div class="space-y-4 self-center">
           <h1 class="font-display text-3xl font-black tracking-tight text-primary-container">
-            {{ displayTitle }}
+            {{ displayTitle() }}
           </h1>
-          <p class="text-2xl font-extrabold text-primary">{{ product.price | currencyFormat }}</p>
-          @if (product.ratingAvg != null) {
+          <p class="text-2xl font-extrabold text-primary">{{ product()!.price | currencyFormat }}</p>
+          @if (product()!.ratingAvg != null) {
             <div class="flex items-center gap-3">
-              <app-star-rating [readonly]="true" [value]="product.ratingAvg!" />
+              <app-star-rating [readonly]="true" [value]="product()!.ratingAvg!" />
               <span class="text-sm font-medium text-secondary">
-                {{ product.ratingCount ?? 0 }} reviews
+                {{ product()!.ratingCount ?? 0 }} reviews
               </span>
             </div>
           }
-          @if (product.description) {
-            <p class="body-md">{{ product.description }}</p>
+          @if (product()!.description) {
+            <p class="body-md">{{ product()!.description }}</p>
           }
-          @if (product.category) {
-            <p class="text-sm font-medium text-secondary">Category: {{ product.category.name }}</p>
+          @if (product()!.category) {
+            <p class="text-sm font-medium text-secondary">Category: {{ product()!.category!.name }}</p>
           }
         </div>
       </div>
@@ -49,24 +49,29 @@
 
     <section class="mt-10 space-y-4">
       <h2 class="font-display text-2xl font-bold text-primary-container">Reviews</h2>
-      @if (reviewsLoading) {
+      @if (reviewsLoading()) {
         <div class="card bg-surface-container-low p-6 text-center text-secondary">
           Loading reviews...
         </div>
-      } @else if (reviewsError) {
-        <app-empty-state title="Failed to load reviews" [message]="reviewsError" />
-      } @else if (reviews.length === 0) {
+      } @else if (reviewsError()) {
+        <app-empty-state title="Failed to load reviews" [message]="reviewsError()" />
+      } @else if (reviews().length === 0) {
         <app-empty-state
           title="No reviews yet"
           message="Be the first one to review this product."
         />
       } @else {
         <div class="space-y-3">
-          @for (review of reviews; track review.id) {
+          @for (review of reviews(); track review.id) {
             <article class="card bg-surface-container-low p-4 md:p-5">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <strong class="text-on-surface">
-                  {{ review.user?.name || review.user?.email || 'Customer' }}
+                  {{
+                    review.user?.name ||
+                    ((review.user?.firstName || '') + ' ' + (review.user?.lastName || '')).trim() ||
+                    review.user?.email ||
+                    'Customer'
+                  }}
                 </strong>
                 <span class="text-xs font-medium text-secondary">
                   {{ review.createdAt | date: 'mediumDate' }}
@@ -80,8 +85,8 @@
           }
         </div>
         <app-pagination
-          [page]="reviewsPage"
-          [totalPages]="reviewsPages"
+          [page]="reviewsPage()"
+          [totalPages]="reviewsPages()"
           (pageChange)="onReviewsPageChange($event)"
         />
       }

@@ -1,6 +1,8 @@
 export interface ReviewUser {
   id: string;
   name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
 }
 

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -31,15 +31,15 @@ export class ProductDetails {
   private readonly productsService = inject(ProductsService);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected product: Product | null = null;
-  protected productLoading = true;
-  protected productError = '';
+  protected readonly product = signal<Product | null>(null);
+  protected readonly productLoading = signal(true);
+  protected readonly productError = signal('');
 
-  protected reviews: Review[] = [];
-  protected reviewsLoading = true;
-  protected reviewsError = '';
-  protected reviewsPage = 1;
-  protected reviewsPages = 1;
+  protected readonly reviews = signal<Review[]>([]);
+  protected readonly reviewsLoading = signal(true);
+  protected readonly reviewsError = signal('');
+  protected readonly reviewsPage = signal(1);
+  protected readonly reviewsPages = signal(1);
 
   constructor() {
     this.route.paramMap
@@ -51,9 +51,9 @@ export class ProductDetails {
       .subscribe((id) => {
         this.resetViewState();
         if (!id) {
-          this.productLoading = false;
-          this.reviewsLoading = false;
-          this.productError = 'Invalid product id.';
+          this.productLoading.set(false);
+          this.reviewsLoading.set(false);
+          this.productError.set('Invalid product id.');
           return;
         }
         this.loadProduct(id);
@@ -61,14 +61,16 @@ export class ProductDetails {
       });
   }
 
-  get displayTitle(): string {
-    if (!this.product) return 'Product';
-    return this.product.title ?? this.product.name ?? 'Product';
-  }
+  protected readonly displayTitle = computed(() => {
+    const product = this.product();
+    if (!product) return 'Product';
+    return product.title ?? product.name ?? 'Product';
+  });
 
-  get displayImage(): string | undefined {
-    return this.product?.images?.[0] ?? this.product?.imageUrl;
-  }
+  protected readonly displayImage = computed(() => {
+    const product = this.product();
+    return product?.images?.[0] ?? product?.imageUrl;
+  });
 
   onReviewsPageChange(page: number): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -84,58 +86,60 @@ export class ProductDetails {
   }
 
   private loadProduct(id: string): void {
-    this.productLoading = true;
-    this.productError = '';
-    this.product = null;
+    this.productLoading.set(true);
+    this.productError.set('');
+    this.product.set(null);
     this.productsService
       .getProductById(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (product) => {
-          this.product = product;
-          this.productLoading = false;
+          this.product.set(product);
+          this.productLoading.set(false);
         },
         error: (error: unknown) => {
-          this.productLoading = false;
-          this.productError =
+          this.productLoading.set(false);
+          this.productError.set(
             error && typeof error === 'object' && 'message' in error
               ? String(error.message)
-              : 'Failed to load product details.';
+              : 'Failed to load product details.',
+          );
         },
       });
   }
 
   private loadReviews(id: string, page: number): void {
-    this.reviewsLoading = true;
-    this.reviewsError = '';
+    this.reviewsLoading.set(true);
+    this.reviewsError.set('');
     this.productsService
       .getReviews(id, { page, limit: 5 })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (payload: PaginatedResponse<Review>) => {
-          this.reviews = payload.data;
-          this.reviewsPage = payload.page;
-          this.reviewsPages = payload.pages;
-          this.reviewsLoading = false;
+          this.reviews.set(payload.data);
+          this.reviewsPage.set(payload.page);
+          this.reviewsPages.set(payload.pages);
+          this.reviewsLoading.set(false);
         },
         error: (error: unknown) => {
-          this.reviewsLoading = false;
-          this.reviewsError =
+          this.reviewsLoading.set(false);
+          this.reviewsError.set(
             error && typeof error === 'object' && 'message' in error
               ? String(error.message)
-              : 'Failed to load reviews.';
+              : 'Failed to load reviews.',
+          );
         },
       });
   }
 
   private resetViewState(): void {
-    this.product = null;
-    this.productError = '';
-    this.productLoading = true;
-    this.reviews = [];
-    this.reviewsError = '';
-    this.reviewsLoading = true;
-    this.reviewsPage = 1;
-    this.reviewsPages = 1;
+    this.product.set(null);
+    this.productError.set('');
+    this.productLoading.set(true);
+    this.reviews.set([]);
+    this.reviewsError.set('');
+    this.reviewsLoading.set(true);
+    this.reviewsPage.set(1);
+    this.reviewsPages.set(1);
   }
 }
