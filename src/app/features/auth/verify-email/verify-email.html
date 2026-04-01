@@ -4,12 +4,7 @@
   <main class="relative z-0 w-full max-w-lg">
     <div class="mb-10 flex justify-center">
       <div class="flex items-center gap-2">
-        <span
-          class="material-symbols-outlined material-symbols-filled text-4xl text-primary-container"
-          aria-hidden="true"
-        >
-          storefront
-        </span>
+        <fa-icon [icon]="storefrontIcon" class="text-4xl text-primary-container" aria-hidden="true" />
         <span class="font-display text-3xl font-black tracking-tight text-primary-container">
           E‑Mart
         </span>
@@ -32,9 +27,7 @@
           class="mb-8 flex items-start gap-3 rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"
           role="alert"
         >
-          <span class="material-symbols-outlined shrink-0 text-base" aria-hidden="true">
-            error
-          </span>
+          <fa-icon [icon]="errorIcon" class="shrink-0 text-base" aria-hidden="true" />
           <span>
             No email address found. Please
             <a
@@ -60,9 +53,7 @@
           role="alert"
           aria-live="assertive"
         >
-          <span class="material-symbols-outlined shrink-0 text-base" aria-hidden="true">
-            error
-          </span>
+          <fa-icon [icon]="errorIcon" class="shrink-0 text-base" aria-hidden="true" />
           <span>{{ errorMessage }}</span>
         </div>
       }
@@ -73,9 +64,7 @@
           role="status"
           aria-live="polite"
         >
-          <span class="material-symbols-outlined shrink-0 text-base" aria-hidden="true">
-            check_circle
-          </span>
+          <fa-icon [icon]="checkCircleIcon" class="shrink-0 text-base" aria-hidden="true" />
           <span>{{ infoMessage }}</span>
         </div>
       }
@@ -113,14 +102,14 @@
             Verifying…
           } @else {
             Verify &amp; Continue
-            <span class="material-symbols-outlined text-xl" aria-hidden="true">arrow_forward</span>
+            <fa-icon [icon]="arrowRightIcon" class="text-xl" aria-hidden="true" />
           }
         </button>
       </form>
 
       <footer class="mt-12 flex flex-col items-center gap-4">
         <div class="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
-          <span class="material-symbols-outlined text-sm" aria-hidden="true">schedule</span>
+          <fa-icon [icon]="scheduleIcon" class="text-sm" aria-hidden="true" />
           @if (!canResend) {
             <span>Resend code in {{ resendLabel }}</span>
           } @else {
@@ -141,7 +130,7 @@
             ></span>
             Sending…
           } @else {
-            <span class="material-symbols-outlined text-sm" aria-hidden="true">refresh</span>
+            <fa-icon [icon]="refreshIcon" class="text-sm" aria-hidden="true" />
             Resend Code
           }
         </button>
@@ -151,9 +140,9 @@
     <div class="mt-12 flex items-center justify-center gap-8 opacity-40">
       <div class="h-px flex-1 bg-outline-variant"></div>
       <div class="flex gap-4">
-        <span class="material-symbols-outlined text-outline" aria-hidden="true">verified_user</span>
-        <span class="material-symbols-outlined text-outline" aria-hidden="true">lock</span>
-        <span class="material-symbols-outlined text-outline" aria-hidden="true">shield</span>
+        <fa-icon [icon]="verifiedUserIcon" class="text-outline" aria-hidden="true" />
+        <fa-icon [icon]="lockIcon" class="text-outline" aria-hidden="true" />
+        <fa-icon [icon]="shieldIcon" class="text-outline" aria-hidden="true" />
       </div>
       <div class="h-px flex-1 bg-outline-variant"></div>
     </div>

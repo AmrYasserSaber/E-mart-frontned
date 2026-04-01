@@ -15,7 +15,6 @@
 @import '@fontsource/be-vietnam-pro/500.css';
 @import '@fontsource/be-vietnam-pro/600.css';
 @import '@fontsource/be-vietnam-pro/700.css';
-@import '@fontsource/material-symbols-outlined/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 
 /* 2. Tailwind base */
@@ -66,6 +65,19 @@
   /* Borders / outlines */
   --color-outline: #8b7266; /* Used in tinted shadows */
   --color-outline-variant: #dfc0b3; /* Ghost border fallback */
+  --color-success: #2e7d32;
+  --color-success-container: #d6f3d8;
+  --color-on-success-container: #173a19;
+  --color-info: #0059b5;
+  --color-info-container: #d7e3ff;
+  --color-on-info-container: #001b3f;
+  --color-warning: #8a4f32;
+  --color-warning-container: #ffdbcb;
+  --color-on-warning-container: #341000;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-scrim: color-mix(in srgb, #1c1c18 68%, transparent);
 
   /* Tertiary / Accents */
   --color-tertiary: #0059b5;
@@ -156,7 +168,7 @@
   h5,
   h6 {
     font-family: var(--font-display);
-    color: var(--color-primary);
+    color: var(--color-on-surface);
     font-weight: 700;
   }
 
@@ -225,9 +237,7 @@
   .btn-primary:hover {
     background-image: none;
     background-color: var(--color-primary);
-    box-shadow:
-      0px 4px 12px rgba(139, 114, 102, 0.3),
-      0px 8px 24px rgba(139, 114, 102, 0.15);
+    box-shadow: var(--shadow-ambient);
     transform: translateY(-1px);
   }
 
@@ -327,9 +337,7 @@
     font-size: var(--text-body-md);
     line-height: var(--text-body-md--line-height);
     border: none;
-    box-shadow:
-      inset 0 1px 3px rgba(139, 114, 102, 0.12),
-      inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-neomorphic);
     outline: none;
     transition:
       background-color 200ms ease,
@@ -344,7 +352,7 @@
   .input-soft:focus {
     background-color: var(--color-surface-container-lowest);
     box-shadow:
-      inset 0 1px 3px rgba(139, 114, 102, 0.08),
+      var(--shadow-neomorphic),
       0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
   }
 
@@ -357,6 +365,28 @@
     background-color: color-mix(in srgb, var(--color-surface-bright) 80%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+  }
+
+  .tactile-card {
+    background-color: var(--color-surface-container-lowest);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .inner-shadow {
+    box-shadow: var(--shadow-neomorphic);
+  }
+
+  .pill-control {
+    border-radius: var(--radius-xl);
+    background-color: var(--color-surface-container-high);
+    color: var(--color-on-surface-variant);
+    transition: all 180ms ease;
+  }
+
+  .pill-control:hover {
+    background-color: var(--color-surface-container);
+    color: var(--color-primary);
   }
 
   /* ----------------------------------------------------------
@@ -498,5 +528,78 @@
     box-shadow:
       inset 4px 4px 8px rgba(0, 0, 0, 0.05),
       inset -4px -4px 8px #ffffff;
+  }
+
+  .focus-glow:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
+    outline: none;
+  }
+
+  .app-shell {
+    width: min(100%, 1600px);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .content-shell {
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-container-low);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .surface-elevated {
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: var(--shadow-ambient);
+    border-radius: var(--radius-md);
+  }
+
+  .surface-muted {
+    background-color: var(--color-surface-container);
+    border-radius: var(--radius-sm);
+  }
+
+  .state-success {
+    background-color: var(--color-success-container);
+    color: var(--color-on-success-container);
+    border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+  }
+
+  .state-error {
+    background-color: var(--color-error-container);
+    color: var(--color-on-error-container);
+    border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
+  }
+
+  .state-info {
+    background-color: var(--color-info-container);
+    color: var(--color-on-info-container);
+    border: 1px solid color-mix(in srgb, var(--color-info) 30%, transparent);
+  }
+
+  .state-warning {
+    background-color: var(--color-warning-container);
+    color: var(--color-on-warning-container);
+    border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+  }
+
+  .bg-scrim {
+    background-color: var(--color-scrim);
+  }
+
+  .control-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .section-shell {
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-container-low);
+    box-shadow: var(--shadow-ambient);
+  }
+
+  .panel-chip-active {
+    background-color: var(--color-surface-container-lowest);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-ambient);
   }
 }

@@ -1,23 +1,23 @@
 @switch (variant()) {
   @case ('card') {
-    <div class="animate-pulse rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-      <div class="h-36 rounded-lg bg-slate-800"></div>
-      <div class="mt-4 h-4 w-2/3 rounded bg-slate-800"></div>
-      <div class="mt-2 h-3 w-1/2 rounded bg-slate-800"></div>
+    <div class="animate-pulse rounded-xl border border-outline-variant/60 bg-surface-container-low p-4">
+      <div class="h-36 rounded-lg bg-surface-container-high"></div>
+      <div class="mt-4 h-4 w-2/3 rounded bg-surface-container-high"></div>
+      <div class="mt-2 h-3 w-1/2 rounded bg-surface-container-high"></div>
     </div>
   }
   @case ('table-row') {
-    <div class="animate-pulse flex gap-4 border-b border-slate-800 py-3">
-      <div class="h-4 flex-1 rounded bg-slate-800"></div>
-      <div class="h-4 flex-1 rounded bg-slate-800"></div>
-      <div class="h-4 w-24 rounded bg-slate-800"></div>
+    <div class="animate-pulse flex gap-4 border-b border-outline-variant/60 py-3">
+      <div class="h-4 flex-1 rounded bg-surface-container-high"></div>
+      <div class="h-4 flex-1 rounded bg-surface-container-high"></div>
+      <div class="h-4 w-24 rounded bg-surface-container-high"></div>
     </div>
   }
   @default {
     <div class="flex flex-col gap-2">
       @for (_ of lineArray(); track $index) {
         <div
-          class="h-3 max-w-full animate-pulse rounded bg-slate-800"
+          class="h-3 max-w-full animate-pulse rounded bg-surface-container-high"
           [style.width.%]="$index === 0 ? 100 : $index === 1 ? 85 : 65"
         ></div>
       }

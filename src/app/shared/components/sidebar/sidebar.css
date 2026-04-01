@@ -2,3 +2,9 @@
   display: block;
   height: 100%;
 }
+
+:host .panel-chip-active {
+  background-color: #ffedd5;
+  color: #9b3f00;
+  border-right: 4px solid #9b3f00;
+}

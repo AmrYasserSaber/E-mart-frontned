@@ -1,1 +1,129 @@
-<p>product-list works!</p>
+<main class="mx-auto flex max-w-[1600px] flex-col gap-12 px-6 pb-16 pt-8 md:flex-row lg:px-12">
+  <aside class="w-full space-y-8 md:w-72 md:shrink-0">
+    <div class="space-y-6">
+      <h3 class="font-display text-xl font-bold tracking-tight text-on-surface">Refine E-Mart</h3>
+
+      <form
+        class="section-shell rounded-2xl p-4"
+        (submit)="$event.preventDefault(); onSearchSubmit(searchInput.value)"
+      >
+        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-outline">Search</label>
+        <div class="rounded-full bg-surface-container-high px-4 py-2 inner-shadow">
+          <input
+            #searchInput
+            type="search"
+            name="search"
+            [value]="searchValue"
+            placeholder="Search curated goods..."
+            class="w-full border-none bg-transparent p-0 text-sm text-on-surface focus:ring-0"
+          />
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-2">
+          <button type="submit" class="btn-primary py-2 text-xs font-bold">Apply</button>
+          <button type="button" class="btn-secondary py-2 text-xs font-bold" (click)="clearFilters()">Clear</button>
+        </div>
+      </form>
+
+      <div class="section-shell rounded-2xl p-4">
+        <span class="text-xs font-bold uppercase tracking-widest text-outline">Category</span>
+        <div class="mt-4 space-y-2">
+          <button
+            type="button"
+            class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition"
+            [class.panel-chip-active]="selectedCategoryId === ''"
+            [class.text-on-surface-variant]="selectedCategoryId !== ''"
+            [class.hover:bg-surface-container]="selectedCategoryId !== ''"
+            (click)="onCategorySelect('')"
+          >
+            All Categories
+            <fa-icon [icon]="checkCircleIcon" class="text-xs" />
+          </button>
+          @for (category of categories; track trackByCategory($index, category)) {
+            <button
+              type="button"
+              class="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm transition"
+              [class.panel-chip-active]="selectedCategoryId === category.id"
+              [class.text-on-surface-variant]="selectedCategoryId !== category.id"
+              [class.hover:bg-surface-container]="selectedCategoryId !== category.id"
+              (click)="onCategorySelect(category.id)"
+            >
+              {{ category.name }}
+              <fa-icon [icon]="chevronRightIcon" class="text-xs" />
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="section-shell rounded-2xl p-4">
+        <span class="text-xs font-bold uppercase tracking-widest text-outline">Price Interval</span>
+        <div class="mt-4 rounded-2xl bg-surface-container-high p-5 inner-shadow">
+          <div class="relative h-1.5 rounded-full bg-outline-variant/40">
+            <div class="absolute inset-y-0 left-1/4 right-1/4 rounded-full bg-primary"></div>
+          </div>
+          <div class="mt-4 flex justify-between text-xs font-medium text-on-surface-variant">
+            <span>$45</span>
+            <span>$850</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <section class="min-w-0 flex-1">
+    <header class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+      <div>
+        <h1 class="font-display text-4xl font-extrabold tracking-tight text-on-surface">
+          The Ceramic Collection
+        </h1>
+        <p class="mt-2 text-lg text-on-surface-variant">
+          Curated tactile objects from earth-conscious kilns.
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-medium text-outline">Sort by</span>
+        <div class="tactile-card flex cursor-default items-center gap-2 rounded-full border border-outline-variant/10 px-4 py-2">
+          <span class="text-sm font-bold text-on-surface">Curated Popularity</span>
+          <fa-icon [icon]="chevronDownIcon" class="text-sm" />
+        </div>
+      </div>
+    </header>
+
+    @if (loading$ | async) {
+      <div class="card bg-surface-container-low p-8 text-center text-secondary">Loading products...</div>
+    } @else if (error$ | async; as error) {
+      <app-empty-state
+        title="Could not load products"
+        [message]="error"
+        actionLabel="Retry"
+        (action)="onSearchSubmit(searchValue)"
+      />
+    } @else {
+      @if ((products$ | async)?.length) {
+        <div class="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          @for (product of (products$ | async) ?? []; track product.id) {
+            <app-product-card
+              [product]="product"
+              (addToCart)="onAddToCart($event)"
+              (open)="openProductDetails($event)"
+            />
+          }
+        </div>
+
+        <div class="mt-16">
+          <app-pagination
+            [page]="(page$ | async) ?? 1"
+            [totalPages]="(pages$ | async) ?? 1"
+            (pageChange)="onPageChange($event)"
+          />
+        </div>
+      } @else {
+        <app-empty-state
+          title="No products found"
+          message="Try a different search or category filter."
+          actionLabel="Clear filters"
+          (action)="clearFilters()"
+        />
+      }
+    }
+  </section>
+</main>

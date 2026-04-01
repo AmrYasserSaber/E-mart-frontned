@@ -1,21 +1,18 @@
 <div
-  class="pointer-events-none fixed bottom-4 right-4 z-[100] flex max-w-sm flex-col gap-2"
+  class="pointer-events-none fixed bottom-4 right-4 z-100 flex max-w-sm flex-col gap-2"
   aria-live="polite"
 >
   @for (t of toastService.toasts(); track t.id) {
     <div
       class="pointer-events-auto flex items-start justify-between gap-3 rounded-xl px-4 py-3 text-sm shadow-tinted"
-      [class.bg-green-50]="t.kind === 'success'"
-      [class.text-green-800]="t.kind === 'success'"
-      [class.bg-red-50]="t.kind === 'error'"
-      [class.text-red-800]="t.kind === 'error'"
-      [class.bg-surface-container-lowest]="t.kind === 'info'"
-      [class.text-on-surface]="t.kind === 'info'"
+      [class.state-success]="t.kind === 'success'"
+      [class.state-error]="t.kind === 'error'"
+      [class.state-info]="t.kind === 'info'"
     >
       <span>{{ t.message }}</span>
       <button
         type="button"
-        class="shrink-0 opacity-70 hover:opacity-100"
+        class="shrink-0 opacity-70 transition hover:opacity-100"
         (click)="dismiss(t.id)"
         aria-label="Dismiss"
       >

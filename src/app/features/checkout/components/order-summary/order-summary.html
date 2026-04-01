@@ -5,7 +5,7 @@
     @for (item of items$ | async; track item.id) {
       <div class="flex gap-4 items-center animate-in fade-in slide-in-from-right duration-300">
         <div class="w-16 h-16 bg-white rounded-xl flex-shrink-0 overflow-hidden neomorphic-inset p-1">
-          <img class="w-full h-full object-cover rounded-lg" [src]="item.product.images[0]" [alt]="item.product.title">
+          <img class="w-full h-full object-cover rounded-lg" [src]="item.product.images?.[0] || ''" [alt]="item.product.title || item.product.name || 'Product image'">
         </div>
         <div class="flex-1">
           <p class="text-sm font-bold text-on-surface line-clamp-1">{{ item.product.title }}</p>

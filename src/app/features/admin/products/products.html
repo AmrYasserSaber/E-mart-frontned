@@ -58,14 +58,14 @@
           <div class="col-span-1">
             <span
               class="px-2 py-0.5 rounded-full text-xs font-bold"
-              [class.bg-red-100]="p.stock === 0"
-              [class.text-red-700]="p.stock === 0"
-              [class.bg-green-100]="p.stock > 0"
-              [class.text-green-700]="p.stock > 0"
-            >{{ p.stock }}</span>
+              [class.bg-red-100]="(p.stock ?? 0) === 0"
+              [class.text-red-700]="(p.stock ?? 0) === 0"
+              [class.bg-green-100]="(p.stock ?? 0) > 0"
+              [class.text-green-700]="(p.stock ?? 0) > 0"
+            >{{ p.stock ?? 0 }}</span>
           </div>
-          <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ categoryName(p.categoryId) }}</div>
-          <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ p.createdAt | timeAgo }}</div>
+          <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ categoryName(p.categoryId ?? '') }}</div>
+`          <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ p.createdAt | timeAgo }}</div>
           <div class="col-span-1 text-right">
             <button
               type="button"

@@ -1,42 +1,42 @@
 <div class="mx-auto max-w-md space-y-6 px-4 py-12">
-  <h1 class="text-2xl font-bold text-slate-100">Sign in</h1>
-  <p class="text-slate-400">
+  <h1 class="text-2xl font-bold text-on-surface">Sign in</h1>
+  <p class="text-on-surface-variant">
     New here?
-    <a routerLink="/auth/register" class="font-medium text-emerald-400 hover:underline"
+    <a routerLink="/auth/register" class="font-medium text-primary hover:underline"
       >Create an account</a
     >
   </p>
   <form (ngSubmit)="submit()" class="space-y-4">
     <div>
-      <label class="block text-sm text-slate-400">Email</label>
+      <label class="block text-sm text-on-surface-variant">Email</label>
       <input
         type="email"
         name="email"
         [(ngModel)]="email"
         required
         autocomplete="email"
-        class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+        class="input-soft mt-1"
       />
     </div>
     <div>
-      <label class="block text-sm text-slate-400">Password</label>
+      <label class="block text-sm text-on-surface-variant">Password</label>
       <input
         type="password"
         name="password"
         [(ngModel)]="password"
         required
         autocomplete="current-password"
-        class="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100"
+        class="input-soft mt-1"
       />
     </div>
     @if (error$ | async; as err) {
       @if (err) {
-        <p class="text-sm text-red-400">{{ err }}</p>
+        <p class="text-sm text-error">{{ err }}</p>
       }
     }
     <button
       type="submit"
-      class="w-full rounded-lg bg-emerald-600 py-2 font-semibold text-slate-950 hover:bg-emerald-500 disabled:opacity-50"
+      class="btn-primary w-full rounded-lg py-2 font-semibold disabled:opacity-50"
       [disabled]="loading$ | async"
     >
       @if (loading$ | async) {

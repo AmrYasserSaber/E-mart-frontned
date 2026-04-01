@@ -6,11 +6,29 @@ import { ApiService } from '../../../core/services/api.service';
 import type { Product } from '../../../core/models/product.model';
 import { ProductsActions } from './products.actions';
 
-function normalizeProducts(data: unknown): Product[] {
-  if (Array.isArray(data)) {
-    return data as Product[];
+interface ProductsListResponse {
+  data: Product[];
+  total: number;
+  page: number;
+  pages: number;
+}
+
+function normalizeProductsResponse(data: unknown): ProductsListResponse {
+  if (data && typeof data === 'object' && 'data' in data) {
+    const payload = data as Partial<ProductsListResponse>;
+    return {
+      data: Array.isArray(payload.data) ? payload.data : [],
+      total: typeof payload.total === 'number' ? payload.total : 0,
+      page: typeof payload.page === 'number' ? payload.page : 1,
+      pages: typeof payload.pages === 'number' ? payload.pages : 1,
+    };
   }
-  return [];
+  return {
+    data: Array.isArray(data) ? (data as Product[]) : [],
+    total: Array.isArray(data) ? data.length : 0,
+    page: 1,
+    pages: 1,
+  };
 }
 
 @Injectable()
@@ -21,13 +39,23 @@ export class ProductsEffects {
   loadProducts$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ProductsActions.loadProducts),
-      switchMap(() =>
-        this.api.get<unknown>('/products').pipe(
-          map((data) =>
-            ProductsActions.loadProductsSuccess({
-              products: normalizeProducts(data),
-            }),
-          ),
+      switchMap(({ query }) =>
+        this.api
+          .get<unknown>('/products', {
+            params: {
+              page: query.page ?? 1,
+              limit: query.limit ?? 12,
+              ...(query.search ? { search: query.search } : {}),
+              ...(query.categoryId ? { categoryId: query.categoryId } : {}),
+            },
+          })
+          .pipe(
+          map((data) => {
+            const payload = normalizeProductsResponse(data);
+            return ProductsActions.loadProductsSuccess({
+              payload,
+            });
+          }),
           catchError((err) =>
             of(
               ProductsActions.loadProductsFailure({

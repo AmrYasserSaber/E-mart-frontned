@@ -1,54 +1,111 @@
-<div class="max-w-7xl mx-auto space-y-12">
+<div class="mx-auto max-w-7xl space-y-10">
+  <header class="sticky top-0 z-20 flex flex-col gap-4 rounded-3xl bg-orange-50/80 px-6 py-5 shadow-[0px_4px_20px_rgba(139,114,102,0.08)] backdrop-blur-md md:flex-row md:items-center md:justify-between">
+    <div>
+      <h2 class="font-display text-3xl font-black tracking-tight text-orange-800">The Tactile Hearth</h2>
+      <p class="text-sm font-medium text-on-surface-variant">Admin Portal Dashboard</p>
+    </div>
+    <div class="hidden items-center gap-2 rounded-full bg-surface-container-high px-4 py-2 soft-inset lg:flex">
+      <span class="material-symbols-outlined text-sm text-outline">search</span>
+      <input class="w-52 border-none bg-transparent text-sm font-medium focus:ring-0" placeholder="Global search..." type="text" />
+    </div>
+  </header>
 
-  <!-- KPI Section -->
-  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
-      <div class="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+  <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest p-6 soft-outset">
+      <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-orange-50 opacity-50 transition-transform group-hover:scale-110"></div>
       <div class="relative z-10">
-        <span class="material-symbols-outlined text-primary-container mb-4 block">group</span>
-        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Total Users</p>
-        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalUsers() }}</h3>
+        <span class="material-symbols-outlined mb-4 block text-primary-container">group</span>
+        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-outline">Total Users</p>
+        <h3 class="font-display text-3xl font-black text-on-surface">{{ totalUsers() }}</h3>
       </div>
     </div>
-
-    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
-      <div class="absolute top-0 right-0 w-24 h-24 bg-stone-100 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+    <div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest p-6 soft-outset">
+      <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-stone-100 opacity-50 transition-transform group-hover:scale-110"></div>
       <div class="relative z-10">
-        <span class="material-symbols-outlined text-on-surface-variant mb-4 block">shopping_bag</span>
-        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Total Orders</p>
-        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalOrders() }}</h3>
+        <span class="material-symbols-outlined mb-4 block text-on-surface-variant">shopping_bag</span>
+        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-outline">Total Orders</p>
+        <h3 class="font-display text-3xl font-black text-on-surface">{{ totalOrders() }}</h3>
       </div>
     </div>
-
-    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
-      <div class="absolute top-0 right-0 w-24 h-24 bg-orange-100 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+    <div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest p-6 soft-outset">
+      <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-orange-100 opacity-50 transition-transform group-hover:scale-110"></div>
       <div class="relative z-10">
-        <span class="material-symbols-outlined text-primary mb-4 block">inventory_2</span>
-        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Products</p>
-        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalProducts() }}</h3>
+        <span class="material-symbols-outlined mb-4 block text-primary">payments</span>
+        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-outline">Total Products</p>
+        <h3 class="font-display text-3xl font-black text-on-surface">{{ totalProducts() }}</h3>
       </div>
     </div>
-
-    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
-      <div class="absolute top-0 right-0 w-24 h-24 bg-stone-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+    <div class="group relative overflow-hidden rounded-3xl bg-surface-container-lowest p-6 soft-outset">
+      <div class="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-stone-50 opacity-50 transition-transform group-hover:scale-110"></div>
       <div class="relative z-10">
-        <span class="material-symbols-outlined text-on-surface-variant mb-4 block">storefront</span>
-        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Pending Sellers</p>
-        <h3 class="text-3xl font-black text-on-surface font-display">{{ pendingSellers() }}</h3>
+        <span class="material-symbols-outlined mb-4 block text-on-surface-variant">storefront</span>
+        <p class="mb-1 text-xs font-bold uppercase tracking-widest text-outline">Pending Sellers</p>
+        <h3 class="font-display text-3xl font-black text-on-surface">{{ pendingSellers() }}</h3>
       </div>
     </div>
   </section>
 
-  <!-- Activity & Quick Actions -->
-  <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+  <section class="grid grid-cols-1 gap-8 xl:grid-cols-3">
+    <div class="xl:col-span-2 rounded-3xl bg-surface-container-lowest p-8 soft-outset">
+      <div class="mb-8 flex items-center justify-between">
+        <div>
+          <h4 class="font-display text-lg font-bold text-on-surface">Revenue Growth</h4>
+          <p class="text-sm text-on-surface-variant">Monthly overview of generated sales</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="rounded-full bg-orange-100 px-4 py-1 text-xs font-bold text-orange-800">12 Months</button>
+          <button class="rounded-full px-4 py-1 text-xs font-bold text-on-surface-variant hover:bg-stone-100">30 Days</button>
+        </div>
+      </div>
+      <div class="flex h-64 items-end justify-between gap-3 px-2">
+        <div class="h-[40%] w-full rounded-t-xl bg-orange-50 transition-all hover:h-[45%] hover:bg-orange-100"></div>
+        <div class="h-[60%] w-full rounded-t-xl bg-orange-100 transition-all hover:h-[65%] hover:bg-orange-200"></div>
+        <div class="h-[35%] w-full rounded-t-xl bg-orange-200 transition-all hover:h-[40%] hover:bg-orange-300"></div>
+        <div class="h-[85%] w-full rounded-t-xl bg-primary-container transition-all hover:h-[90%] hover:bg-primary"></div>
+        <div class="h-[55%] w-full rounded-t-xl bg-orange-200 transition-all hover:h-[60%] hover:bg-orange-300"></div>
+        <div class="h-[75%] w-full rounded-t-xl bg-orange-100 transition-all hover:h-[80%] hover:bg-orange-200"></div>
+        <div class="h-[95%] w-full rounded-t-xl bg-orange-50 transition-all hover:h-full hover:bg-orange-100"></div>
+      </div>
+      <div class="mt-4 flex justify-between text-[10px] font-bold uppercase tracking-widest text-outline">
+        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+      </div>
+    </div>
 
-    <!-- Recent Activity Feed -->
+    <div class="flex flex-col items-center rounded-3xl bg-surface-container-lowest p-8 soft-outset">
+      <div class="mb-6 w-full text-left">
+        <h4 class="font-display text-lg font-bold text-on-surface">Order Status</h4>
+      </div>
+      <div class="relative flex h-48 w-48 items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-[18px] border-orange-50"></div>
+        <div class="absolute inset-0 rotate-45 rounded-full border-[18px] border-transparent border-r-primary border-t-primary-container transition-transform"></div>
+        <div class="text-center">
+          <span class="font-display block text-2xl font-black text-on-surface">{{ totalOrders() > 0 ? '84%' : '0%' }}</span>
+          <span class="text-[10px] font-bold uppercase text-outline">Fulfilled</span>
+        </div>
+      </div>
+      <div class="mt-8 w-full space-y-3">
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2"><div class="h-3 w-3 rounded-full bg-primary-container"></div><span class="font-medium text-on-surface-variant">Delivered</span></div>
+          <span class="font-bold">{{ totalOrders() }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2"><div class="h-3 w-3 rounded-full bg-orange-200"></div><span class="font-medium text-on-surface-variant">Pending</span></div>
+          <span class="font-bold">{{ pendingSellers() }}</span>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2"><div class="h-3 w-3 rounded-full bg-stone-200"></div><span class="font-medium text-on-surface-variant">Cancelled</span></div>
+          <span class="font-bold">0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 gap-8 lg:grid-cols-2">
     <div class="space-y-6">
       <div class="flex items-center justify-between">
-        <h4 class="text-xl font-bold font-display text-on-surface">Recent Activity</h4>
-        <a routerLink="/admin/activity-feed" class="text-sm font-bold text-primary-container hover:text-primary transition-colors">View all</a>
+        <h4 class="font-display text-xl font-bold text-on-surface">Recent Activity</h4>
+        <a routerLink="/admin/activity-feed" class="text-sm font-bold text-primary-container transition-colors hover:text-primary">View all</a>
       </div>
-
       @if (loading()) {
         <p class="text-on-surface-variant">Loading…</p>
       } @else if (recentActivity().length === 0) {
@@ -56,26 +113,20 @@
       } @else {
         <div class="space-y-4">
           @for (item of recentActivity(); track item.id) {
-            <div
-              class="bg-surface-container-low p-4 rounded-xl flex gap-4 soft-outset border-l-4"
+            <div class="flex gap-4 rounded-2xl border-l-4 bg-surface-container-low p-4 soft-outset"
               [class.border-primary-container]="item.kind === 'user'"
-              [class.border-green-500]="item.kind === 'order'"
-            >
-              <div
-                class="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+              [class.border-green-500]="item.kind === 'order'">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full"
                 [class.bg-orange-100]="item.kind === 'user'"
-                [class.bg-green-50]="item.kind === 'order'"
-              >
-                <span
-                  class="material-symbols-outlined"
+                [class.bg-green-50]="item.kind === 'order'">
+                <span class="material-symbols-outlined"
                   [class.text-primary-container]="item.kind === 'user'"
-                  [class.text-green-800]="item.kind === 'order'"
-                >{{ item.kind === 'user' ? 'person_add' : 'shopping_cart_checkout' }}</span>
+                  [class.text-green-800]="item.kind === 'order'">{{ item.kind === 'user' ? 'person_add' : 'shopping_cart_checkout' }}</span>
               </div>
               <div>
                 <p class="text-sm font-bold text-on-surface">{{ item.title }}</p>
                 <p class="text-xs text-on-surface-variant">{{ item.detail }}</p>
-                <span class="text-[10px] text-outline font-bold uppercase mt-2 block">{{ item.date | timeAgo }}</span>
+                <span class="mt-2 block text-[10px] font-bold uppercase text-outline">{{ item.date | timeAgo }}</span>
               </div>
             </div>
           }
@@ -83,72 +134,27 @@
       }
     </div>
 
-    <!-- Quick Actions -->
     <div class="space-y-6">
-      <h4 class="text-xl font-bold font-display text-on-surface">Quick Actions</h4>
+      <h4 class="font-display text-xl font-bold text-on-surface">Quick Actions</h4>
       <div class="grid grid-cols-2 gap-4">
-        <a
-          routerLink="/admin/users"
-          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
-        >
-          <span class="material-symbols-outlined text-primary-container text-3xl">group</span>
-          <span class="font-bold text-sm">Manage Users</span>
+        <a routerLink="/admin/users" class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-surface-container-lowest p-8 text-on-surface soft-outset transition-all hover:-translate-y-0.5 active:scale-95">
+          <span class="material-symbols-outlined text-3xl text-primary-container">group</span>
+          <span class="text-sm font-bold">Manage Users</span>
         </a>
-        <a
-          routerLink="/admin/orders"
-          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
-        >
-          <span class="material-symbols-outlined text-primary-container text-3xl">shopping_cart</span>
-          <span class="font-bold text-sm">View Orders</span>
+        <a routerLink="/admin/orders" class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-surface-container-lowest p-8 text-on-surface soft-outset transition-all hover:-translate-y-0.5 active:scale-95">
+          <span class="material-symbols-outlined text-3xl text-primary-container">shopping_cart</span>
+          <span class="text-sm font-bold">View Orders</span>
         </a>
-        <a
-          routerLink="/admin/products"
-          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
-        >
-          <span class="material-symbols-outlined text-primary-container text-3xl">inventory_2</span>
-          <span class="font-bold text-sm">Products</span>
+        <a routerLink="/admin/products" class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-surface-container-lowest p-8 text-on-surface soft-outset transition-all hover:-translate-y-0.5 active:scale-95">
+          <span class="material-symbols-outlined text-3xl text-primary-container">inventory_2</span>
+          <span class="text-sm font-bold">Products</span>
         </a>
-        <a
-          routerLink="/admin/sellers"
-          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
-        >
-          <span class="material-symbols-outlined text-primary-container text-3xl">storefront</span>
-          <span class="font-bold text-sm">Sellers</span>
+        <a routerLink="/admin/sellers" class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-surface-container-lowest p-8 text-on-surface soft-outset transition-all hover:-translate-y-0.5 active:scale-95">
+          <span class="material-symbols-outlined text-3xl text-primary-container">storefront</span>
+          <span class="text-sm font-bold">Sellers</span>
         </a>
       </div>
 
-      <!-- Recent signups card -->
-      <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset">
-        <div class="flex items-center justify-between mb-4">
-          <h5 class="text-lg font-bold font-display text-on-surface">Recent Signups</h5>
-          <a routerLink="/admin/users" class="text-sm font-bold text-primary-container hover:text-primary transition-colors">Manage</a>
-        </div>
-        @if (loading()) {
-          <p class="text-on-surface-variant">Loading…</p>
-        } @else if (recentUsers().length === 0) {
-          <p class="text-on-surface-variant">No users yet.</p>
-        } @else {
-          <ul class="divide-y divide-outline-variant/20">
-            @for (u of recentUsers(); track u.id) {
-              <li class="flex items-center justify-between gap-3 py-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-xs border-2 border-white">
-                    {{ ((u.firstName || '').charAt(0) + (u.lastName || '').charAt(0)) || u.email.charAt(0).toUpperCase() || 'U' }}
-                  </div>
-                  <div>
-                    <p class="text-sm font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>
-                    <p class="text-[11px] text-on-surface-variant">{{ u.email }}</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <span class="rounded-full bg-surface-container-high px-2 py-0.5 text-[10px] font-bold text-on-surface-variant uppercase">{{ u.role }}</span>
-                  <p class="text-[10px] text-outline mt-1">{{ u.createdAt | timeAgo }}</p>
-                </div>
-              </li>
-            }
-          </ul>
-        }
-      </div>
     </div>
   </section>
 </div>
