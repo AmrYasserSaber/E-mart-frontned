@@ -1,16 +1,16 @@
-<div class="space-y-8 py-8">
-  <section class="section-shell rounded-2xl p-10">
-    <h1 class="text-3xl font-bold text-on-surface md:text-4xl">
-      Welcome to E‑Mart
-    </h1>
-    <p class="mt-3 max-w-xl text-on-surface-variant">
-      Your marketplace for everyday essentials. Browse products, manage your cart,
-      and checkout when you are ready.
-    </p>
-    <a
-      routerLink="/products"
-      class="btn-primary mt-6 rounded-lg px-5 py-2.5 font-semibold"
-      >Shop now</a
-    >
-  </section>
+<div class="pb-20 font-body text-on-surface">
+  <app-hero-banner />
+  <app-category-strip />
+  <app-featured-products />
+  <app-home-newsletter />
 </div>
+
+<button
+  type="button"
+  class="fixed bottom-8 right-8 z-40 flex h-16 w-16 items-center justify-center rounded-full bg-primary-container text-on-primary shadow-2xl transition-all hover:scale-110 active:scale-90"
+  aria-label="Open chat"
+>
+  <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1"
+    >chat_bubble</span
+  >
+</button>

@@ -1,1 +1,74 @@
-<p>featured-products works!</p>
+<section class="mb-24 max-w-7xl mx-auto px-6">
+  <h2 class="mb-12 font-display text-4xl font-bold tracking-tight text-on-surface">
+    Featured Selections
+  </h2>
+
+  @if (loading$ | async) {
+    <p class="text-on-surface-variant font-body">Loading featured products…</p>
+  } @else if ((featured$ | async)?.length === 0) {
+    <p class="text-on-surface-variant font-body">
+      No products yet.
+      <a routerLink="/products" class="font-bold text-primary hover:underline">Browse the catalog</a>
+    </p>
+  } @else {
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+      @for (product of (featured$ | async) ?? []; track product.id) {
+        <article
+          class="curated-tile group neomorphic-flat cursor-pointer transition-all hover:-translate-y-1"
+          role="link"
+          tabindex="0"
+          (click)="openProduct(product)"
+          (keydown.enter)="openProduct(product)"
+          (keydown.space)="$event.preventDefault(); openProduct(product)"
+        >
+          <div
+            class="curated-tile__image relative -mt-12 mb-6 h-64 w-full overflow-hidden rounded-lg shadow-xl"
+          >
+            @if (product.images?.length) {
+              <img
+                [src]="product.images![0]"
+                [alt]="title(product)"
+                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                loading="lazy"
+                (error)="onImageError($event)"
+              />
+            } @else {
+              <div
+                class="flex h-full items-center justify-center bg-surface-container text-4xl text-outline"
+              >
+                📦
+              </div>
+            }
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <h3 class="font-display text-xl font-bold text-on-surface">{{ title(product) }}</h3>
+              <span class="font-display font-black text-primary-container">{{
+                product.price | currencyFormat
+              }}</span>
+            </div>
+            <p class="line-clamp-2 text-sm text-on-surface-variant font-body">
+              {{ product.description || 'Curated handcrafted piece.' }}
+            </p>
+            <div class="flex items-center justify-between pt-4">
+              <div class="flex items-center gap-1 text-on-surface-variant">
+                <app-star-rating [value]="rating(product)" [readonly]="true" />
+                <span class="text-xs font-bold"
+                  >{{ rating(product).toFixed(1) }} ({{ reviewCount(product) }} reviews)</span
+                >
+              </div>
+              <button
+                type="button"
+                class="neomorphic-inset rounded-full p-2 text-primary transition-colors hover:text-primary-container"
+                aria-label="Add to cart"
+                (click)="addToCart($event, product)"
+              >
+                <span class="material-symbols-outlined">add_shopping_cart</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</section>
