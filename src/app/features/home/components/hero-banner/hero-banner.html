@@ -1,1 +1,56 @@
-<p>hero-banner works!</p>
+<section class="mb-16 max-w-7xl mx-auto px-6 mt-6">
+  <div
+    class="relative flex min-h-[500px] flex-col items-center overflow-hidden rounded-xl bg-surface-container-low p-8 md:flex-row md:p-16 neomorphic-flat"
+  >
+    <div class="z-10 flex flex-1 flex-col space-y-6">
+      <span
+        class="w-max inline-block rounded-full bg-secondary-fixed px-4 py-1.5 text-sm font-semibold uppercase tracking-wide text-primary"
+      >
+        Curated Goods
+      </span>
+      <h1
+        class="font-display text-5xl font-extrabold leading-[1.1] tracking-tighter text-on-surface md:text-7xl"
+      >
+        Crafted for <br />
+        <span class="text-primary-container font-bold">Modern Tactility.</span>
+      </h1>
+      <p class="max-w-md text-lg text-on-surface-variant font-body">
+        Escape the digital noise. Discover physical treasures designed to bring warmth and editorial
+        beauty back to your everyday space.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-4">
+        <a routerLink="/products" class="btn-primary px-8 py-4 text-base shadow-lg hover:-translate-y-0.5 active:scale-95">
+          Shop the Collection
+        </a>
+        <a
+          routerLink="/products"
+          class="inline-flex items-center justify-center rounded-xl border-2 border-transparent bg-surface-container-lowest px-8 py-4 font-bold text-on-surface neomorphic-flat transition-all hover:bg-surface active:scale-95 font-body"
+        >
+          Our Story
+        </a>
+      </div>
+    </div>
+    <div
+      class="absolute bottom-0 right-0 mt-8 flex h-full w-full flex-shrink-0 items-center justify-center md:relative md:mt-0 md:w-auto md:flex-1"
+    >
+      <div class="relative h-72 w-72 md:h-96 md:w-96">
+        <div class="absolute inset-0 rounded-full bg-primary-container/10 blur-3xl"></div>
+        <img
+          alt="Warm aesthetic handcrafted ceramic vase on a wooden pedestal"
+          class="relative z-10 h-full w-full rotate-3 rounded-xl object-cover shadow-2xl transition-transform duration-700 hover:rotate-0"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZJV0gCx34QVcfLsB-wTCPwLSMXkuXGgUjxgzYHItT3ORiDbdNnTV6qQAmk-VRF8suUENc12kDxG_8sg_QiyaAuR7YPf-FdQkGjnrWIgXhYF04uvc2jJwOcO3PLBORQKTW8s7RaHxl8L9-8k93VBQUueWZB7JHf4HNokY0Mb0soH7-gO1moChWvh1EcDMK9QXQByAk_kPANEE1OpKHgGsJv9djF2faktwSp1SiUoSyRctF3BjE13bwBvK-d9ph1TVejrBrVPyY3sk"
+          width="384"
+          height="384"
+        />
+        <div
+          class="absolute -left-10 -top-10 z-20 hidden rounded-lg bg-surface-container-lowest p-6 neomorphic-flat lg:block"
+        >
+          <span class="font-display text-2xl font-black text-primary-container">01</span>
+          <span class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mt-2"
+            >Heritage Series</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

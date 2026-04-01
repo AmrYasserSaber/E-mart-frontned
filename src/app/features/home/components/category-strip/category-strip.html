@@ -1,1 +1,44 @@
-<p>category-strip works!</p>
+<section class="mb-20 max-w-7xl mx-auto px-6">
+  <div class="flex flex-col gap-8">
+    <div class="flex items-end justify-between">
+      <h2 class="font-display text-3xl font-bold text-on-surface">Browse Categories</h2>
+      <a routerLink="/products" class="font-bold text-primary hover:underline">View All</a>
+    </div>
+    <div class="flex flex-wrap gap-4">
+      @if (categories().length) {
+        @for (cat of categories(); track cat.id; let i = $index) {
+          <a
+            [routerLink]="['/products']"
+            [queryParams]="{ categoryId: cat.id, page: 1 }"
+            class="rounded-full px-6 py-3 font-medium transition-all"
+            [class.bg-primary-container]="i === 0"
+            [class.text-on-primary]="i === 0"
+            [class.font-bold]="i === 0"
+            [class.shadow-md]="i === 0"
+            [class.bg-surface-container-high]="i !== 0"
+            [class.text-on-surface-variant]="i !== 0"
+            [class.hover:bg-surface-container-highest]="i !== 0"
+          >
+            {{ cat.name }}
+          </a>
+        }
+      } @else {
+        @for (chip of staticFallback; track chip.label; let i = $index) {
+          <a
+            routerLink="/products"
+            class="rounded-full px-6 py-3 font-medium transition-all"
+            [class.bg-primary-container]="i === 0"
+            [class.text-on-primary]="i === 0"
+            [class.font-bold]="i === 0"
+            [class.shadow-md]="i === 0"
+            [class.bg-surface-container-high]="i !== 0"
+            [class.text-on-surface-variant]="i !== 0"
+            [class.hover:bg-surface-container-highest]="i !== 0"
+          >
+            {{ chip.label }}
+          </a>
+        }
+      }
+    </div>
+  </div>
+</section>

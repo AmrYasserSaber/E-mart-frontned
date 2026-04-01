@@ -46,6 +46,7 @@
   --color-surface-container-low: #f7f3ed; /* Sections */
   --color-surface-container: #f1ede7; /* In-set content */
   --color-surface-container-high: #ebe8e2; /* Input backgrounds */
+  --color-surface-container-highest: #e6e2dc; /* Category chips hover */
 
   /* Primary / brand */
   --color-primary: #9b3f00; /* Hover state, tinted shadows */
