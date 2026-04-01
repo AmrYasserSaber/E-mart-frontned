@@ -1,37 +1,44 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { DatePipe, CurrencyPipe } from '@angular/common';
 import { ProfileService } from '../services/profile.service';
+import { ProductCard } from '../../../shared/components/product-card/product-card';
+import { Pagination } from '../../../shared/components/pagination/pagination';
 import type {
-  AccountStats,
   Address,
-  PaymentMethod,
   ProfileTab,
   RecentOrder,
   UserProfile,
+  WishlistItem,
 } from '../models/profile.models';
+import type { Product } from '../../../core/models/product.model';
+
+const ORDERS_PER_PAGE = 8;
 
 @Component({
   selector: 'app-profile-home',
-  imports: [],
+  imports: [ProductCard, DatePipe, CurrencyPipe, Pagination],
   templateUrl: './profile-home.html',
   styleUrl: './profile-home.css',
 })
 export class ProfileHome implements OnInit {
   profile = signal<UserProfile | null>(null);
-  stats = signal<AccountStats | null>(null);
-  paymentMethods = signal<PaymentMethod[]>([]);
-  primaryAddress = signal<Address | null>(null);
   addresses = signal<Address[]>([]);
+  wishlist = signal<WishlistItem[]>([]);
   recentOrders = signal<RecentOrder[]>([]);
+  ordersPage = signal(1);
+  ordersTotalPages = signal(1);
+  ordersTotal = signal(0);
+  ordersLoading = signal(true);
   activeTab = signal<ProfileTab>('orders');
   loading = signal(true);
   deletingAddressId = signal<string | null>(null);
+  removingWishlistId = signal<string | null>(null);
 
   readonly tabs: { key: ProfileTab; label: string; icon: string }[] = [
     { key: 'orders', label: 'Orders', icon: 'shopping_bag' },
     { key: 'wishlist', label: 'Wishlist', icon: 'favorite' },
     { key: 'addresses', label: 'Addresses', icon: 'location_on' },
-    { key: 'payment', label: 'Payment', icon: 'payments' },
   ];
 
   constructor(
@@ -41,6 +48,7 @@ export class ProfileHome implements OnInit {
 
   ngOnInit(): void {
     this.loadProfileData();
+    this.loadOrders(1);
   }
 
   setTab(tab: ProfileTab): void {
@@ -51,13 +59,39 @@ export class ProfileHome implements OnInit {
     this.router.navigate(['/profile/edit']);
   }
 
+  onOrdersPageChange(page: number): void {
+    this.loadOrders(page);
+  }
+
+  toProduct(item: WishlistItem): Product {
+    return {
+      id: item.productId,
+      title: item.title,
+      price: item.price,
+      images: item.images,
+      ratingAvg: item.ratingAvg ?? undefined,
+    };
+  }
+
+  removeFromWishlist(event: Event, productId: string): void {
+    event.stopPropagation();
+    if (this.removingWishlistId()) return;
+    this.removingWishlistId.set(productId);
+    this.profileService.removeFromWishlist(productId).subscribe({
+      next: () => {
+        this.wishlist.update((list) => list.filter((w) => w.productId !== productId));
+        this.removingWishlistId.set(null);
+      },
+      error: () => this.removingWishlistId.set(null),
+    });
+  }
+
   deleteAddress(id: string): void {
     if (this.deletingAddressId()) return;
     this.deletingAddressId.set(id);
     this.profileService.deleteAddress(id).subscribe({
       next: () => {
         this.addresses.update((list) => list.filter((a) => a.id !== id));
-        if (this.primaryAddress()?.id === id) this.primaryAddress.set(null);
         this.deletingAddressId.set(null);
       },
       error: () => this.deletingAddressId.set(null),
@@ -90,6 +124,24 @@ export class ProfileHome implements OnInit {
     return status === 'pending' || status === 'confirmed' || status === 'shipped';
   }
 
+  primaryAddress(): Address | null {
+    return this.addresses().find((a) => a.isPrimary) ?? null;
+  }
+
+  private loadOrders(page: number): void {
+    this.ordersLoading.set(true);
+    this.profileService.getRecentOrders(page, ORDERS_PER_PAGE).subscribe({
+      next: (result) => {
+        this.recentOrders.set(result.orders);
+        this.ordersPage.set(result.page);
+        this.ordersTotalPages.set(result.pages);
+        this.ordersTotal.set(result.total);
+        this.ordersLoading.set(false);
+      },
+      error: () => this.ordersLoading.set(false),
+    });
+  }
+
   private loadProfileData(): void {
     this.loading.set(true);
 
@@ -98,24 +150,12 @@ export class ProfileHome implements OnInit {
       this.loading.set(false);
     });
 
-    this.profileService.getAccountStats().subscribe((stats) => {
-      this.stats.set(stats);
-    });
-
-    this.profileService.getPaymentMethods().subscribe((methods) => {
-      this.paymentMethods.set(methods);
-    });
-
-    this.profileService.getPrimaryAddress().subscribe((address) => {
-      this.primaryAddress.set(address);
-    });
-
     this.profileService.getAddresses().subscribe((addresses) => {
       this.addresses.set(addresses);
     });
 
-    this.profileService.getRecentOrders().subscribe((orders) => {
-      this.recentOrders.set(orders);
+    this.profileService.getWishlist().subscribe((items) => {
+      this.wishlist.set(items);
     });
   }
 }

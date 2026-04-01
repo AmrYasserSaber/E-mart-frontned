@@ -11,30 +11,8 @@
       </button>
       <div>
         <h1 class="card-title">Edit Profile</h1>
-        <p class="card-subtitle">Update your personal information and profile appearance</p>
+        <p class="card-subtitle">Update your name and email address</p>
       </div>
-    </div>
-
-    <!-- Avatar -->
-    <div class="avatar-section">
-      <div class="avatar-outer">
-        @if (avatarPreview()) {
-          <img [src]="avatarPreview()!" alt="Profile Preview" class="avatar-img" />
-        } @else {
-          <span class="material-symbols-outlined avatar-icon">person</span>
-        }
-        <label class="avatar-camera-btn" for="avatar-input" title="Change photo">
-          <span class="material-symbols-outlined">photo_camera</span>
-          <input
-            id="avatar-input"
-            type="file"
-            accept="image/*"
-            class="visually-hidden"
-            (change)="onAvatarChange($event)"
-          />
-        </label>
-      </div>
-      <label class="change-photo-btn" for="avatar-input">Change Photo</label>
     </div>
 
     <!-- Form -->
@@ -54,7 +32,7 @@
             />
           </div>
           @if (hasError('firstName')) {
-            <p class="field-error">First name is required (min 2 characters)</p>
+            <p class="field-error">First name is required</p>
           }
         </div>
 
@@ -71,57 +49,25 @@
             />
           </div>
           @if (hasError('lastName')) {
-            <p class="field-error">Last name is required (min 2 characters)</p>
+            <p class="field-error">Last name is required</p>
           }
         </div>
       </div>
 
-      <!-- Email & Phone row -->
-      <div class="form-row">
-        <div class="field">
-          <label class="field-label" for="email">Email Address</label>
-          <div class="input-wrap" [class.input-wrap--error]="hasError('email')">
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              class="input"
-              placeholder="you@example.com"
-              autocomplete="email"
-            />
-          </div>
-          @if (hasError('email')) {
-            <p class="field-error">A valid email address is required</p>
-          }
-        </div>
-
-        <div class="field">
-          <label class="field-label" for="phone">Phone Number <span class="optional">optional</span></label>
-          <div class="input-wrap">
-            <input
-              id="phone"
-              type="tel"
-              formControlName="phone"
-              class="input"
-              placeholder="+1 (555) 000-0000"
-              autocomplete="tel"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Bio -->
+      <!-- Email (read-only) -->
       <div class="field">
-        <label class="field-label" for="bio">Bio <span class="optional">optional</span></label>
-        <div class="input-wrap input-wrap--textarea">
-          <textarea
-            id="bio"
-            formControlName="bio"
-            class="input input--textarea"
-            placeholder="Tell us a little about yourself…"
-            rows="4"
-          ></textarea>
+        <label class="field-label" for="email">Email Address</label>
+        <div class="input-wrap input-wrap--disabled">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="input"
+            readonly
+            tabindex="-1"
+          />
         </div>
+        <p class="field-hint">Email address cannot be changed.</p>
       </div>
 
       <!-- Actions -->

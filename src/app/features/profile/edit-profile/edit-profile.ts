@@ -15,7 +15,6 @@ export class EditProfile implements OnInit {
   profile = signal<UserProfile | null>(null);
   loading = signal(true);
   saving = signal(false);
-  avatarPreview = signal<string | null>(null);
 
   constructor(
     private readonly fb: FormBuilder,
@@ -25,52 +24,38 @@ export class EditProfile implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      bio: [''],
+      firstName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      lastName: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(100)]],
+      email: [{ value: '', disabled: true }],
     });
 
     this.profileService.getProfile().subscribe((profile) => {
       this.profile.set(profile);
-      this.avatarPreview.set(profile.avatarUrl);
       this.loading.set(false);
       this.form.patchValue({
         firstName: profile.firstName,
         lastName: profile.lastName,
         email: profile.email,
-        phone: profile.phone ?? '',
-        bio: profile.bio ?? '',
       });
     });
-  }
-
-  onAvatarChange(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => this.avatarPreview.set(reader.result as string);
-    reader.readAsDataURL(file);
   }
 
   onSubmit(): void {
     if (this.form.invalid || this.saving()) return;
 
     this.saving.set(true);
-    const { firstName, lastName, email, phone, bio } = this.form.value;
+    const { firstName, lastName } = this.form.value;
+    const email = this.profile()?.email ?? '';
 
-    this.profileService
-      .updateProfile({ firstName, lastName, email, phone: phone || null, bio: bio || null })
-      .subscribe({
-        next: () => {
-          this.saving.set(false);
-          this.router.navigate(['/profile']);
-        },
-        error: () => {
-          this.saving.set(false);
-        },
-      });
+    this.profileService.updateProfile({ firstName, lastName, email }).subscribe({
+      next: () => {
+        this.saving.set(false);
+        this.router.navigate(['/profile']);
+      },
+      error: () => {
+        this.saving.set(false);
+      },
+    });
   }
 
   cancel(): void {

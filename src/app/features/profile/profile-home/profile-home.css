@@ -608,6 +608,67 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.order-total {
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+  padding-top: 0.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+}
+
+.order-total strong {
+  color: var(--color-on-surface);
+  font-weight: 700;
+}
+
+/* Skeleton loader */
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position:  200% 0; }
+}
+
+.timeline-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.skeleton-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-surface-container-high) 25%, var(--color-surface-container) 50%, var(--color-surface-container-high) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-container-lowest);
+}
+
+.skeleton-line {
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--color-surface-container-high) 25%, var(--color-surface-container) 50%, var(--color-surface-container-high) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-line--short { width: 35%; }
+.skeleton-line--long  { width: 65%; }
+
 /* ============================================================
    ADDRESSES TAB
    ============================================================ */
@@ -826,3 +887,101 @@
   cursor: not-allowed;
 }
 
+/* ============================================================
+   WISHLIST TAB
+   ============================================================ */
+.wishlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.wishlist-count {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  background-color: var(--color-surface-container-high);
+  padding: 0.25rem 0.875rem;
+  border-radius: 9999px;
+}
+
+.wishlist-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.wishlist-item-wrap {
+  position: relative;
+  width: 220px;
+  transition: opacity 300ms ease;
+}
+
+/* Hide ProductCard's own favorite button — our remove btn covers this action */
+.wishlist-item-wrap ::ng-deep button[aria-label="Favorite"] {
+  display: none;
+}
+
+.wishlist-item-wrap--removing {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.wishlist-remove-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  color: var(--color-primary-container);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.wishlist-item-wrap:hover .wishlist-remove-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.wishlist-remove-btn:hover {
+  background-color: color-mix(in srgb, var(--color-error-container) 30%, white);
+  color: var(--color-error);
+}
+
+.wishlist-remove-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.orders-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.orders-meta {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  background-color: var(--color-surface-container-high);
+  padding: 0.25rem 0.875rem;
+  border-radius: 9999px;
+}
+
+.orders-pagination {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+}
