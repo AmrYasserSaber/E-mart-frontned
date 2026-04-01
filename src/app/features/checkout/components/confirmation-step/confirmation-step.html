@@ -1,1 +1,54 @@
-<p>confirmation-step works!</p>
+<div class="fixed inset-0 z-[100] bg-surface-bright flex items-center justify-center p-6 animate-in zoom-in-95 duration-500">
+  <div class="max-w-md w-full bg-surface-container-lowest rounded-lg p-10 neomorphic-outset text-center space-y-8 relative overflow-hidden">
+    <!-- Animated background particles (Optional decorative) -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-container to-secondary-container"></div>
+    
+    <div class="w-24 h-24 bg-primary-container/10 rounded-full flex items-center justify-center mx-auto shadow-inner">
+      <span class="material-symbols-outlined text-primary-container text-6xl scale-animation animate-bounce-short">check_circle</span>
+    </div>
+    
+    <div class="space-y-2">
+      <h2 class="text-3xl font-display font-extrabold text-on-surface">Order Confirmed!</h2>
+      <p class="text-on-surface-variant text-sm px-4 italic leading-tight">
+        Your Nexus Market finds are now being curated by our artisan team.
+      </p>
+    </div>
+
+    <div class="bg-surface-container-low p-6 rounded-xl space-y-4 shadow-inner">
+      <div>
+        <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Transaction ID</p>
+        <code class="block font-mono text-base text-primary-container font-black px-2 py-1 bg-white/50 rounded-sm">
+          {{ orderId()?.slice(0, 8) | uppercase }}-NX-{{ orderId()?.slice(-4) | uppercase }}
+        </code>
+      </div>
+      
+      <div class="h-px bg-outline-variant/30 w-full"></div>
+      
+      <div class="flex flex-col gap-1">
+        <p class="text-sm text-on-surface-variant font-medium">Estimated Delivery</p>
+        <strong class="text-on-surface text-lg font-bold">{{ deliveryDate() }}</strong>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <button 
+        routerLink="/orders"
+        (click)="newShopping()"
+        class="w-full bg-primary-container text-white font-headline font-bold py-4 rounded-xl shadow-lg hover:shadow-xl hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2"
+      >
+        Track My Order
+        <span class="material-symbols-outlined">package_2</span>
+      </button>
+      
+      <button 
+        routerLink="/home"
+        (click)="newShopping()"
+        class="w-full text-on-surface-variant font-bold py-4 hover:bg-surface-container-low rounded-xl transition-all"
+      >
+        Continue Shopping
+      </button>
+    </div>
+
+    <p class="text-[10px] text-outline-variant italic">A receipt has been sent to your verified email address.</p>
+  </div>
+</div>

@@ -5,20 +5,22 @@
   (closed)="onModalClose()"
 >
   <p class="text-sm text-on-surface-variant">{{ message() }}</p>
-  <div class="mt-6 flex justify-end gap-2">
+  <div class="mt-6 flex justify-end gap-3">
     <button
       type="button"
       (click)="onCancel()"
-      class="btn-secondary px-4 py-2 text-sm font-medium"
+      class="btn-secondary px-5 py-2.5 text-sm"
     >
       {{ cancelLabel() }}
     </button>
     <button
       type="button"
       (click)="onConfirm()"
-      class="rounded-lg px-4 py-2 text-sm font-semibold text-on-primary transition hover:opacity-90"
-      [class.btn-primary]="!dangerous()"
-      [class.bg-error]="dangerous()"
+      class="rounded-full px-5 py-2.5 text-sm font-bold text-white transition-all"
+      [class.bg-primary-container]="!dangerous()"
+      [class.hover:bg-primary]="!dangerous()"
+      [class.bg-red-600]="dangerous()"
+      [class.hover:bg-red-700]="dangerous()"
     >
       {{ confirmLabel() }}
     </button>

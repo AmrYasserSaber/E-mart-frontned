@@ -79,6 +79,20 @@
   --color-on-error-container: #93000a;
   --color-scrim: color-mix(in srgb, #1c1c18 68%, transparent);
 
+  /* Tertiary / Accents */
+  --color-tertiary: #0059b5;
+  --color-tertiary-container: #0371e2;
+  --color-on-tertiary: #ffffff;
+
+  /* Error states */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Secondary variants */
+  --color-secondary-container: #feb28d;
+  --color-on-secondary-container: #794225;
+
   /* ----------------------------------------------------------
      TYPOGRAPHY — FONT SIZE
      Paired line-height via --text-*--line-height companion token
@@ -124,6 +138,7 @@
   --shadow-ambient: 0px 4px 20px rgba(139, 114, 102, 0.08), 0px 12px 40px rgba(139, 114, 102, 0.04);
 
   --shadow-neomorphic: inset 4px 4px 8px rgba(139, 114, 102, 0.08), inset -4px -4px 8px #ffffff;
+  --shadow-neomorphic-flat: 4px 4px 12px rgba(139, 114, 102, 0.08), -4px -4px 12px #ffffff;
 }
 
 /* ============================================================
@@ -168,6 +183,21 @@
   /* Zero-Divider Rule: <hr> is prohibited */
   hr {
     display: none;
+  }
+
+  /* Material Symbols global font config */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    font-feature-settings: 'liga';
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24;
   }
 }
 
@@ -445,10 +475,59 @@
     box-shadow: var(--shadow-ambient);
   }
 
+  .neomorphic-inset {
+    box-shadow: var(--shadow-neomorphic);
+  }
+
+  .neomorphic-flat {
+    box-shadow: var(--shadow-neomorphic-flat);
+  }
+
   /* Focus glow — composable with any focusable element */
   .focus-glow:focus {
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-fixed-dim) 30%, transparent);
     outline: none;
+  }
+
+  /* Neomorphic shadow utilities — shared across auth & admin */
+  .neomorphic-card {
+    box-shadow:
+      20px 20px 60px rgba(139, 114, 102, 0.06),
+      -20px -20px 60px #ffffff;
+  }
+
+  .neomorphic-inset {
+    box-shadow:
+      inset 4px 4px 8px rgba(139, 114, 102, 0.1),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  }
+
+  .neomorphic-outset-sm {
+    box-shadow:
+      4px 4px 8px rgba(139, 114, 102, 0.05),
+      -4px -4px 8px #ffffff;
+  }
+
+  .soft-glow {
+    box-shadow: 0px 4px 20px rgba(139, 114, 102, 0.08);
+  }
+
+  .neomorphic-row {
+    box-shadow:
+      4px 4px 10px rgba(0, 0, 0, 0.02),
+      -4px -4px 10px #ffffff;
+  }
+
+  .soft-outset {
+    box-shadow:
+      8px 8px 16px rgba(139, 114, 102, 0.08),
+      -8px -8px 16px #ffffff;
+  }
+
+  .soft-inset {
+    box-shadow:
+      inset 4px 4px 8px rgba(0, 0, 0, 0.05),
+      inset -4px -4px 8px #ffffff;
   }
 
   .focus-glow:focus-visible {

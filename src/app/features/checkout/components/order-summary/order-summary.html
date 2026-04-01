@@ -1,0 +1,54 @@
+<div class="bg-surface-container-low rounded-lg p-6 neomorphic-outset space-y-6">
+  <h3 class="font-display text-xl font-bold text-on-surface-variant border-b border-outline-variant/20 pb-4">Order Summary</h3>
+  
+  <div class="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+    @for (item of items$ | async; track item.id) {
+      <div class="flex gap-4 items-center animate-in fade-in slide-in-from-right duration-300">
+        <div class="w-16 h-16 bg-white rounded-xl flex-shrink-0 overflow-hidden neomorphic-inset p-1">
+          <img class="w-full h-full object-cover rounded-lg" [src]="item.product.images[0]" [alt]="item.product.title">
+        </div>
+        <div class="flex-1">
+          <p class="text-sm font-bold text-on-surface line-clamp-1">{{ item.product.title }}</p>
+          <p class="text-xs text-on-surface-variant">Qty: {{ item.quantity }}</p>
+        </div>
+        <p class="text-sm font-bold text-primary-container">{{ item.product.price * item.quantity | currencyFormat }}</p>
+      </div>
+    }
+  </div>
+
+  <div class="pt-4 border-t border-outline-variant/20 space-y-2">
+    <div class="flex justify-between text-sm">
+      <span class="text-on-surface-variant">Subtotal</span>
+      <span class="font-semibold">{{ subtotal$ | async | currencyFormat }}</span>
+    </div>
+    <div class="flex justify-between text-sm">
+      <span class="text-on-surface-variant">Shipping</span>
+      <span class="font-semibold text-tertiary">{{ (shipping$ | async) === 0 ? 'FREE' : (shipping$ | async | currencyFormat) }}</span>
+    </div>
+    <div class="flex justify-between text-sm">
+      <span class="text-on-surface-variant">Sales Tax (8%)</span>
+      <span class="font-semibold">{{ tax$ | async | currencyFormat }}</span>
+    </div>
+    <div class="flex justify-between text-lg font-display font-extrabold pt-4 text-primary-container">
+      <span>Total</span>
+      <span>{{ total$ | async | currencyFormat }}</span>
+    </div>
+  </div>
+
+  <p class="text-[10px] text-center text-outline uppercase tracking-widest font-bold">
+    Encrypted with 256-bit AES Security
+  </p>
+</div>
+
+<!-- Featured Upsell Tile -->
+<div class="mt-8 relative bg-surface-container-highest rounded-lg p-6 group overflow-hidden shadow-tinted transition-all hover:scale-[1.02]">
+  <div class="relative z-10">
+    <span class="inline-block bg-primary-fixed text-on-primary-fixed-variant text-[10px] font-bold px-2 py-1 rounded-full mb-2 uppercase tracking-wide">Limited Deal</span>
+    <h4 class="text-sm font-display font-bold text-on-surface-variant">Artisan Wax Candle</h4>
+    <p class="text-xs text-on-surface-variant/70 mb-4">Add for only $12.00</p>
+    <button class="text-primary-container text-xs font-bold flex items-center gap-1 hover:gap-2 transition-all">
+      Add to bag <span class="material-symbols-outlined text-sm">add</span>
+    </button>
+  </div>
+  <img class="absolute -right-4 -bottom-4 w-24 h-24 object-cover rounded-full shadow-lg transform group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxIv7m2OZNwoLe3CA1TYrM8w0NhEyMgk-bf23y22-SPpO26CfPAWqDsq61foUX5rAvq9SciCf8aCOkWpJ9obmqckba5zeUjp5NfvOlBW-KI0qrWyvqaWdEfjzQX0h62_KhdnHd95uX3Pug0UwW2_rRpWTV999fjVosX0XH47pmHIFkQBTpxtp8BVDpz35GpHlueF-LWdZFH9MjhhaoVdstGqia3EIIpQvE9EYbYGMnFri8tU81OK1J2-GRKFMx3whtoinFSMO2i3U">
+</div>

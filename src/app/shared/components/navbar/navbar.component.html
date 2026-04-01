@@ -1,73 +1,100 @@
-<header class="sticky top-0 z-40 border-b border-outline-variant/30 frosted-glass">
-  <div class="flex items-center justify-between gap-4 px-6 py-4">
-    <div class="flex items-center gap-8">
-      <a routerLink="/home" class="font-display text-2xl font-black tracking-tighter text-primary-container">
-        E-Mart
+<header
+  class="fixed top-0 left-0 right-0 z-50 frosted-glass shadow-[0px_4px_20px_rgba(139,114,102,0.08)]"
+>
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+    <div class="flex items-center gap-6">
+      <a routerLink="/home" class="flex items-center gap-2">
+        <span
+          class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary-container text-lg font-black text-on-primary"
+          >E</span
+        >
+        <span class="text-xl font-black tracking-tight text-primary-container font-display"
+          >E&#8209;Mart</span
+        >
       </a>
-      <nav class="hidden gap-6 md:flex">
-        <a routerLink="/products" class="border-b-2 border-primary-container font-bold text-primary">Shop</a>
-        <a routerLink="/home" class="font-medium text-on-surface-variant hover:text-primary">Collections</a>
-        <a routerLink="/profile" class="font-medium text-on-surface-variant hover:text-primary">Artisans</a>
+      <nav class="hidden gap-5 text-sm font-medium md:flex">
+        <a routerLink="/home" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+          >Home</a
+        >
+        <a routerLink="/products" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+          >Products</a
+        >
+        <a routerLink="/cart" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+          >Cart</a
+        >
+        <a routerLink="/profile" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+          >Profile</a
+        >
         @if (showAdmin$ | async) {
-          <a routerLink="/admin" class="font-medium text-on-surface-variant hover:text-primary">Admin</a>
+          <a routerLink="/admin" class="text-primary-container font-bold px-3 py-1"
+            >Admin</a
+          >
         }
       </nav>
     </div>
-
-    <div class="flex items-center gap-3">
-      <div class="hidden items-center gap-2 rounded-full bg-surface-container-high px-4 py-2 inner-shadow lg:flex">
-        <fa-icon [icon]="searchIcon" class="text-sm text-outline" />
-        <input
-          type="text"
-          placeholder="Search curated goods..."
-          class="w-56 border-none bg-transparent p-0 text-sm text-on-surface placeholder:text-outline/70 focus:ring-0"
-        />
-      </div>
-
+    <div class="flex items-center gap-3 text-sm">
       <a
         routerLink="/cart"
-        class="relative p-2 text-on-surface-variant transition-colors hover:text-primary"
         aria-label="Cart"
+        class="relative rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary-container transition-colors"
       >
-        <fa-icon [icon]="cartIcon" />
+        <span class="material-symbols-outlined text-xl" aria-hidden="true">shopping_cart</span>
         @if ((cartCount$ | async); as count) {
           @if (count > 0) {
             <span
-              class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
               >{{ count }}</span
             >
           }
         }
       </a>
-
-      <a
-        routerLink="/orders"
-        class="p-2 text-on-surface-variant transition-colors hover:text-primary"
-        aria-label="Orders"
-      >
-        <fa-icon [icon]="notificationsIcon" />
-      </a>
-
       @if (isAuth$ | async) {
         @if (user$ | async; as user) {
-          <button
-            type="button"
-            class="p-2 text-on-surface-variant transition-colors hover:text-primary"
-            [attr.aria-label]="user.firstName"
+          <span class="hidden text-on-surface-variant font-medium sm:inline"
+            >{{ user.firstName }}</span
           >
-            <fa-icon [icon]="accountIcon" />
-          </button>
           <button
             type="button"
             (click)="logout()"
-            class="rounded-full bg-surface-container-high px-3 py-1.5 text-sm font-medium text-on-surface hover:bg-surface-container"
+            class="rounded-full bg-surface-container-high px-4 py-2 font-semibold text-on-surface-variant hover:bg-surface-container hover:text-primary-container transition-colors"
           >
             Log out
           </button>
         }
       } @else {
-        <a routerLink="/auth/login" class="btn-primary px-4 py-2 text-sm font-semibold">Sign in</a>
+        <a
+          routerLink="/auth/login"
+          class="btn-primary px-5 py-2.5 text-sm"
+          >Sign in</a
+        >
       }
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        class="md:hidden rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 transition-colors"
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-controls="mobile-nav"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="material-symbols-outlined" aria-hidden="true">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
     </div>
   </div>
+
+  <!-- Mobile menu -->
+  @if (mobileMenuOpen()) {
+    <nav
+      id="mobile-nav"
+      class="md:hidden border-t border-outline-variant/20 bg-surface-container-lowest px-6 py-4 space-y-2"
+    >
+      <a routerLink="/home" (click)="closeMobileMenu()" class="mobile-nav-link">Home</a>
+      <a routerLink="/products" (click)="closeMobileMenu()" class="mobile-nav-link">Products</a>
+      <a routerLink="/cart" (click)="closeMobileMenu()" class="mobile-nav-link">Cart</a>
+      <a routerLink="/profile" (click)="closeMobileMenu()" class="mobile-nav-link">Profile</a>
+      @if (showAdmin$ | async) {
+        <a routerLink="/admin" (click)="closeMobileMenu()" class="mobile-nav-link text-primary-container font-bold">Admin</a>
+      }
+    </nav>
+  }
 </header>

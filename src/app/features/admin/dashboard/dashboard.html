@@ -1,70 +1,154 @@
-<div class="mx-auto max-w-6xl space-y-8">
-  <div>
-    <h1 class="text-2xl font-bold text-on-surface">Admin dashboard</h1>
-    <p class="mt-1 text-on-surface-variant">Overview and latest signups</p>
-  </div>
+<div class="max-w-7xl mx-auto space-y-12">
 
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <div class="section-shell rounded-xl p-5">
-      <p class="text-xs font-medium uppercase tracking-wide text-outline">
-        Total users
-      </p>
-      <p class="mt-2 text-3xl font-bold text-primary">{{ totalUsers() }}</p>
+  <!-- KPI Section -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+      <div class="relative z-10">
+        <span class="material-symbols-outlined text-primary-container mb-4 block">group</span>
+        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Total Users</p>
+        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalUsers() }}</h3>
+      </div>
     </div>
-    <div class="section-shell rounded-xl p-5">
-      <p class="text-xs font-medium uppercase tracking-wide text-outline">
-        Active users
-      </p>
-      <p class="mt-2 text-3xl font-bold text-tertiary">{{ activeUsers() }}</p>
-    </div>
-    <div class="section-shell rounded-xl p-5">
-      <p class="text-xs font-medium uppercase tracking-wide text-outline">
-        Orders
-      </p>
-      <p class="mt-2 text-3xl font-bold text-outline">—</p>
-      <p class="mt-1 text-xs text-outline">API pending</p>
-    </div>
-    <div class="section-shell rounded-xl p-5">
-      <p class="text-xs font-medium uppercase tracking-wide text-outline">
-        Products
-      </p>
-      <p class="mt-2 text-3xl font-bold text-outline">—</p>
-      <p class="mt-1 text-xs text-outline">API pending</p>
-    </div>
-  </div>
 
-  <div class="section-shell rounded-xl p-6">
-    <div class="mb-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-on-surface">Recent signups</h2>
-      <a
-        routerLink="/admin/users"
-        class="text-sm font-medium text-primary hover:text-primary-container"
-        >Manage users</a
-      >
+    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-stone-100 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+      <div class="relative z-10">
+        <span class="material-symbols-outlined text-on-surface-variant mb-4 block">shopping_bag</span>
+        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Total Orders</p>
+        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalOrders() }}</h3>
+      </div>
     </div>
-    @if (loading()) {
-      <p class="text-outline">Loading…</p>
-    } @else if (recentUsers().length === 0) {
-      <p class="text-outline">No users yet.</p>
-    } @else {
-      <ul class="divide-y divide-outline-variant/60">
-        @for (u of recentUsers(); track u.id) {
-          <li class="flex flex-wrap items-center justify-between gap-2 py-3">
-            <div>
-              <p class="font-medium text-on-surface">
-                {{ u.firstName }} {{ u.lastName }}
-              </p>
-              <p class="text-sm text-outline">{{ u.email }}</p>
-            </div>
-            <div class="text-right text-sm text-outline">
-              <span class="rounded bg-surface-container-high px-2 py-0.5 text-xs text-on-surface-variant"
-                >{{ u.role }}</span
+
+    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-orange-100 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+      <div class="relative z-10">
+        <span class="material-symbols-outlined text-primary mb-4 block">inventory_2</span>
+        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Products</p>
+        <h3 class="text-3xl font-black text-on-surface font-display">{{ totalProducts() }}</h3>
+      </div>
+    </div>
+
+    <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset relative overflow-hidden group">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-stone-50 rounded-bl-full opacity-50 group-hover:scale-110 transition-transform"></div>
+      <div class="relative z-10">
+        <span class="material-symbols-outlined text-on-surface-variant mb-4 block">storefront</span>
+        <p class="text-outline text-sm font-medium uppercase tracking-widest mb-1">Pending Sellers</p>
+        <h3 class="text-3xl font-black text-on-surface font-display">{{ pendingSellers() }}</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity & Quick Actions -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- Recent Activity Feed -->
+    <div class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h4 class="text-xl font-bold font-display text-on-surface">Recent Activity</h4>
+        <a routerLink="/admin/activity-feed" class="text-sm font-bold text-primary-container hover:text-primary transition-colors">View all</a>
+      </div>
+
+      @if (loading()) {
+        <p class="text-on-surface-variant">Loading…</p>
+      } @else if (recentActivity().length === 0) {
+        <p class="text-on-surface-variant">No recent activity.</p>
+      } @else {
+        <div class="space-y-4">
+          @for (item of recentActivity(); track item.id) {
+            <div
+              class="bg-surface-container-low p-4 rounded-xl flex gap-4 soft-outset border-l-4"
+              [class.border-primary-container]="item.kind === 'user'"
+              [class.border-green-500]="item.kind === 'order'"
+            >
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
+                [class.bg-orange-100]="item.kind === 'user'"
+                [class.bg-green-50]="item.kind === 'order'"
               >
-              <p class="mt-1">{{ u.createdAt | timeAgo }}</p>
+                <span
+                  class="material-symbols-outlined"
+                  [class.text-primary-container]="item.kind === 'user'"
+                  [class.text-green-800]="item.kind === 'order'"
+                >{{ item.kind === 'user' ? 'person_add' : 'shopping_cart_checkout' }}</span>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-on-surface">{{ item.title }}</p>
+                <p class="text-xs text-on-surface-variant">{{ item.detail }}</p>
+                <span class="text-[10px] text-outline font-bold uppercase mt-2 block">{{ item.date | timeAgo }}</span>
+              </div>
             </div>
-          </li>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="space-y-6">
+      <h4 class="text-xl font-bold font-display text-on-surface">Quick Actions</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <a
+          routerLink="/admin/users"
+          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
+        >
+          <span class="material-symbols-outlined text-primary-container text-3xl">group</span>
+          <span class="font-bold text-sm">Manage Users</span>
+        </a>
+        <a
+          routerLink="/admin/orders"
+          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
+        >
+          <span class="material-symbols-outlined text-primary-container text-3xl">shopping_cart</span>
+          <span class="font-bold text-sm">View Orders</span>
+        </a>
+        <a
+          routerLink="/admin/products"
+          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
+        >
+          <span class="material-symbols-outlined text-primary-container text-3xl">inventory_2</span>
+          <span class="font-bold text-sm">Products</span>
+        </a>
+        <a
+          routerLink="/admin/sellers"
+          class="flex flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-lg soft-outset gap-3 text-on-surface hover:translate-y-[-2px] transition-all active:scale-95"
+        >
+          <span class="material-symbols-outlined text-primary-container text-3xl">storefront</span>
+          <span class="font-bold text-sm">Sellers</span>
+        </a>
+      </div>
+
+      <!-- Recent signups card -->
+      <div class="bg-surface-container-lowest p-6 rounded-lg soft-outset">
+        <div class="flex items-center justify-between mb-4">
+          <h5 class="text-lg font-bold font-display text-on-surface">Recent Signups</h5>
+          <a routerLink="/admin/users" class="text-sm font-bold text-primary-container hover:text-primary transition-colors">Manage</a>
+        </div>
+        @if (loading()) {
+          <p class="text-on-surface-variant">Loading…</p>
+        } @else if (recentUsers().length === 0) {
+          <p class="text-on-surface-variant">No users yet.</p>
+        } @else {
+          <ul class="divide-y divide-outline-variant/20">
+            @for (u of recentUsers(); track u.id) {
+              <li class="flex items-center justify-between gap-3 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-xs border-2 border-white">
+                    {{ ((u.firstName || '').charAt(0) + (u.lastName || '').charAt(0)) || u.email.charAt(0).toUpperCase() || 'U' }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>
+                    <p class="text-[11px] text-on-surface-variant">{{ u.email }}</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="rounded-full bg-surface-container-high px-2 py-0.5 text-[10px] font-bold text-on-surface-variant uppercase">{{ u.role }}</span>
+                  <p class="text-[10px] text-outline mt-1">{{ u.createdAt | timeAgo }}</p>
+                </div>
+              </li>
+            }
+          </ul>
         }
-      </ul>
-    }
-  </div>
+      </div>
+    </div>
+  </section>
 </div>

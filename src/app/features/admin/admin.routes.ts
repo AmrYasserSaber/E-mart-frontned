@@ -32,8 +32,8 @@ export const adminRoutes: Routes = [
         loadComponent: () => import('./categories/categories').then((m) => m.Categories),
       },
       {
-        path: 'banners',
-        loadComponent: () => import('./banners/banners').then((m) => m.Banners),
+        path: 'sellers',
+        loadComponent: () => import('./sellers/sellers').then((m) => m.Sellers),
       },
       {
         path: 'activity-feed',

@@ -20,6 +20,7 @@ import { productsReducer } from './shared/store/products/products.reducer';
 import { AuthEffects } from './shared/store/auth/auth.effects';
 import { ProductsEffects } from './shared/store/products/products.effects';
 import { AuthActions } from './shared/store/auth/auth.actions';
+import { CartEffects } from './shared/store/cart/cart.effects';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { authRefreshInterceptor } from './core/interceptors/auth-refresh.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
@@ -63,7 +64,7 @@ export const appConfig: ApplicationConfig = {
       cart: cartReducer,
       products: productsReducer,
     }),
-    provideEffects([AuthEffects, ProductsEffects]),
+    provideEffects([AuthEffects, ProductsEffects, CartEffects]),
     ...(isDevMode()
       ? [
           provideStoreDevtools({

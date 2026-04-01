@@ -1,97 +1,142 @@
-<div class="mx-auto max-w-6xl space-y-6">
-  <div>
-    <h1 class="text-2xl font-bold text-on-surface">Users</h1>
-    <p class="mt-1 text-on-surface-variant">Search, filter, and manage accounts</p>
+<div class="mx-auto max-w-5xl space-y-8 pb-24">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div>
+      <h2 class="text-4xl font-display font-bold text-on-surface tracking-tight">User Management</h2>
+      <p class="text-on-surface-variant mt-2 max-w-lg font-medium">Coordinate your artisan community and customer base through this tactile central hub.</p>
+    </div>
+    <nav class="flex p-1 bg-surface-container neomorphic-inset rounded-2xl">
+      @for (opt of roleOptions; track opt.label) {
+        <button
+          type="button"
+          class="px-5 py-2.5 rounded-xl text-sm transition-colors hover:text-primary-container"
+          [class.font-bold]="roleFilter() === opt.value"
+          [class.font-semibold]="roleFilter() !== opt.value"
+          [class.text-primary-container]="roleFilter() === opt.value"
+          [class.bg-surface-container-lowest]="roleFilter() === opt.value"
+          [class.soft-glow]="roleFilter() === opt.value"
+          [class.text-on-surface-variant]="roleFilter() !== opt.value"
+          (click)="roleFilter.set(opt.value); applyFilters()"
+        >{{ opt.label }}</button>
+      }
+    </nav>
   </div>
 
-  <div class="section-shell flex flex-col gap-4 rounded-xl p-4 md:flex-row md:flex-wrap md:items-end">
-    <div class="flex-1 min-w-[200px]">
-      <label class="block text-xs font-medium text-outline">Search email</label>
+  <div class="flex items-center gap-4">
+    <div class="flex-1 flex items-center bg-surface-container-high neomorphic-inset rounded-full px-5 py-3">
+      <span class="material-symbols-outlined text-outline mr-3">search</span>
       <input
+        id="users-search-input"
         type="search"
-        class="input-soft mt-1"
+        class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder-outline/50 font-medium text-on-surface outline-none"
+        placeholder="Search members..."
+        aria-label="Search members"
         [ngModel]="searchInput()"
         (ngModelChange)="searchInput.set($event)"
         (keyup.enter)="applyFilters()"
       />
     </div>
-    <div>
-      <label class="block text-xs font-medium text-outline">Role</label>
-      <select
-        class="input-soft mt-1 md:w-40"
-        [ngModel]="roleFilter()"
-        (ngModelChange)="roleFilter.set($event)"
-      >
-        <option [ngValue]="''">Any</option>
-        <option [ngValue]="RoleEnum.USER">User</option>
-        <option [ngValue]="RoleEnum.SELLER">Seller</option>
-        <option [ngValue]="RoleEnum.ADMIN">Admin</option>
-      </select>
-    </div>
-    <div>
-      <label class="block text-xs font-medium text-outline">Active</label>
-      <select
-        class="input-soft mt-1 md:w-36"
-        [ngModel]="activeFilter()"
-        (ngModelChange)="activeFilter.set($event)"
-      >
-        <option [ngValue]="'all'">Any</option>
-        <option [ngValue]="'true'">Active</option>
-        <option [ngValue]="'false'">Inactive</option>
-      </select>
-    </div>
-    <button
-      type="button"
-      (click)="applyFilters()"
-      class="btn-primary px-4 py-2 text-sm font-semibold"
+    <select
+      id="users-status-filter"
+      class="neomorphic-inset rounded-full bg-surface-container-high border-none px-5 py-3 text-sm font-medium text-on-surface focus:ring-2 focus:ring-primary-fixed-dim"
+      aria-label="Member status filter"
+      [ngModel]="activeFilter()"
+      (ngModelChange)="activeFilter.set($event); applyFilters()"
     >
-      Apply
-    </button>
+      <option [ngValue]="'all'">Any status</option>
+      <option [ngValue]="'true'">Active</option>
+      <option [ngValue]="'false'">Inactive</option>
+    </select>
   </div>
 
   @if (loading()) {
-    <p class="text-outline">Loading…</p>
+    <p class="text-on-surface-variant">Loading…</p>
   } @else if (result(); as r) {
-    <div class="overflow-x-auto rounded-xl border border-outline-variant/60 bg-surface-container-lowest">
-      <table class="w-full min-w-[720px] text-left text-sm">
-        <thead
-          class="border-b border-outline-variant/60 bg-surface-container-low text-xs uppercase text-outline"
+    <div class="w-full space-y-3">
+      <!-- Table Header -->
+      <div class="grid grid-cols-12 px-8 text-xs font-bold text-outline uppercase tracking-widest">
+        <div class="col-span-1 flex items-center">
+          <div class="w-5 h-5"></div>
+        </div>
+        <div class="col-span-5">Member</div>
+        <div class="col-span-3">Role</div>
+        <div class="col-span-2">Join Date</div>
+        <div class="col-span-1 text-right">Actions</div>
+      </div>
+
+      @for (u of r.items; track u.id) {
+        <div
+          class="grid grid-cols-12 items-center bg-surface-container-low rounded-2xl px-8 py-5 border border-white/40 hover:translate-y-[-2px] transition-all duration-300 neomorphic-outset-sm"
         >
-          <tr>
-            <th class="px-4 py-3">Name</th>
-            <th class="px-4 py-3">Email</th>
-            <th class="px-4 py-3">Role</th>
-            <th class="px-4 py-3">Joined</th>
-            <th class="px-4 py-3 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-outline-variant/60 text-on-surface-variant">
-          @for (u of r.items; track u.id) {
-            <tr class="transition hover:bg-surface-container-low">
-              <td class="px-4 py-3 font-medium text-on-surface">
-                {{ u.firstName }} {{ u.lastName }}
-              </td>
-              <td class="px-4 py-3">{{ u.email }}</td>
-              <td class="px-4 py-3">
-                <span
-                  class="rounded-full bg-surface-container-high px-2 py-0.5 text-xs text-on-surface-variant"
-                  >{{ u.role }}</span
-                >
-              </td>
-              <td class="px-4 py-3 text-outline">{{ u.createdAt | timeAgo }}</td>
-              <td class="px-4 py-3 text-right">
-                <button
-                  type="button"
-                  (click)="openEdit(u)"
-                  class="text-sm font-medium text-primary hover:text-primary-container"
-                >
-                  Edit
-                </button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+          <!-- Checkbox -->
+          <div class="col-span-1">
+            <button
+              type="button"
+              (click)="toggleSelect(u.id)"
+              role="checkbox"
+              [attr.aria-checked]="isSelected(u.id)"
+              [attr.aria-label]="'Select user ' + (((u.firstName || '') + ' ' + (u.lastName || '')).trim() || u.id)"
+              class="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors"
+              [class.border-primary]="isSelected(u.id)"
+              [class.bg-primary/10]="isSelected(u.id)"
+              [class.border-outline-variant/30]="!isSelected(u.id)"
+            >
+              @if (isSelected(u.id)) {
+                <span class="material-symbols-outlined text-[16px] text-primary font-bold">check</span>
+              }
+            </button>
+          </div>
+          <!-- Member info -->
+          <div class="col-span-5 flex items-center gap-4">
+            <div class="relative">
+              <div class="w-12 h-12 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-sm border-2 border-white shadow-sm">
+                {{ (u.firstName || '').charAt(0) }}{{ (u.lastName || '').charAt(0) }}
+              </div>
+              @if (u.emailVerifiedAt) {
+                <span class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-white flex items-center justify-center" title="Email verified">
+                  <span class="material-symbols-outlined text-white text-[10px]">check</span>
+                </span>
+              }
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <p class="font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>
+                @if (!u.emailVerifiedAt) {
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-yellow-100 text-yellow-700">unverified</span>
+                }
+              </div>
+              <p class="text-xs text-on-surface-variant">{{ u.email }}</p>
+            </div>
+          </div>
+          <!-- Role badge -->
+          <div class="col-span-3">
+            <span
+              class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider border"
+              [class.bg-orange-100]="u.role === RoleEnum.SELLER"
+              [class.text-orange-800]="u.role === RoleEnum.SELLER"
+              [class.border-orange-200]="u.role === RoleEnum.SELLER"
+              [class.bg-stone-100]="u.role === RoleEnum.USER"
+              [class.text-stone-600]="u.role === RoleEnum.USER"
+              [class.border-stone-200]="u.role === RoleEnum.USER"
+              [class.bg-blue-100]="u.role === RoleEnum.ADMIN"
+              [class.text-blue-800]="u.role === RoleEnum.ADMIN"
+              [class.border-blue-200]="u.role === RoleEnum.ADMIN"
+            >{{ u.role }}</span>
+          </div>
+          <!-- Join date -->
+          <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ u.createdAt | timeAgo }}</div>
+          <!-- Actions -->
+          <div class="col-span-1 text-right">
+            <button
+              type="button"
+              (click)="openEdit(u)"
+              [attr.aria-label]="'Edit user ' + (((u.firstName || '') + ' ' + (u.lastName || '')).trim() || u.email || u.id)"
+              class="text-outline hover:text-primary transition-colors"
+            >
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+          </div>
+        </div>
+      }
     </div>
 
     @if (r.totalPages > 1) {
@@ -103,14 +148,68 @@
     }
   }
 
-  <app-modal [open]="editOpen()" title="Manage user" (closed)="closeEdit()">
+  <!-- Floating Bulk Action Toolbar -->
+  @if (hasSelection()) {
+    <div class="bulk-toolbar fixed bottom-10 left-1/2 -translate-x-1/2 z-50">
+      <div class="flex items-center gap-4 px-6 py-4 bg-orange-50/95 backdrop-blur-xl rounded-full shadow-2xl border border-white/60">
+        <div class="flex items-center gap-2 pr-4 border-r border-orange-200/50">
+          <span class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center text-[10px] font-bold">{{ selectedCount() }}</span>
+          <span class="text-sm font-bold text-primary-container">Selected</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <button
+            type="button"
+            (click)="editSelected()"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-orange-100 rounded-full transition-colors text-primary-container text-sm font-bold active:scale-95"
+          >
+            <span class="material-symbols-outlined text-[20px]">edit</span>
+            Edit
+          </button>
+          <button
+            type="button"
+            (click)="verifySelected()"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-orange-100 rounded-full transition-colors text-primary-container text-sm font-bold active:scale-95"
+          >
+            <span class="material-symbols-outlined text-[20px]">verified_user</span>
+            Verify
+          </button>
+          <button
+            type="button"
+            (click)="removeSelected()"
+            class="flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-red-600 rounded-full transition-colors text-sm font-bold active:scale-95"
+          >
+            <span class="material-symbols-outlined text-[20px]">delete</span>
+            Remove
+          </button>
+        </div>
+        <button
+          type="button"
+          (click)="clearSelection()"
+          class="p-2 text-outline hover:text-on-surface transition-colors"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Modal -->
+  <app-modal [open]="editOpen()" title="Manage user" [closeOnBackdrop]="!saveLoading()" [disableClose]="saveLoading()" (closed)="closeEdit()">
     @if (editing(); as u) {
-      <p class="mb-4 text-sm text-outline">{{ u.email }}</p>
-      <div class="space-y-4">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-full bg-primary-fixed/40 flex items-center justify-center text-primary-container font-bold text-sm">
+          {{ (u.firstName || '').charAt(0) }}{{ (u.lastName || '').charAt(0) }}
+        </div>
         <div>
-          <label class="block text-xs text-outline">Role</label>
+          <p class="font-bold text-on-surface">{{ u.firstName }} {{ u.lastName }}</p>
+          <p class="text-xs text-on-surface-variant">{{ u.email }}</p>
+        </div>
+      </div>
+      <div class="space-y-5">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 ml-1">Role</label>
           <select
-            class="input-soft mt-1"
+            class="w-full neomorphic-inset rounded-2xl bg-surface-container-high border-none px-5 py-3 font-medium text-on-surface"
             [ngModel]="editRole()"
             (ngModelChange)="editRole.set($event)"
           >
@@ -119,20 +218,20 @@
             <option [ngValue]="RoleEnum.ADMIN">Admin</option>
           </select>
         </div>
-        <label class="flex items-center gap-2 text-sm text-on-surface-variant">
+        <label class="flex items-center gap-3 text-sm text-on-surface-variant font-medium p-4 bg-surface-container-low rounded-2xl neomorphic-outset-sm">
           <input
             type="checkbox"
             [ngModel]="editActive()"
             (ngModelChange)="editActive.set($event)"
-            class="rounded border-outline-variant"
+            class="rounded border-outline-variant w-5 h-5"
           />
           Active account
         </label>
-        <div class="flex justify-end gap-2 pt-2">
+        <div class="flex justify-end gap-3 pt-3">
           <button
             type="button"
             (click)="closeEdit()"
-            class="btn-secondary px-4 py-2 text-sm"
+            class="btn-secondary px-6 py-3 text-sm"
           >
             Cancel
           </button>
@@ -140,9 +239,9 @@
             type="button"
             [disabled]="saveLoading()"
             (click)="saveEdit()"
-            class="btn-primary px-4 py-2 text-sm font-semibold disabled:opacity-50"
+            class="btn-primary px-6 py-3 text-sm disabled:opacity-50"
           >
-            Save
+            Save changes
           </button>
         </div>
       </div>

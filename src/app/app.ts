@@ -1,7 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavbarComponent } from './shared/components/navbar/navbar.component';
-import { Footer } from './shared/components/footer/footer';
 import { Toast } from './shared/components/toast/toast';
 
 @Component({

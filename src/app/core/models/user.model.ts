@@ -10,8 +10,9 @@ export interface User {
   lastName: string;
   email: string;
   role: Role;
-  createdAt: string;
   active?: boolean;
+  emailVerifiedAt?: string | null;
+  createdAt: string;
 }
 
 export interface LoginRequest {
