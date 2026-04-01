@@ -2,13 +2,14 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { MainLayout } from './shared/components/main-layout/main-layout';
+import { roleGuard } from './core/guards/role.guard';
+import { Role } from './core/models/user.model';
 
 export const appRoutes: Routes = [
   {
     path: 'auth',
     canActivate: [guestGuard],
-    loadChildren: () =>
-      import('./features/auth/auth.routes').then((m) => m.authRoutes),
+    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
     path: '',
@@ -27,9 +28,7 @@ export const appRoutes: Routes = [
       {
         path: 'products',
         loadChildren: () =>
-          import('./features/products/products.routes').then(
-            (m) => m.productsRoutes,
-          ),
+          import('./features/products/products.routes').then((m) => m.productsRoutes),
       },
       {
         path: 'cart',
@@ -41,35 +40,34 @@ export const appRoutes: Routes = [
         path: 'checkout',
         canActivate: [authGuard],
         loadChildren: () =>
-          import('./features/checkout/checkout.routes').then(
-            (m) => m.checkoutRoutes,
-          ),
+          import('./features/checkout/checkout.routes').then((m) => m.checkoutRoutes),
       },
       {
         path: 'orders',
         canActivate: [authGuard],
-        loadChildren: () =>
-          import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
+        loadChildren: () => import('./features/orders/orders.routes').then((m) => m.ordersRoutes),
+      },
+      {
+        path: 'order',
+        pathMatch: 'full',
+        redirectTo: 'orders',
       },
       {
         path: 'profile',
         canActivate: [authGuard],
         loadChildren: () =>
-          import('./features/profile/profile.routes').then(
-            (m) => m.profileRoutes,
-          ),
+          import('./features/profile/profile.routes').then((m) => m.profileRoutes),
       },
       {
         path: 'seller',
-        canActivate: [authGuard],
-        loadChildren: () =>
-          import('./features/seller/seller.routes').then((m) => m.sellerRoutes),
+        canActivate: [authGuard, roleGuard],
+        data: { roles: [Role.SELLER] },
+        loadChildren: () => import('./features/seller/seller.routes').then((m) => m.sellerRoutes),
       },
       {
         path: 'admin',
         canActivate: [authGuard],
-        loadChildren: () =>
-          import('./features/admin/admin.routes').then((m) => m.adminRoutes),
+        loadChildren: () => import('./features/admin/admin.routes').then((m) => m.adminRoutes),
       },
     ],
   },

@@ -1,0 +1,156 @@
+<main class="min-h-screen bg-surface font-body text-on-surface">
+  <header
+    class="sticky top-0 z-30 flex w-full items-center justify-between bg-orange-50/80 px-6 py-4 shadow-[0px_4px_20px_rgba(139,114,102,0.08)] backdrop-blur-md"
+  >
+    <div class="flex items-center gap-3">
+      <a
+        routerLink="/seller/orders"
+        class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-orange-100/50"
+      >
+        <span class="material-symbols-outlined text-primary">arrow_back</span>
+      </a>
+      <h1 class="font-display text-2xl font-black tracking-tight text-primary">Order Details</h1>
+    </div>
+
+    <a
+      routerLink="/seller/orders"
+      class="rounded-xl bg-surface-container-high px-4 py-2 font-bold text-primary"
+    >
+      All Orders
+    </a>
+  </header>
+
+  <section class="mx-auto max-w-6xl px-6 py-10 pb-28">
+    @if (loading()) {
+      <div class="rounded-xl bg-surface-container-low p-8 neomorph-frame">Loading order...</div>
+    } @else if (error()) {
+      <app-empty-state title="Unable to open order" [message]="error()!" />
+    } @else if (order(); as orderData) {
+      <div
+        class="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-surface-container-low p-6 neomorph-frame"
+      >
+        <div>
+          <p class="text-sm font-bold uppercase tracking-wider text-on-surface-variant">
+            Order Number
+          </p>
+          <h2 class="font-display text-3xl font-extrabold text-primary">{{ orderNumber() }}</h2>
+          <p class="text-on-surface-variant">
+            Created at: {{ orderData.createdAt | date: 'medium' }}
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <select
+            class="neomorph-inset rounded-xl border-none bg-surface-container-high px-4 py-3 font-semibold text-on-surface-variant"
+            [value]="selectedStatus()"
+            (change)="selectedStatus.set($any($event.target).value)"
+          >
+            <option value="confirmed">Confirmed</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+          </select>
+          <button
+            type="button"
+            [disabled]="updating()"
+            (click)="updateStatus()"
+            class="rounded-xl bg-primary-container px-6 py-3 font-bold text-on-primary shadow-lg shadow-orange-700/20"
+          >
+            Update Status
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-10 lg:grid-cols-12">
+        <div class="space-y-8 lg:col-span-7">
+          <section class="rounded-lg bg-surface-container-lowest p-8 neomorph-frame">
+            <h3 class="mb-5 font-display text-2xl font-bold text-primary">Order Items</h3>
+
+            <div class="space-y-4">
+              @for (item of orderData.items; track item.product.id) {
+                <article class="flex items-center gap-4 rounded-md bg-surface-container-low p-4">
+                  <img
+                    src="https://images.ncsl.org/image/upload/c_fill,g_auto,w_600/f_auto,q_auto/v1666843745/website/1320834676.jpg"
+                    alt="Order item"
+                    title="Order item"
+                    class="h-20 w-20 rounded-xl object-cover"
+                  />
+                  <div class="flex-1">
+                    <p class="font-bold text-on-surface">{{ item.product.title }}</p>
+                    <p class="text-sm text-on-surface-variant">Quantity: {{ item.qty }}</p>
+                  </div>
+                  <p class="font-bold text-primary">{{ item.price | currency: 'USD' }}</p>
+                </article>
+              }
+            </div>
+          </section>
+
+          <section class="rounded-lg bg-surface-container-low p-8 neomorph-frame">
+            <h3 class="mb-4 font-display text-xl font-bold text-primary">Delivery Info</h3>
+            <p class="text-on-surface-variant">Shipping Address ID</p>
+            <p class="font-mono text-sm text-on-surface-variant">
+              {{ orderData.shippingAddressId || 'Not provided' }}
+            </p>
+
+            <div class="mt-6 rounded-xl bg-surface-container-high p-4 neomorph-inset">
+              <p class="text-sm font-bold uppercase tracking-wider text-on-surface-variant">
+                Total Price
+              </p>
+              <p class="font-display text-3xl font-extrabold text-primary">
+                {{ orderData.total | currency: 'USD' }}
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="rounded-lg bg-surface-container-low p-8 neomorph-frame lg:col-span-5">
+          <h3 class="mb-10 font-display text-2xl font-extrabold text-on-surface-variant">
+            Tracking Updates
+          </h3>
+
+          <div class="relative">
+            <div class="absolute bottom-2 left-5 top-2 w-1 rounded-full bg-surface-variant"></div>
+
+            <div class="relative space-y-10">
+              @for (step of trackingSteps(); track step.label) {
+                <div class="flex items-start gap-6">
+                  <div
+                    class="z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+                    [ngClass]="{
+                      'bg-primary shadow-lg shadow-primary/30 scale-110': step.current,
+                      'bg-surface-container-low neomorph-inset': step.completed,
+                      'bg-surface-container-low neomorph-extruded':
+                        !step.current && !step.completed,
+                    }"
+                  >
+                    @if (step.completed) {
+                      <span class="material-symbols-outlined text-primary">check</span>
+                    } @else if (step.current) {
+                      <span class="material-symbols-outlined text-white">local_shipping</span>
+                    } @else {
+                      <span class="h-3 w-3 rounded-full bg-outline-variant"></span>
+                    }
+                  </div>
+
+                  <div
+                    class="rounded-md"
+                    [ngClass]="{
+                      'bg-surface-container-lowest p-4 shadow-sm -mt-2': step.current,
+                    }"
+                  >
+                    <h4
+                      class="font-display font-bold"
+                      [ngClass]="step.current ? 'text-primary' : 'text-on-surface'"
+                    >
+                      {{ step.label }}
+                    </h4>
+                    <p class="text-sm text-on-surface-variant">{{ step.description }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </aside>
+      </div>
+    }
+  </section>
+</main>
