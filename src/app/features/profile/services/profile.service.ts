@@ -37,6 +37,8 @@ function toAddress(a: AddressPublic): Address {
     city: a.city,
     phone: a.phone,
     isPrimary: a.isPrimary,
+    firstName: a.firstName,
+    lastName: a.lastName,
   };
 }
 

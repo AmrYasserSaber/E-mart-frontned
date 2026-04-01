@@ -97,6 +97,8 @@ export interface Address {
   city: string;
   phone: string | null;
   isPrimary: boolean;
+  firstName: string;
+  lastName: string;
 }
 
 export interface RecentOrder {

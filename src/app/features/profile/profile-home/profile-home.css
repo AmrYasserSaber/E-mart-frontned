@@ -622,8 +622,12 @@
 
 /* Skeleton loader */
 @keyframes shimmer {
-  from { background-position: -200% 0; }
-  to   { background-position:  200% 0; }
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
 }
 
 .timeline-skeleton {
@@ -643,7 +647,12 @@
   height: 2.5rem;
   flex-shrink: 0;
   border-radius: 9999px;
-  background: linear-gradient(90deg, var(--color-surface-container-high) 25%, var(--color-surface-container) 50%, var(--color-surface-container-high) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-container-high) 25%,
+    var(--color-surface-container) 50%,
+    var(--color-surface-container-high) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -661,13 +670,22 @@
 .skeleton-line {
   height: 0.75rem;
   border-radius: 9999px;
-  background: linear-gradient(90deg, var(--color-surface-container-high) 25%, var(--color-surface-container) 50%, var(--color-surface-container-high) 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-container-high) 25%,
+    var(--color-surface-container) 50%,
+    var(--color-surface-container-high) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
 
-.skeleton-line--short { width: 35%; }
-.skeleton-line--long  { width: 65%; }
+.skeleton-line--short {
+  width: 35%;
+}
+.skeleton-line--long {
+  width: 65%;
+}
 
 /* ============================================================
    ADDRESSES TAB
@@ -919,7 +937,7 @@
 }
 
 /* Hide ProductCard's own favorite button — our remove btn covers this action */
-.wishlist-item-wrap ::ng-deep button[aria-label="Favorite"] {
+.wishlist-item-wrap ::ng-deep button[aria-label='Favorite'] {
   display: none;
 }
 
@@ -943,10 +961,12 @@
   border: none;
   cursor: pointer;
   color: var(--color-primary-container);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   opacity: 0;
   transform: scale(0.85);
-  transition: opacity 200ms ease, transform 200ms ease;
+  transition:
+    opacity 200ms ease,
+    transform 200ms ease;
 }
 
 .wishlist-item-wrap:hover .wishlist-remove-btn {
@@ -984,4 +1004,57 @@
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-on-surface-variant);
+  padding-left: 0.5rem;
+}
+
+.optional {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: var(--color-outline);
+}
+
+.input-wrap {
+  background-color: var(--color-surface-container-high);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow:
+    inset 4px 4px 8px rgba(0, 0, 0, 0.05),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8);
+  transition: box-shadow 200ms;
+}
+
+.input-wrap--error {
+  box-shadow:
+    inset 4px 4px 8px rgba(186, 26, 26, 0.08),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.8),
+    0 0 0 2px color-mix(in srgb, var(--color-error) 30%, transparent);
+}
+
+.input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.input::placeholder {
+  color: var(--color-outline);
+  opacity: 0.6;
 }

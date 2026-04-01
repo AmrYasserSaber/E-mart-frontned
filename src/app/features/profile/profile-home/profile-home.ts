@@ -1,9 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProfileService } from '../services/profile.service';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
 import { Pagination } from '../../../shared/components/pagination/pagination';
+import { Modal } from '../../../shared/components/modal/modal';
 import type {
   Address,
   ProfileTab,
@@ -17,11 +19,13 @@ const ORDERS_PER_PAGE = 8;
 
 @Component({
   selector: 'app-profile-home',
-  imports: [ProductCard, DatePipe, CurrencyPipe, Pagination],
+  imports: [ProductCard, DatePipe, CurrencyPipe, Pagination, ReactiveFormsModule, Modal],
   templateUrl: './profile-home.html',
   styleUrl: './profile-home.css',
 })
 export class ProfileHome implements OnInit {
+  private readonly fb = inject(FormBuilder);
+
   profile = signal<UserProfile | null>(null);
   addresses = signal<Address[]>([]);
   wishlist = signal<WishlistItem[]>([]);
@@ -34,6 +38,20 @@ export class ProfileHome implements OnInit {
   loading = signal(true);
   deletingAddressId = signal<string | null>(null);
   removingWishlistId = signal<string | null>(null);
+
+  showAddressModal = signal(false);
+  editingAddressId = signal<string | null>(null);
+  savingAddress = signal(false);
+
+  addressForm = this.fb.group({
+    label: [''],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    phone: [''],
+    street: ['', [Validators.required, Validators.minLength(3)]],
+    city: ['', [Validators.required, Validators.minLength(2)]],
+    isPrimary: [false],
+  });
 
   readonly tabs: { key: ProfileTab; label: string; icon: string }[] = [
     { key: 'orders', label: 'Orders', icon: 'shopping_bag' },
@@ -98,6 +116,76 @@ export class ProfileHome implements OnInit {
     });
   }
 
+  openAddAddressModal(): void {
+    this.editingAddressId.set(null);
+    this.addressForm.reset({
+      isPrimary: false,
+      firstName: this.profile()?.firstName || '',
+      lastName: this.profile()?.lastName || '',
+    });
+    this.showAddressModal.set(true);
+  }
+
+  openEditAddressModal(address: Address): void {
+    this.editingAddressId.set(address.id);
+    this.addressForm.patchValue({
+      label: address.label === 'Address' ? '' : address.label,
+      firstName: address.firstName,
+      lastName: address.lastName,
+      phone: address.phone,
+      street: address.street,
+      city: address.city,
+      isPrimary: address.isPrimary,
+    });
+    this.showAddressModal.set(true);
+  }
+
+  closeAddressModal(): void {
+    this.showAddressModal.set(false);
+  }
+
+  saveAddress(): void {
+    if (this.addressForm.invalid || this.savingAddress()) return;
+    this.savingAddress.set(true);
+    const data = this.addressForm.value;
+    const req = {
+      label: data.label || undefined,
+      firstName: data.firstName || '',
+      lastName: data.lastName || '',
+      phone: data.phone || undefined,
+      street: data.street || '',
+      city: data.city || '',
+      isPrimary: !!data.isPrimary,
+    };
+
+    const id = this.editingAddressId();
+    if (id) {
+      this.profileService.updateAddress(id, req).subscribe({
+        next: (addr) => {
+          this.addresses.update((list) => list.map((a) => (a.id === id ? addr : a)));
+          if (addr.isPrimary) {
+            this.loadAddresses();
+          }
+          this.savingAddress.set(false);
+          this.closeAddressModal();
+        },
+        error: () => this.savingAddress.set(false),
+      });
+    } else {
+      this.profileService.createAddress(req).subscribe({
+        next: (addr) => {
+          this.addresses.update((list) => [...list, addr]);
+          if (addr.isPrimary) {
+            this.loadAddresses();
+          }
+          this.savingAddress.set(false);
+          this.closeAddressModal();
+        },
+        error: () => this.savingAddress.set(false),
+      });
+    }
+  }
+
   getStatusIcon(status: string): string {
     const map: Record<string, string> = {
       pending: 'schedule',
@@ -150,12 +238,16 @@ export class ProfileHome implements OnInit {
       this.loading.set(false);
     });
 
-    this.profileService.getAddresses().subscribe((addresses) => {
-      this.addresses.set(addresses);
-    });
+    this.loadAddresses();
 
     this.profileService.getWishlist().subscribe((items) => {
       this.wishlist.set(items);
+    });
+  }
+
+  private loadAddresses(): void {
+    this.profileService.getAddresses().subscribe((addresses) => {
+      this.addresses.set(addresses);
     });
   }
 }
