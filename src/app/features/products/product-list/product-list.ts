@@ -137,7 +137,7 @@ export class ProductList {
       .pipe(take(1))
       .subscribe((isAuthenticated) => {
         if (isAuthenticated) {
-          this.store.dispatch(CartActions.addToCart({ product }));
+          this.store.dispatch(CartActions.addToCart({ productId: product.id }));
           return;
         }
         this.router.navigate(['/auth/login'], {

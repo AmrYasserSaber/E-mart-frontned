@@ -1,6 +1,6 @@
-<div class="flex min-h-[calc(100vh-5rem)] w-full bg-background" style="--admin-sidebar-width: 220px;">
-  <app-sidebar class="hidden shrink-0 md:-mt-20 md:block md:self-start" [items]="nav" />
-  <div class="min-w-0 flex-1 overflow-x-auto px-6 py-8 md:px-12">
+<div class="flex min-h-screen w-full gap-6 bg-background px-3 py-4 md:px-4">
+  <app-sidebar class="hidden shrink-0 md:fixed md:left-0 md:top-0 md:z-[60] md:block" [items]="nav" />
+  <div class="min-w-0 flex-1 overflow-x-auto px-2 py-2 md:pl-[260px] md:pr-6 md:py-4">
     <router-outlet />
   </div>
 </div>

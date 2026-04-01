@@ -7,9 +7,9 @@
   (keydown.space)="onOpen(); $event.preventDefault()"
 >
   <div class="relative -mt-6 aspect-square overflow-hidden rounded-xl shadow-lg transition-transform duration-300 group-hover:-translate-y-1">
-    @if (product().images?.length || product().imageUrl) {
+    @if (product().images?.length) {
       <img
-        [src]="product().images?.[0] || product().imageUrl"
+        [src]="product().images?.[0] || ''"
         [alt]="product().title || product().name || 'Product image'"
         class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         loading="lazy"

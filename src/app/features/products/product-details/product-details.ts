@@ -75,7 +75,7 @@ export class ProductDetails {
 
   protected readonly displayImage = computed(() => {
     const product = this.product();
-    return product?.images?.[0] ?? product?.imageUrl;
+    return product?.images?.[0];
   });
 
   onReviewsPageChange(page: number): void {
@@ -99,7 +99,7 @@ export class ProductDetails {
       .pipe(take(1))
       .subscribe((isAuthenticated) => {
         if (isAuthenticated) {
-          this.store.dispatch(CartActions.addToCart({ product }));
+          this.store.dispatch(CartActions.addToCart({ productId: product.id }));
           return;
         }
         this.router.navigate(['/auth/login'], {

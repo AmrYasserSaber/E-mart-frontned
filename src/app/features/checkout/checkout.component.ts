@@ -1,5 +1,4 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { CheckoutService, CheckoutStep } from './services/checkout.service';
 import { StepIndicator } from './components/step-indicator/step-indicator';
 import { AddressStep } from './components/address-step/address-step';
@@ -11,7 +10,6 @@ import { OrderSummary } from './components/order-summary/order-summary';
   selector: 'app-checkout',
   standalone: true,
   imports: [
-    RouterLink,
     StepIndicator,
     AddressStep,
     PaymentStep,
