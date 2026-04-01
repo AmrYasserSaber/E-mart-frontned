@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
-import { API_BASE_URL } from '../../../core/tokens/app.tokens';
+import { Observable } from 'rxjs';
+import { ApiService } from '../../../core/services/api.service';
 
 export interface ShippingAddress {
+  firstName: string;
+  lastName: string;
   street: string;
   city: string;
   zip: string;
@@ -15,7 +16,7 @@ export interface CreateOrderResponse {
   userId: string;
   total: number;
   status: string;
-  shippingAddress: ShippingAddress;
+  shippingAddress: unknown | null;
   createdAt: string;
 }
 
@@ -23,16 +24,19 @@ export interface CreateOrderResponse {
   providedIn: 'root',
 })
 export class OrderService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = inject(API_BASE_URL);
+  private readonly api = inject(ApiService);
 
-  placeOrder(shippingAddress: ShippingAddress): Observable<CreateOrderResponse> {
-    return this.http
-      .post<any>(`${this.baseUrl}/orders`, { shippingAddress })
-      .pipe(map((res) => res));
+  placeOrder(
+    addressId: string,
+    paymentMethod: string,
+  ): Observable<CreateOrderResponse> {
+    return this.api.post<CreateOrderResponse>('/orders', {
+      addressId,
+      paymentMethod,
+    });
   }
 
   getOrderDetails(id: string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/orders/${id}`);
+    return this.api.get<any>(`/orders/${id}`);
   }
 }

@@ -2,30 +2,59 @@
   <h3 class="text-lg font-display font-bold text-on-surface-variant px-2">Select Payment Method</h3>
   
   <div class="grid grid-cols-1 gap-4">
-    <!-- Cash on Delivery (Selected by default) -->
-    <div class="group relative bg-surface-container-lowest p-6 rounded-lg neomorphic-outset border-2 border-primary-container transition-all cursor-pointer">
+    <button
+      type="button"
+      (click)="selectMethod('KASHIER')"
+      [class.border-primary-container]="selectedMethod() === 'KASHIER'"
+      [class.neomorphic-outset]="selectedMethod() === 'KASHIER'"
+      [class.bg-surface-container-lowest]="selectedMethod() === 'KASHIER'"
+      [class.bg-surface-container-low]="selectedMethod() !== 'KASHIER'"
+      class="group relative p-6 rounded-lg border-2 border-transparent transition-all text-left"
+    >
       <div class="flex items-center gap-6">
-        <span class="material-symbols-outlined text-primary-container text-4xl">payments</span>
+        <span
+          class="material-symbols-outlined text-4xl"
+          [class.text-primary-container]="selectedMethod() === 'KASHIER'"
+          [class.text-outline]="selectedMethod() !== 'KASHIER'"
+        >credit_card</span>
+        <div>
+          <p class="font-bold text-on-surface">Pay with Kashier</p>
+          <p class="text-xs text-on-surface-variant">Secure card payment via Kashier checkout.</p>
+        </div>
+      </div>
+      @if (selectedMethod() === 'KASHIER') {
+        <div class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full bg-primary-container flex items-center justify-center">
+          <div class="h-2 w-2 rounded-full bg-white"></div>
+        </div>
+      }
+    </button>
+
+    <button
+      type="button"
+      (click)="selectMethod('CASH_ON_DELIVERY')"
+      [class.border-primary-container]="selectedMethod() === 'CASH_ON_DELIVERY'"
+      [class.neomorphic-outset]="selectedMethod() === 'CASH_ON_DELIVERY'"
+      [class.bg-surface-container-lowest]="selectedMethod() === 'CASH_ON_DELIVERY'"
+      [class.bg-surface-container-low]="selectedMethod() !== 'CASH_ON_DELIVERY'"
+      class="group relative p-6 rounded-lg border-2 border-transparent transition-all text-left"
+    >
+      <div class="flex items-center gap-6">
+        <span
+          class="material-symbols-outlined text-4xl"
+          [class.text-primary-container]="selectedMethod() === 'CASH_ON_DELIVERY'"
+          [class.text-outline]="selectedMethod() !== 'CASH_ON_DELIVERY'"
+        >payments</span>
         <div>
           <p class="font-bold text-on-surface">Cash on Delivery</p>
           <p class="text-xs text-on-surface-variant">Pay in cash upon receiving your order.</p>
         </div>
       </div>
-      <div class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full bg-primary-container flex items-center justify-center">
-        <div class="h-2 w-2 rounded-full bg-white"></div>
-      </div>
-    </div>
-
-    <!-- Other (Disabled or placeholder) -->
-    <div class="group relative bg-surface-container-low p-6 rounded-lg transition-all opacity-50 grayscale cursor-not-allowed">
-      <div class="flex items-center gap-6">
-        <span class="material-symbols-outlined text-outline text-4xl">credit_card</span>
-        <div>
-          <p class="font-bold text-on-surface-variant">Credit / Debit Card</p>
-          <p class="text-xs text-on-surface-variant">Coming soon to Nexus Market.</p>
+      @if (selectedMethod() === 'CASH_ON_DELIVERY') {
+        <div class="absolute top-1/2 -translate-y-1/2 right-6 h-6 w-6 rounded-full bg-primary-container flex items-center justify-center">
+          <div class="h-2 w-2 rounded-full bg-white"></div>
         </div>
-      </div>
-    </div>
+      }
+    </button>
   </div>
 
   <div class="pt-8 flex flex-col md:flex-row gap-4">

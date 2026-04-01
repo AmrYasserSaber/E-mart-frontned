@@ -100,7 +100,7 @@ export class OrderTrackingComponent {
                       country: '',
                     },
                     payment: {
-                      provider: 'stripe' as const,
+                      provider: 'kashier' as const,
                       status: 'pending',
                     },
                   } satisfies OrderDetailsResponse),
