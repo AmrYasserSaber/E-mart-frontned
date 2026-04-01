@@ -8,6 +8,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { StorageService } from '../../../core/services/storage.service';
 import type { User } from '../../../core/models/user.model';
 import { AuthActions } from './auth.actions';
+import { CartActions } from '../cart/cart.actions';
 import {
   authTokensOnlySchema,
   authTokensWithUserSchema,
@@ -106,6 +107,13 @@ export class AuthEffects {
         tap(({ user }) => this.storage.setUser(user)),
       ),
     { dispatch: false },
+  );
+
+  loadCartAfterUserLoad$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loadUserSuccess),
+      map(() => CartActions.loadCart()),
+    ),
   );
 
   redirectAfterLogin$ = createEffect(

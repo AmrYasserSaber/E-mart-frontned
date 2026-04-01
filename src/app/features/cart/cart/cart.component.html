@@ -3,7 +3,7 @@
   @if (items$ | async; as items) {
     @if (items.length > 0) {
       <header class="mb-12">
-        <h1 class="font-display text-4xl font-extrabold text-on-surface tracking-tight mb-2">Your Basket</h1>
+        <h1 class="font-display text-4xl font-extrabold text-on-surface tracking-tight mb-2">Your Cart</h1>
         <p class="text-on-surface-variant">Review your curated selection before checkout.</p>
       </header>
 
@@ -13,7 +13,16 @@
           @for (item of items; track trackById($index, item)) {
             <div class="bg-surface-container-lowest p-6 rounded-md flex flex-col md:flex-row items-center gap-8 shadow-tinted relative overflow-visible group">
               <div class="w-32 h-32 md:-ml-10 flex-shrink-0 bg-surface-container rounded-sm overflow-hidden shadow-lg transform group-hover:scale-105 transition-transform duration-300">
-                <img [src]="item.product.images?.[0] || ''" [alt]="item.product.title || item.product.name || 'Product image'" class="w-full h-full object-cover">
+                @if (getItemImage(item)) {
+                  <img
+                    [src]="getItemImage(item)!"
+                    [alt]="item.product.title || item.product.name || 'Product image'"
+                    class="w-full h-full object-cover"
+                    (error)="onImageError($event)"
+                  >
+                } @else {
+                  <div class="flex h-full w-full items-center justify-center text-4xl text-outline">📦</div>
+                }
               </div>
 
               <div class="flex-grow grid grid-cols-1 md:grid-cols-4 gap-4 items-center w-full">
@@ -113,7 +122,7 @@
       </div>
     } @else {
       <div class="flex flex-col items-center justify-center pt-24 min-h-[40vh]">
-        <h1 class="font-display text-4xl font-extrabold text-on-surface tracking-tight mb-4">Your basket is empty</h1>
+        <h1 class="font-display text-4xl font-extrabold text-on-surface tracking-tight mb-4">Your Cart is empty</h1>
         <p class="text-on-surface-variant mb-8 text-center italic">Looks like you haven't added anything to your curation yet.</p>
         <button routerLink="/products" class="btn-primary">
           Discover Our Collection

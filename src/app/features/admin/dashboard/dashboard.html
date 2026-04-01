@@ -50,25 +50,53 @@
       <div class="mb-8 flex items-center justify-between">
         <div>
           <h4 class="font-display text-lg font-bold text-on-surface">Revenue Growth</h4>
-          <p class="text-sm text-on-surface-variant">Monthly overview of generated sales</p>
+          <p class="text-sm text-on-surface-variant">
+            {{ revenuePeriod() === '12m' ? 'Monthly overview of generated sales' : 'Daily overview of generated sales' }}
+            · Total {{ formatRevenue(revenueTotal()) }} {{ revenueCurrency() }}
+          </p>
         </div>
         <div class="flex gap-2">
-          <button class="rounded-full bg-orange-100 px-4 py-1 text-xs font-bold text-orange-800">12 Months</button>
-          <button class="rounded-full px-4 py-1 text-xs font-bold text-on-surface-variant hover:bg-stone-100">30 Days</button>
+          <button
+            type="button"
+            (click)="setRevenuePeriod('12m')"
+            [class.bg-orange-100]="revenuePeriod() === '12m'"
+            [class.text-orange-800]="revenuePeriod() === '12m'"
+            class="rounded-full px-4 py-1 text-xs font-bold text-on-surface-variant hover:bg-stone-100"
+          >
+            12 Months
+          </button>
+          <button
+            type="button"
+            (click)="setRevenuePeriod('7d')"
+            [class.bg-orange-100]="revenuePeriod() === '7d'"
+            [class.text-orange-800]="revenuePeriod() === '7d'"
+            class="rounded-full px-4 py-1 text-xs font-bold text-on-surface-variant hover:bg-stone-100"
+          >
+            7 Days
+          </button>
         </div>
       </div>
-      <div class="flex h-64 items-end justify-between gap-3 px-2">
-        <div class="h-[40%] w-full rounded-t-xl bg-orange-50 transition-all hover:h-[45%] hover:bg-orange-100"></div>
-        <div class="h-[60%] w-full rounded-t-xl bg-orange-100 transition-all hover:h-[65%] hover:bg-orange-200"></div>
-        <div class="h-[35%] w-full rounded-t-xl bg-orange-200 transition-all hover:h-[40%] hover:bg-orange-300"></div>
-        <div class="h-[85%] w-full rounded-t-xl bg-primary-container transition-all hover:h-[90%] hover:bg-primary"></div>
-        <div class="h-[55%] w-full rounded-t-xl bg-orange-200 transition-all hover:h-[60%] hover:bg-orange-300"></div>
-        <div class="h-[75%] w-full rounded-t-xl bg-orange-100 transition-all hover:h-[80%] hover:bg-orange-200"></div>
-        <div class="h-[95%] w-full rounded-t-xl bg-orange-50 transition-all hover:h-full hover:bg-orange-100"></div>
-      </div>
-      <div class="mt-4 flex justify-between text-[10px] font-bold uppercase tracking-widest text-outline">
-        <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
-      </div>
+      @if (revenueLoading()) {
+        <div class="flex h-64 items-center justify-center text-on-surface-variant">Loading revenue analytics...</div>
+      } @else if (revenueSeries().length === 0) {
+        <div class="flex h-64 items-center justify-center text-on-surface-variant">No revenue data available.</div>
+      } @else {
+        <div class="overflow-x-auto">
+          <div class="flex h-64 w-full min-w-[720px] items-end gap-3 px-2">
+            @for (point of revenueSeries(); track point.key) {
+              <div class="flex h-full min-w-0 flex-1 flex-col justify-end">
+                <div
+                  class="w-full rounded-t-xl bg-orange-100 transition-all hover:bg-primary-container"
+                  [class.bg-primary-container]="point.revenue === maxRevenueValue() && point.revenue > 0"
+                  [style.height.%]="barHeightPercent(point.revenue)"
+                  [title]="pointTooltip(point)"
+                ></div>
+                <span class="mt-2 text-center text-[10px] font-bold uppercase tracking-widest text-outline">{{ point.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
     </div>
 
     <div class="flex flex-col items-center rounded-3xl bg-surface-container-lowest p-8 soft-outset">

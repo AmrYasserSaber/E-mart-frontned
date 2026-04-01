@@ -44,6 +44,10 @@ export class CheckoutService {
     this._addressId.set(id);
   }
 
+  clearAddressId(): void {
+    this._addressId.set(null);
+  }
+
   setPaymentMethod(method: 'KASHIER' | 'CASH_ON_DELIVERY'): void {
     this._paymentMethod.set(method);
   }

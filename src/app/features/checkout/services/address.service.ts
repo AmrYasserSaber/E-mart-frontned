@@ -16,9 +16,17 @@ export interface AddressResponse {
   updatedAt: string;
 }
 
+export interface AddressListResponse {
+  data: AddressResponse[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AddressService {
   private readonly api = inject(ApiService);
+
+  getAddresses(): Observable<AddressListResponse> {
+    return this.api.get<AddressListResponse>('/addresses');
+  }
 
   createAddress(address: ShippingAddress): Observable<AddressResponse> {
     return this.api.post<AddressResponse>('/addresses', {
