@@ -85,6 +85,21 @@ export interface ApproveSellerResponse {
   approvedAt: string;
 }
 
+export type RevenueAnalyticsPeriod = '12m' | '7d';
+
+export interface RevenueAnalyticsPoint {
+  key: string;
+  label: string;
+  revenue: number;
+}
+
+export interface RevenueAnalyticsResponse {
+  period: RevenueAnalyticsPeriod;
+  currency: string;
+  totalRevenue: number;
+  data: RevenueAnalyticsPoint[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly api = inject(ApiService);
@@ -179,5 +194,13 @@ export class AdminService {
 
   approveSellerStore(id: string): Observable<ApproveSellerResponse> {
     return this.api.patch<ApproveSellerResponse>(`/admin/sellers/${id}/approve`, {});
+  }
+
+  getRevenueAnalytics(
+    period: RevenueAnalyticsPeriod,
+  ): Observable<RevenueAnalyticsResponse> {
+    return this.api.get<RevenueAnalyticsResponse>('/admin/analytics/revenue', {
+      params: { period },
+    });
   }
 }
