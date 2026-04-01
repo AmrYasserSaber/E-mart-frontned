@@ -20,6 +20,14 @@ export class CheckoutService {
   private readonly _orderId = signal<string | null>(null);
   readonly orderId = computed(() => this._orderId());
 
+  private readonly _addressId = signal<string | null>(null);
+  readonly addressId = computed(() => this._addressId());
+
+  private readonly _paymentMethod = signal<'KASHIER' | 'CASH_ON_DELIVERY'>(
+    'KASHIER',
+  );
+  readonly paymentMethod = computed(() => this._paymentMethod());
+
   setStep(step: CheckoutStep): void {
     this._currentStep.set(step);
   }
@@ -32,9 +40,19 @@ export class CheckoutService {
     this._orderId.set(id);
   }
 
+  setAddressId(id: string): void {
+    this._addressId.set(id);
+  }
+
+  setPaymentMethod(method: 'KASHIER' | 'CASH_ON_DELIVERY'): void {
+    this._paymentMethod.set(method);
+  }
+
   reset(): void {
     this._currentStep.set(CheckoutStep.ADDRESS);
     this._shippingAddress.set(null);
     this._orderId.set(null);
+    this._addressId.set(null);
+    this._paymentMethod.set('KASHIER');
   }
 }

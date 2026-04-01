@@ -39,7 +39,7 @@ export interface OrderDetailsResponse {
     country: string;
   };
   payment: {
-    provider: 'stripe';
+    provider: 'kashier' | 'cash_on_delivery';
     status: string;
   };
   createdAt: string;
