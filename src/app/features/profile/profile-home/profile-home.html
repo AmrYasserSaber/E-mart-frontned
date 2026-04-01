@@ -1,1 +1,258 @@
-<p>profile-home works!</p>
+<!-- Profile Header Card -->
+@if (profile(); as user) {
+  <section class="profile-header">
+    <div class="avatar-wrapper">
+      <div class="avatar-ring">
+        @if (user.avatarUrl) {
+          <img
+            [src]="user.avatarUrl"
+            [alt]="user.firstName + ' ' + user.lastName"
+            class="avatar-img"
+          />
+        } @else {
+          <span class="material-symbols-outlined avatar-placeholder">person</span>
+        }
+      </div>
+      @if (user.isVerified) {
+        <div class="verified-badge">
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: 'FILL' 1; font-size: 16px"
+            >verified</span
+          >
+        </div>
+      }
+    </div>
+
+    <div class="profile-info">
+      <h1 class="profile-name">{{ user.firstName }} {{ user.lastName }}</h1>
+      <p class="profile-email">{{ user.email }}</p>
+      <div class="profile-badges">
+        <span class="badge badge--primary">{{ user.membershipTier }}</span>
+        <span class="badge badge--neutral">Member since {{ user.memberSince }}</span>
+      </div>
+    </div>
+
+    <button class="btn-edit-profile" (click)="navigateToEditProfile()">Edit Profile</button>
+  </section>
+} @else if (loading()) {
+  <section class="profile-header profile-header--skeleton">
+    <div class="avatar-wrapper">
+      <div class="avatar-ring skeleton-circle"></div>
+    </div>
+    <div class="profile-info">
+      <div class="skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton-line skeleton-line--md"></div>
+      <div class="skeleton-line skeleton-line--sm"></div>
+    </div>
+  </section>
+}
+
+<!-- Tabs -->
+<section class="tabs-wrapper">
+  <div class="tabs-track">
+    @for (tab of tabs; track tab.key) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === tab.key"
+        (click)="setTab(tab.key)"
+      >
+        <span class="material-symbols-outlined tab-icon">{{ tab.icon }}</span>
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+</section>
+
+<!-- Tab Content: Orders -->
+@if (activeTab() === 'orders') {
+  <div class="content-grid">
+    <!-- Timeline -->
+    <div class="timeline-section">
+      <h2 class="section-title">
+        Recent Activity
+        <span class="activity-dot"></span>
+      </h2>
+
+      <div class="timeline">
+        @for (order of recentOrders(); track order.id) {
+          <div class="timeline-item" [class.timeline-item--faded]="!isActiveOrder(order.status)">
+            <div class="timeline-icon" [class.timeline-icon--active]="isActiveOrder(order.status)">
+              <span class="material-symbols-outlined">{{ getStatusIcon(order.status) }}</span>
+            </div>
+
+            <div class="timeline-card">
+              <div class="timeline-card-header">
+                <div>
+                  <p
+                    class="order-status"
+                    [class.order-status--active]="isActiveOrder(order.status)"
+                  >
+                    {{ getStatusLabel(order.status) }}
+                  </p>
+                  <h3 class="order-number">Order #{{ order.orderNumber }}</h3>
+                  @if (order.estimatedDelivery) {
+                    <p class="order-date">Estimated delivery: {{ order.estimatedDelivery }}</p>
+                  }
+                  @if (order.deliveredAt) {
+                    <p class="order-date">Arrived: {{ order.deliveredAt }}</p>
+                  }
+                </div>
+                @if (order.shippingType) {
+                  <span class="shipping-badge">{{ order.shippingType }}</span>
+                }
+              </div>
+
+              @if (order.productImages.length > 0) {
+                <div class="product-thumbs">
+                  @for (img of order.productImages; track img) {
+                    <div class="thumb">
+                      <img [src]="img" alt="Product" class="thumb-img" />
+                    </div>
+                  }
+                </div>
+              }
+
+              @if (order.status === 'delivered') {
+                <button class="link-btn">
+                  <span class="material-symbols-outlined" style="font-size: 16px">description</span>
+                  View Invoice
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (recentOrders().length === 0 && !loading()) {
+          <div class="empty-state">
+            <span class="material-symbols-outlined empty-icon">shopping_bag</span>
+            <p>No recent orders</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-section">
+      <!-- Account Stats -->
+      <div class="stats-card">
+        <h3 class="sidebar-title">Account Stats</h3>
+        @if (stats(); as s) {
+          <div class="stats-grid">
+            <div class="stat-item">
+              <p class="stat-value">{{ s.totalOrders }}</p>
+              <p class="stat-label">Orders</p>
+            </div>
+            <div class="stat-item">
+              <p class="stat-value">{{ s.wishlistCount }}</p>
+              <p class="stat-label">Wishlist</p>
+            </div>
+          </div>
+        }
+
+        <div class="divider"></div>
+
+        <p class="sidebar-label">Saved Payment Methods</p>
+        @for (method of paymentMethods(); track method.id) {
+          <div class="payment-row">
+            <span class="material-symbols-outlined payment-icon">credit_card</span>
+            <div>
+              <p class="payment-brand">{{ method.brand }} •••• {{ method.last4 }}</p>
+              <p class="payment-expiry">Expires {{ method.expiryMonth }}/{{ method.expiryYear }}</p>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Primary Address -->
+      @if (primaryAddress(); as addr) {
+        <div class="address-card">
+          <div class="address-header">
+            <h3 class="sidebar-title">Primary Address</h3>
+            <button class="icon-btn">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+          </div>
+          <div class="address-body">
+            {{ addr.street }}<br />
+            {{ addr.city }}, {{ addr.state }} {{ addr.zip }}<br />
+            {{ addr.country }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- Tab content: Wishlist -->
+@if (activeTab() === 'wishlist') {
+  <div class="tab-placeholder">
+    <span class="material-symbols-outlined empty-icon">favorite</span>
+    <p>Your wishlist items will appear here</p>
+  </div>
+}
+
+<!-- Tab content: Addresses -->
+@if (activeTab() === 'addresses') {
+  <div class="addr-grid">
+    <!-- Add New Address -->
+    <button class="addr-add-card">
+      <div class="addr-add-icon">
+        <span class="material-symbols-outlined">add_location</span>
+      </div>
+      <span class="addr-add-title">Add New Address</span>
+      <span class="addr-add-hint">Securely save a new shipping point</span>
+    </button>
+
+    <!-- Address Cards -->
+    @for (addr of addresses(); track addr.id) {
+      <div class="addr-card" [class.addr-card--deleting]="deletingAddressId() === addr.id">
+        @if (addr.isPrimary) {
+          <span class="addr-default-badge">Default</span>
+        }
+
+        <div class="addr-card-header">
+          <div class="addr-icon-wrap" [class.addr-icon-wrap--primary]="addr.isPrimary">
+            <span class="material-symbols-outlined">{{ addr.icon }}</span>
+          </div>
+          <div>
+            <h3 class="addr-label">{{ addr.label }}</h3>
+            <p class="addr-owner">{{ profile()?.firstName }} {{ profile()?.lastName }}</p>
+          </div>
+        </div>
+
+        <div class="addr-details">
+          <div class="addr-detail-row">
+            <span class="material-symbols-outlined addr-detail-icon">map</span>
+            <span>{{ addr.street }}, {{ addr.city }}, {{ addr.state }} {{ addr.zip }}</span>
+          </div>
+          @if (addr.phone) {
+            <div class="addr-detail-row">
+              <span class="material-symbols-outlined addr-detail-icon">phone</span>
+              <span>{{ addr.phone }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="addr-actions">
+          <button class="addr-btn-edit">Edit</button>
+          <button
+            class="addr-btn-delete"
+            [disabled]="deletingAddressId() === addr.id"
+            (click)="deleteAddress(addr.id)"
+          >
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Tab content: Payment -->
+@if (activeTab() === 'payment') {
+  <div class="tab-placeholder">
+    <span class="material-symbols-outlined empty-icon">payments</span>
+    <p>Your payment methods will appear here</p>
+  </div>
+}

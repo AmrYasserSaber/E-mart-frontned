@@ -1,1 +1,141 @@
-<p>edit-profile works!</p>
+@if (loading()) {
+  <div class="loading-overlay">
+    <span class="material-symbols-outlined loading-icon">progress_activity</span>
+  </div>
+} @else {
+  <div class="page-card">
+    <!-- Header -->
+    <div class="card-header">
+      <button class="back-btn" (click)="cancel()">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div>
+        <h1 class="card-title">Edit Profile</h1>
+        <p class="card-subtitle">Update your personal information and profile appearance</p>
+      </div>
+    </div>
+
+    <!-- Avatar -->
+    <div class="avatar-section">
+      <div class="avatar-outer">
+        @if (avatarPreview()) {
+          <img [src]="avatarPreview()!" alt="Profile Preview" class="avatar-img" />
+        } @else {
+          <span class="material-symbols-outlined avatar-icon">person</span>
+        }
+        <label class="avatar-camera-btn" for="avatar-input" title="Change photo">
+          <span class="material-symbols-outlined">photo_camera</span>
+          <input
+            id="avatar-input"
+            type="file"
+            accept="image/*"
+            class="visually-hidden"
+            (change)="onAvatarChange($event)"
+          />
+        </label>
+      </div>
+      <label class="change-photo-btn" for="avatar-input">Change Photo</label>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" novalidate>
+      <!-- Full Name row -->
+      <div class="form-row">
+        <div class="field">
+          <label class="field-label" for="firstName">First Name</label>
+          <div class="input-wrap" [class.input-wrap--error]="hasError('firstName')">
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="input"
+              placeholder="First name"
+              autocomplete="given-name"
+            />
+          </div>
+          @if (hasError('firstName')) {
+            <p class="field-error">First name is required (min 2 characters)</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lastName">Last Name</label>
+          <div class="input-wrap" [class.input-wrap--error]="hasError('lastName')">
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="input"
+              placeholder="Last name"
+              autocomplete="family-name"
+            />
+          </div>
+          @if (hasError('lastName')) {
+            <p class="field-error">Last name is required (min 2 characters)</p>
+          }
+        </div>
+      </div>
+
+      <!-- Email & Phone row -->
+      <div class="form-row">
+        <div class="field">
+          <label class="field-label" for="email">Email Address</label>
+          <div class="input-wrap" [class.input-wrap--error]="hasError('email')">
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="input"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+          </div>
+          @if (hasError('email')) {
+            <p class="field-error">A valid email address is required</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="phone">Phone Number <span class="optional">optional</span></label>
+          <div class="input-wrap">
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="input"
+              placeholder="+1 (555) 000-0000"
+              autocomplete="tel"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio -->
+      <div class="field">
+        <label class="field-label" for="bio">Bio <span class="optional">optional</span></label>
+        <div class="input-wrap input-wrap--textarea">
+          <textarea
+            id="bio"
+            formControlName="bio"
+            class="input input--textarea"
+            placeholder="Tell us a little about yourself…"
+            rows="4"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button type="submit" class="btn-save" [disabled]="saving()">
+          @if (saving()) {
+            <span class="material-symbols-outlined btn-spinner">progress_activity</span>
+          } @else {
+            <span class="material-symbols-outlined">check</span>
+          }
+          {{ saving() ? 'Saving…' : 'Save Changes' }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+}
