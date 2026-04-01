@@ -16,4 +16,6 @@ export interface SidebarNavItem {
 export class Sidebar {
   readonly items = input<SidebarNavItem[]>([]);
   readonly collapsed = input(false);
+  readonly title = input('Admin Portal');
+  readonly subtitle = input('Seller Central');
 }

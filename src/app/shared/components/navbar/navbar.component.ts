@@ -4,11 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Role } from '../../../core/models/user.model';
 import { AuthActions } from '../../store/auth/auth.actions';
-import {
-  selectIsAuthenticated,
-  selectUser,
-  selectUserRole,
-} from '../../store/auth/auth.selectors';
+import { selectIsAuthenticated, selectUser, selectUserRole } from '../../store/auth/auth.selectors';
 import { selectCartCount } from '../../store/cart/cart.selectors';
 import { map } from 'rxjs/operators';
 
@@ -24,9 +20,8 @@ export class NavbarComponent {
   readonly user$ = this.store.select(selectUser);
   readonly isAuth$ = this.store.select(selectIsAuthenticated);
   readonly cartCount$ = this.store.select(selectCartCount);
-  readonly showAdmin$ = this.store
-    .select(selectUserRole)
-    .pipe(map((r) => r === Role.ADMIN));
+  readonly showAdmin$ = this.store.select(selectUserRole).pipe(map((r) => r === Role.ADMIN));
+  readonly showSeller$ = this.store.select(selectUserRole).pipe(map((r) => r === Role.SELLER));
 
   readonly Role = Role;
   readonly mobileMenuOpen = signal(false);
