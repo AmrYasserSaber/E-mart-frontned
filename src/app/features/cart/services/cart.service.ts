@@ -10,6 +10,8 @@ interface CartResponse {
   message?: string;
 }
 
+type CartApiPayload = CartResponse | Cart;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,28 +19,56 @@ export class CartService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
 
+  private normalizeCart(payload: CartApiPayload): Cart {
+    const raw = ('data' in payload ? payload.data : payload) as Omit<
+      Cart,
+      'totalQuantity' | 'totalPrice'
+    > & {
+      totalQuantity?: number;
+      totalPrice?: number;
+    };
+
+    const items = raw.items ?? [];
+    const totalQuantity =
+      raw.totalQuantity ??
+      items.reduce((sum, item) => sum + (item.quantity ?? 0), 0);
+    const totalPrice =
+      raw.totalPrice ??
+      items.reduce(
+        (sum, item) => sum + (item.quantity ?? 0) * (item.product?.price ?? 0),
+        0,
+      );
+
+    return {
+      ...raw,
+      items,
+      totalQuantity,
+      totalPrice,
+    };
+  }
+
   getCart(): Observable<Cart> {
     return this.http
-      .get<CartResponse>(`${this.baseUrl}/cart`)
-      .pipe(map((res) => res.data));
+      .get<CartApiPayload>(`${this.baseUrl}/cart`)
+      .pipe(map((res) => this.normalizeCart(res)));
   }
 
   addItem(productId: string, quantity: number = 1): Observable<Cart> {
     return this.http
-      .post<CartResponse>(`${this.baseUrl}/cart`, { productId, quantity })
-      .pipe(map((res) => res.data));
+      .post<CartApiPayload>(`${this.baseUrl}/cart`, { productId, quantity })
+      .pipe(map((res) => this.normalizeCart(res)));
   }
 
   updateQuantity(itemId: string, quantity: number): Observable<Cart> {
     return this.http
-      .put<CartResponse>(`${this.baseUrl}/cart/items/${itemId}`, { quantity })
-      .pipe(map((res) => res.data));
+      .put<CartApiPayload>(`${this.baseUrl}/cart/items/${itemId}`, { quantity })
+      .pipe(map((res) => this.normalizeCart(res)));
   }
 
   removeItem(itemId: string): Observable<Cart> {
     return this.http
-      .delete<CartResponse>(`${this.baseUrl}/cart/items/${itemId}`)
-      .pipe(map((res) => res.data));
+      .delete<CartApiPayload>(`${this.baseUrl}/cart/items/${itemId}`)
+      .pipe(map((res) => this.normalizeCart(res)));
   }
 
   clearCart(): Observable<void> {

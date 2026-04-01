@@ -17,6 +17,9 @@ import { CartItem } from '../../../core/models/cart.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartComponent implements OnInit {
+  protected readonly imagePlaceholder =
+    'https://img.freepik.com/premium-vector/picture-icon-isolated-white-background-vector-illustration_736051-240.jpg?semt=ais_incoming&w=740&q=80';
+
   private readonly store = inject(Store);
 
   readonly items$: Observable<CartItem[]> = this.store.select(selectCartItems);
@@ -50,6 +53,17 @@ export class CartComponent implements OnInit {
 
   removeItem(itemId: string): void {
     this.store.dispatch(CartActions.removeFromCart({ itemId }));
+  }
+
+  getItemImage(item: CartItem): string | null {
+    return item.product.images?.[0] ?? null;
+  }
+
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement | null;
+    if (!target) return;
+    target.onerror = null;
+    target.src = this.imagePlaceholder;
   }
 
   trackById(index: number, item: any): string {

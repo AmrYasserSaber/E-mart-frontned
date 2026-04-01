@@ -2,12 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { CartService } from '../../../features/cart/services/cart.service';
 import { CartActions } from './cart.actions';
-import { catchError, map, mergeMap, of } from 'rxjs';
+import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Injectable()
 export class CartEffects {
   private readonly actions$ = inject(Actions);
   private readonly cartService = inject(CartService);
+  private readonly toast = inject(ToastService);
 
   loadCart$ = createEffect(() =>
     this.actions$.pipe(
@@ -35,6 +37,15 @@ export class CartEffects {
         ),
       ),
     ),
+  );
+
+  addToCartSuccessToast$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CartActions.addToCartSuccess),
+        tap(() => this.toast.success('Product added to cart.')),
+      ),
+    { dispatch: false },
   );
 
   updateQuantity$ = createEffect(() =>
