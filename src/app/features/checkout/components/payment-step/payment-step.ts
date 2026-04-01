@@ -1,7 +1,8 @@
 import { Component, inject, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CheckoutService, CheckoutStep } from '../../services/checkout.service';
 import { OrderService } from '../../services/order.service';
-import { finalize } from 'rxjs';
+import { AddressService } from '../../services/address.service';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'app-payment-step',
@@ -14,8 +15,18 @@ import { finalize } from 'rxjs';
 export class PaymentStep {
   private readonly checkoutService = inject(CheckoutService);
   private readonly orderService = inject(OrderService);
+  private readonly addressService = inject(AddressService);
+  private readonly paymentService = inject(PaymentService);
 
   readonly loading = signal(false);
+  readonly selectedMethod = signal<'KASHIER' | 'CASH_ON_DELIVERY'>(
+    this.checkoutService.paymentMethod(),
+  );
+
+  selectMethod(method: 'KASHIER' | 'CASH_ON_DELIVERY'): void {
+    this.selectedMethod.set(method);
+    this.checkoutService.setPaymentMethod(method);
+  }
 
   completePurchase(): void {
     const address = this.checkoutService.shippingAddress();
@@ -25,17 +36,53 @@ export class PaymentStep {
     }
 
     this.loading.set(true);
-    this.orderService.placeOrder(address)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: (res) => {
-          this.checkoutService.setOrderId(res.id);
-          this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
+    const paymentMethod = this.selectedMethod();
+    const existingAddressId = this.checkoutService.addressId();
+
+    const proceedWithOrder = (addressId: string) => {
+      this.orderService.placeOrder(addressId, paymentMethod).subscribe({
+        next: (order) => {
+          this.checkoutService.setOrderId(order.id);
+          this.paymentService.createPayment(order.id, paymentMethod).subscribe({
+            next: (payment) => {
+              if (paymentMethod === 'KASHIER' && payment.paymentUrl) {
+                this.loading.set(false);
+                sessionStorage.setItem('checkout_order_id', order.id);
+                window.location.href = payment.paymentUrl;
+                return;
+              }
+              this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
+              this.loading.set(false);
+            },
+            error: (err) => {
+              this.loading.set(false);
+              console.error('Payment initialization failed', err);
+            },
+          });
         },
         error: (err) => {
+          this.loading.set(false);
           console.error('Order failed', err);
-          // Handle error (e.g. show toast)
-        }
+        },
+      });
+    };
+
+    if (existingAddressId) {
+      proceedWithOrder(existingAddressId);
+      return;
+    }
+
+    this.addressService
+      .createAddress(address)
+      .subscribe({
+        next: (savedAddress) => {
+          this.checkoutService.setAddressId(savedAddress.id);
+          proceedWithOrder(savedAddress.id);
+        },
+        error: (err) => {
+          this.loading.set(false);
+          console.error('Address save failed', err);
+        },
       });
   }
 

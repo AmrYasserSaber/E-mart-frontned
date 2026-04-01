@@ -1,5 +1,5 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CheckoutService, CheckoutStep } from './services/checkout.service';
 import { StepIndicator } from './components/step-indicator/step-indicator';
 import { AddressStep } from './components/address-step/address-step';
@@ -22,9 +22,24 @@ import { OrderSummary } from './components/order-summary/order-summary';
   styleUrl: './checkout.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
   private readonly checkoutService = inject(CheckoutService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly currentStep = this.checkoutService.currentStep;
   readonly STEP = CheckoutStep;
+
+  ngOnInit(): void {
+    const query = this.route.snapshot.queryParamMap;
+    const orderId =
+      query.get('orderId') ||
+      query.get('order_id') ||
+      query.get('order') ||
+      sessionStorage.getItem('checkout_order_id');
+
+    if (orderId) {
+      this.checkoutService.setOrderId(orderId);
+      this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
+    }
+  }
 }

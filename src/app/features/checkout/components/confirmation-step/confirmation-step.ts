@@ -28,6 +28,7 @@ export class ConfirmationStep {
   });
 
   newShopping(): void {
+    sessionStorage.removeItem('checkout_order_id');
     this.checkoutService.reset();
   }
 }
