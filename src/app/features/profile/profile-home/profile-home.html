@@ -1,1 +1,449 @@
-<p>profile-home works!</p>
+<!-- Profile Header Card -->
+@if (profile(); as user) {
+  <section class="profile-header">
+    <div class="avatar-wrapper">
+      <div class="avatar-ring">
+        <span class="material-symbols-outlined avatar-placeholder">person</span>
+      </div>
+      @if (user.isVerified) {
+        <div class="verified-badge">
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: 'FILL' 1; font-size: 16px"
+            >verified</span
+          >
+        </div>
+      }
+    </div>
+
+    <div class="profile-info">
+      <h1 class="profile-name">{{ user.firstName }} {{ user.lastName }}</h1>
+      <p class="profile-email">{{ user.email }}</p>
+      <div class="profile-badges">
+        <span class="badge badge--primary">{{ user.membershipTier }}</span>
+        <span class="badge badge--neutral">Member since {{ user.memberSince }}</span>
+      </div>
+    </div>
+
+    <button class="btn-edit-profile" (click)="navigateToEditProfile()">Edit Profile</button>
+  </section>
+} @else if (loading()) {
+  <section class="profile-header profile-header--skeleton">
+    <div class="avatar-wrapper">
+      <div class="avatar-ring skeleton-circle"></div>
+    </div>
+    <div class="profile-info">
+      <div class="skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton-line skeleton-line--md"></div>
+      <div class="skeleton-line skeleton-line--sm"></div>
+    </div>
+  </section>
+}
+
+<!-- Tabs -->
+<section class="tabs-wrapper">
+  <div class="tabs-track">
+    @for (tab of tabs; track tab.key) {
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === tab.key"
+        (click)="setTab(tab.key)"
+      >
+        <span class="material-symbols-outlined tab-icon">{{ tab.icon }}</span>
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+</section>
+
+<!-- Tab Content: Orders -->
+@if (activeTab() === 'orders') {
+  <div class="content-grid">
+    <!-- Timeline -->
+    <div class="timeline-section">
+      <div class="orders-header">
+        <h2 class="section-title">
+          Order History
+          <span class="activity-dot"></span>
+        </h2>
+        @if (ordersTotal() > 0) {
+          <span class="orders-meta">{{ ordersTotal() }} total</span>
+        }
+      </div>
+
+      <div class="timeline">
+        @if (ordersLoading()) {
+          <div class="timeline-skeleton">
+            @for (i of [1, 2, 3]; track i) {
+              <div class="skeleton-row">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-card">
+                  <div class="skeleton-line skeleton-line--short"></div>
+                  <div class="skeleton-line skeleton-line--long"></div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          @for (order of recentOrders(); track order.id) {
+            <div class="timeline-item" [class.timeline-item--faded]="!isActiveOrder(order.status)">
+              <div
+                class="timeline-icon"
+                [class.timeline-icon--active]="isActiveOrder(order.status)"
+              >
+                <span class="material-symbols-outlined">{{ getStatusIcon(order.status) }}</span>
+              </div>
+
+              <div class="timeline-card">
+                <div class="timeline-card-header">
+                  <div>
+                    <p
+                      class="order-status"
+                      [class.order-status--active]="isActiveOrder(order.status)"
+                    >
+                      {{ getStatusLabel(order.status) }}
+                    </p>
+                    <h3 class="order-number">Order #{{ order.id.slice(0, 8).toUpperCase() }}</h3>
+                    <p class="order-date">{{ order.createdAt | date: 'mediumDate' }}</p>
+                  </div>
+                  <span class="shipping-badge"
+                    >{{ order.itemsCount }} item{{ order.itemsCount === 1 ? '' : 's' }}</span
+                  >
+                </div>
+
+                <div class="order-total">
+                  Total: <strong>{{ order.total | currency: 'USD' }}</strong>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (recentOrders().length === 0) {
+            <div class="empty-state">
+              <span class="material-symbols-outlined empty-icon">shopping_bag</span>
+              <p>No orders yet</p>
+            </div>
+          }
+        }
+      </div>
+
+      @if (!ordersLoading() && recentOrders().length > 0) {
+        <div class="orders-pagination">
+          <app-pagination
+            [page]="ordersPage()"
+            [totalPages]="ordersTotalPages()"
+            (pageChange)="onOrdersPageChange($event)"
+          />
+        </div>
+      }
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-section">
+      <!-- Primary Address -->
+      @if (primaryAddress(); as addr) {
+        <div class="address-card">
+          <div class="address-header">
+            <h3 class="sidebar-title">Primary Address</h3>
+          </div>
+          <div class="address-body">
+            {{ addr.street }}<br />
+            {{ addr.city }}<br />
+            {{ addr.phone ?? '' }}
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!-- Tab content: Wishlist -->
+@if (activeTab() === 'wishlist') {
+  @if (wishlist().length === 0) {
+    <div class="tab-placeholder">
+      <span class="material-symbols-outlined empty-icon">favorite</span>
+      <p>Your wishlist is empty</p>
+    </div>
+  } @else {
+    <div class="wishlist-header">
+      <h2 class="section-title">
+        Saved Items
+        <span class="activity-dot"></span>
+      </h2>
+      <span class="wishlist-count">{{ wishlist().length }} items</span>
+    </div>
+
+    <div class="wishlist-grid">
+      @for (item of wishlist(); track item.wishlistId) {
+        <div
+          class="wishlist-item-wrap"
+          [class.wishlist-item-wrap--removing]="removingWishlistId() === item.wishlistId"
+        >
+          <app-product-card [product]="toProduct(item)" />
+          <button
+            class="wishlist-remove-btn"
+            title="Remove from wishlist"
+            [disabled]="removingWishlistId() === item.wishlistId"
+            (click)="removeFromWishlist($event, item.wishlistId)"
+          >
+            <span
+              class="material-symbols-outlined"
+              style="font-variation-settings: 'FILL' 1; font-size: 18px"
+              >favorite</span
+            >
+          </button>
+        </div>
+      }
+    </div>
+  }
+}
+
+<!-- Tab content: Addresses -->
+@if (activeTab() === 'addresses') {
+  <div class="addr-grid">
+    <!-- Add New Address -->
+    <button class="addr-add-card" (click)="openAddAddressModal()">
+      <div class="addr-add-icon">
+        <span class="material-symbols-outlined">add_location</span>
+      </div>
+      <span class="addr-add-title">Add New Address</span>
+      <span class="addr-add-hint">Securely save a new shipping point</span>
+    </button>
+
+    <!-- Address Cards -->
+    @for (addr of addresses(); track addr.id) {
+      <div class="addr-card" [class.addr-card--deleting]="deletingAddressId() === addr.id">
+        @if (addr.isPrimary) {
+          <span class="addr-default-badge">Default</span>
+        }
+
+        <div class="addr-card-header">
+          <div class="addr-icon-wrap" [class.addr-icon-wrap--primary]="addr.isPrimary">
+            <span class="material-symbols-outlined">{{ addr.icon }}</span>
+          </div>
+          <div>
+            <h3 class="addr-label">{{ addr.label }}</h3>
+            <p class="addr-owner">{{ profile()?.firstName }} {{ profile()?.lastName }}</p>
+          </div>
+        </div>
+
+        <div class="addr-details">
+          <div class="addr-detail-row">
+            <span class="material-symbols-outlined addr-detail-icon">map</span>
+            <span>{{ addr.street }}, {{ addr.city }}</span>
+          </div>
+          @if (addr.phone) {
+            <div class="addr-detail-row">
+              <span class="material-symbols-outlined addr-detail-icon">phone</span>
+              <span>{{ addr.phone }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="addr-actions">
+          <button class="addr-btn-edit" (click)="openEditAddressModal(addr)">Edit</button>
+          <button
+            class="addr-btn-delete"
+            [disabled]="deletingAddressId() === addr.id"
+            (click)="deleteAddress(addr.id)"
+          >
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Address Form Modal -->
+<app-modal
+  [open]="showAddressModal()"
+  [title]="editingAddressId() ? 'Edit Address' : 'Add New Address'"
+  [disableClose]="savingAddress()"
+  (closed)="closeAddressModal()"
+>
+  <form
+    [formGroup]="addressForm"
+    (ngSubmit)="saveAddress()"
+    class="address-form"
+    style="display: flex; flex-direction: column; gap: 1.5rem; padding: 1rem 0"
+  >
+    <div class="form-row">
+      <div class="field">
+        <label class="field-label" for="addr-label"
+          >Label <span class="optional">(optional)</span></label
+        >
+        <div class="input-wrap">
+          <input
+            id="addr-label"
+            type="text"
+            formControlName="label"
+            class="input"
+            placeholder="e.g. Home, Office"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+      <div class="field">
+        <label class="field-label" for="addr-firstName">First Name</label>
+        <div
+          class="input-wrap"
+          [class.input-wrap--error]="
+            addressForm.get('firstName')?.invalid && addressForm.get('firstName')?.touched
+          "
+        >
+          <input
+            id="addr-firstName"
+            type="text"
+            formControlName="firstName"
+            class="input"
+            placeholder="First Name"
+          />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="addr-lastName">Last Name</label>
+        <div
+          class="input-wrap"
+          [class.input-wrap--error]="
+            addressForm.get('lastName')?.invalid && addressForm.get('lastName')?.touched
+          "
+        >
+          <input
+            id="addr-lastName"
+            type="text"
+            formControlName="lastName"
+            class="input"
+            placeholder="Last Name"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="addr-street">Street Address</label>
+      <div
+        class="input-wrap"
+        [class.input-wrap--error]="
+          addressForm.get('street')?.invalid && addressForm.get('street')?.touched
+        "
+      >
+        <input
+          id="addr-street"
+          type="text"
+          formControlName="street"
+          class="input"
+          placeholder="123 Main St"
+        />
+      </div>
+    </div>
+
+    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+      <div class="field">
+        <label class="field-label" for="addr-city">City</label>
+        <div
+          class="input-wrap"
+          [class.input-wrap--error]="
+            addressForm.get('city')?.invalid && addressForm.get('city')?.touched
+          "
+        >
+          <input
+            id="addr-city"
+            type="text"
+            formControlName="city"
+            class="input"
+            placeholder="City name"
+          />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="addr-phone"
+          >Phone Number <span class="optional">(optional)</span></label
+        >
+        <div class="input-wrap">
+          <input
+            id="addr-phone"
+            type="tel"
+            formControlName="phone"
+            class="input"
+            placeholder="+123456789"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row checkbox-row">
+      <label
+        class="checkbox-label"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          color: var(--color-on-surface);
+          font-weight: 500;
+          font-size: 0.875rem;
+          margin-top: 0.5rem;
+        "
+      >
+        <input
+          type="checkbox"
+          formControlName="isPrimary"
+          class="checkbox-input"
+          style="width: 1.125rem; height: 1.125rem; accent-color: var(--color-primary-container)"
+        />
+        Set as primary address
+      </label>
+    </div>
+
+    <div class="modal-actions" style="display: flex; gap: 1rem; margin-top: 1rem">
+      <button
+        type="button"
+        class="btn-cancel"
+        [disabled]="savingAddress()"
+        (click)="closeAddressModal()"
+        style="
+          flex: 1;
+          padding: 0.75rem;
+          background-color: var(--color-surface-container-high);
+          color: var(--color-on-surface);
+          border: none;
+          border-radius: var(--radius-md);
+          font-weight: 600;
+          cursor: pointer;
+        "
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-save"
+        [disabled]="addressForm.invalid || savingAddress()"
+        style="
+          flex: 1;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem;
+          background-color: var(--color-primary-container);
+          color: white;
+          border: none;
+          border-radius: var(--radius-md);
+          font-weight: 600;
+          cursor: pointer;
+        "
+      >
+        <span class="material-symbols-outlined" style="font-size: 1.25rem">save</span>
+        <span>Save Address</span>
+        @if (savingAddress()) {
+          <span class="material-symbols-outlined" style="animation: spin 1s linear infinite"
+            >progress_activity</span
+          >
+        }
+      </button>
+    </div>
+  </form>
+</app-modal>

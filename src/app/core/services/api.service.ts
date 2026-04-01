@@ -59,7 +59,10 @@ export class ApiService {
       .pipe(map((r) => r.data));
   }
 
-  /** Raw GET when the backend does not wrap (should be rare) */
+  deleteRaw(path: string): Observable<void> {
+    return this.http.delete<void>(this.url(path));
+  }
+
   getRaw<T>(path: string): Observable<T> {
     return this.http.get<T>(this.url(path));
   }

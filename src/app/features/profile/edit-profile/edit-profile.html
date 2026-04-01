@@ -1,1 +1,87 @@
-<p>edit-profile works!</p>
+@if (loading()) {
+  <div class="loading-overlay">
+    <span class="material-symbols-outlined loading-icon">progress_activity</span>
+  </div>
+} @else {
+  <div class="page-card">
+    <!-- Header -->
+    <div class="card-header">
+      <button class="back-btn" (click)="cancel()">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div>
+        <h1 class="card-title">Edit Profile</h1>
+        <p class="card-subtitle">Update your name and email address</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form" novalidate>
+      <!-- Full Name row -->
+      <div class="form-row">
+        <div class="field">
+          <label class="field-label" for="firstName">First Name</label>
+          <div class="input-wrap" [class.input-wrap--error]="hasError('firstName')">
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              class="input"
+              placeholder="First name"
+              autocomplete="given-name"
+            />
+          </div>
+          @if (hasError('firstName')) {
+            <p class="field-error">First name is required</p>
+          }
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="lastName">Last Name</label>
+          <div class="input-wrap" [class.input-wrap--error]="hasError('lastName')">
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              class="input"
+              placeholder="Last name"
+              autocomplete="family-name"
+            />
+          </div>
+          @if (hasError('lastName')) {
+            <p class="field-error">Last name is required</p>
+          }
+        </div>
+      </div>
+
+      <!-- Email (read-only) -->
+      <div class="field">
+        <label class="field-label" for="email">Email Address</label>
+        <div class="input-wrap input-wrap--disabled">
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            class="input"
+            readonly
+            tabindex="-1"
+          />
+        </div>
+        <p class="field-hint">Email address cannot be changed.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button type="submit" class="btn-save" [disabled]="saving()">
+          @if (saving()) {
+            <span class="material-symbols-outlined btn-spinner">progress_activity</span>
+          } @else {
+            <span class="material-symbols-outlined">check</span>
+          }
+          {{ saving() ? 'Saving…' : 'Save Changes' }}
+        </button>
+        <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+}
