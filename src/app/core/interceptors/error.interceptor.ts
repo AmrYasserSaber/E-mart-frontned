@@ -5,6 +5,7 @@ import {
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../services/toast.service';
+import { SUPPRESS_ERROR_TOAST } from '../tokens/http.tokens';
 
 function formatErrorMessage(err: HttpErrorResponse): string {
   const body = err.error as
@@ -20,12 +21,13 @@ function formatErrorMessage(err: HttpErrorResponse): string {
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ToastService);
+  const suppressToast = req.context.get(SUPPRESS_ERROR_TOAST);
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       // 401s are handled upstream by authRefreshInterceptor (which dispatches
       // logout on refresh failure). Skip toast for 401 to avoid duplicates.
-      if (err.status !== 401) {
+      if (!suppressToast && err.status !== 401) {
         toast.error(formatErrorMessage(err));
       }
       return throwError(() => err);
