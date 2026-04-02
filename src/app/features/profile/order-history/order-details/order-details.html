@@ -1,0 +1,195 @@
+<div class="od-wrapper">
+
+  <!-- Back link -->
+  <a routerLink="/profile" class="od-back-link">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Back to profile
+  </a>
+
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="od-skeleton-grid">
+      <div class="od-skeleton-main">
+        <app-skeleton-loader variant="card" />
+        <app-skeleton-loader variant="card" />
+      </div>
+      <div class="od-skeleton-side">
+        <app-skeleton-loader variant="card" />
+      </div>
+    </div>
+  }
+
+  <!-- Error state -->
+  @else if (error()) {
+    <app-empty-state
+      title="Order not found"
+      [message]="error()!"
+      actionLabel="Go to profile"
+    />
+  }
+
+  <!-- Order loaded -->
+  @else if (order(); as o) {
+    <!-- Page header -->
+    <header class="od-header">
+      <div class="od-header-left">
+        <h1 class="od-title">Order {{ orderNumber() }}</h1>
+        <p class="od-subtitle">Placed on {{ o.createdAt | date: 'MMMM d, y' }}</p>
+      </div>
+
+      <div
+        class="od-status-badge"
+        [ngClass]="{
+          'od-status-badge--active': isActiveOrder(o.status),
+          'od-status-badge--delivered': o.status === 'delivered',
+          'od-status-badge--cancelled': o.status === 'cancelled',
+        }"
+      >
+        <span class="material-symbols-outlined od-status-icon">{{ statusIcon(o.status) }}</span>
+        {{ o.status | titlecase }}
+      </div>
+    </header>
+
+    <div class="od-grid">
+
+      <!-- LEFT COLUMN -->
+      <div class="od-main-col">
+
+        <!-- Order items -->
+        <section class="od-card">
+          <h2 class="od-card-title">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            Items
+          </h2>
+
+          <div class="od-items-list">
+            @for (item of o.items; track item.product.id + $index) {
+              <article class="od-item">
+                <div class="od-item-icon">
+                  <span class="material-symbols-outlined">inventory_2</span>
+                </div>
+                <div class="od-item-info">
+                  <p class="od-item-title">{{ item.product.title }}</p>
+                  <p class="od-item-meta">Qty: {{ item.qty }}  ×  {{ item.price | currency: 'USD' }}</p>
+                </div>
+                <p class="od-item-total">{{ lineTotal(item.price, item.qty) | currency: 'USD' }}</p>
+              </article>
+            }
+          </div>
+
+          <!-- Order total -->
+          <div class="od-total-row">
+            <span>Order Total</span>
+            <strong class="od-total-amount">{{ o.total | currency: 'USD' }}</strong>
+          </div>
+        </section>
+
+        <!-- Shipping address -->
+        @if (o.shippingAddress) {
+          <section class="od-card">
+            <h2 class="od-card-title">
+              <span class="material-symbols-outlined">location_on</span>
+              Shipping Address
+            </h2>
+
+            <div class="od-address">
+              @if (o.shippingAddress.label) {
+                <p class="od-address-label">{{ o.shippingAddress.label }}</p>
+              }
+              <p class="od-address-name">
+                {{ o.shippingAddress.firstName }} {{ o.shippingAddress.lastName }}
+              </p>
+              <p class="od-address-line">{{ o.shippingAddress.street }}</p>
+              <p class="od-address-line">{{ o.shippingAddress.city }}</p>
+              @if (o.shippingAddress.phone) {
+                <p class="od-address-phone">
+                  <span class="material-symbols-outlined od-address-phone-icon">call</span>
+                  {{ o.shippingAddress.phone }}
+                </p>
+              }
+            </div>
+          </section>
+        }
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <aside class="od-side-col">
+
+        <!-- Summary card -->
+        <section class="od-card od-summary-card">
+          <h2 class="od-card-title">
+            <span class="material-symbols-outlined">receipt_long</span>
+            Summary
+          </h2>
+
+          <dl class="od-summary-list">
+            <div class="od-summary-row">
+              <dt>Items</dt>
+              <dd>{{ o.items.length }}</dd>
+            </div>
+            <div class="od-summary-row">
+              <dt>Status</dt>
+              <dd>
+                <span
+                  class="od-inline-status"
+                  [ngClass]="{
+                    'od-inline-status--active': isActiveOrder(o.status),
+                    'od-inline-status--delivered': o.status === 'delivered',
+                    'od-inline-status--cancelled': o.status === 'cancelled',
+                  }"
+                >{{ o.status | titlecase }}</span>
+              </dd>
+            </div>
+            <div class="od-summary-row od-summary-row--total">
+              <dt>Total</dt>
+              <dd class="od-summary-total">{{ o.total | currency: 'USD' }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <!-- Payment card -->
+        <section class="od-card">
+          <h2 class="od-card-title">
+            <span class="material-symbols-outlined">payments</span>
+            Payment
+          </h2>
+
+          <div class="od-payment">
+            <div class="od-payment-row">
+              <span class="od-payment-label">Method</span>
+              <span class="od-payment-value">{{ paymentProviderLabel(o.payment.provider) }}</span>
+            </div>
+            <div class="od-payment-row">
+              <span class="od-payment-label">Status</span>
+              <span
+                class="od-payment-status"
+                [ngClass]="{
+                  'od-payment-status--paid': o.payment.status === 'paid',
+                  'od-payment-status--pending': o.payment.status === 'pending',
+                  'od-payment-status--failed': o.payment.status === 'failed',
+                }"
+              >
+                <span class="material-symbols-outlined od-payment-status-icon">
+                  {{ paymentStatusIcon(o.payment.status) }}
+                </span>
+                {{ o.payment.status | titlecase }}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Support nudge -->
+        <div class="od-support">
+          <span class="material-symbols-outlined od-support-icon">contact_support</span>
+          <div>
+            <p class="od-support-title">Need help with this order?</p>
+            <a routerLink="/profile" class="od-support-link">Return to profile</a>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  }
+
+</div>

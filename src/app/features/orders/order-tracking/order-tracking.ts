@@ -90,19 +90,18 @@ export class OrderTrackingComponent {
               this.ordersService.getOrderById(listItem.id).pipe(
                 catchError(() =>
                   of({
-                    ...listItem,
                     id: listItem.id,
+                    total: listItem.total,
+                    status: listItem.status,
                     items: [],
-                    shippingAddress: {
-                      street: '',
-                      city: '',
-                      zip: '',
-                      country: '',
-                    },
+                    shippingAddressId: null,
+                    shippingAddress: null,
                     payment: {
-                      provider: 'kashier' as const,
+                      method: 'CASH_ON_DELIVERY',
+                      provider: 'cash_on_delivery' as const,
                       status: 'pending',
                     },
+                    createdAt: listItem.createdAt,
                   } satisfies OrderDetailsResponse),
                 ),
                 map((details) => this.mapOrderToTrackingModel(listItem, details)),
