@@ -9,7 +9,7 @@ import {
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EMPTY, finalize, switchMap } from 'rxjs';
+import { EMPTY, catchError, finalize, switchMap } from 'rxjs';
 import { ProductCategory, ProductService } from '../services/product.service';
 import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -31,6 +31,8 @@ export class ProductForm {
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
+  readonly loadError = signal<string | null>(null);
+  readonly categoriesLoadError = signal<string | null>(null);
   readonly categories = signal<ProductCategory[]>([]);
   readonly imagePreview = signal<string[]>([]);
   readonly selectedFiles = signal<File[]>([]);
@@ -59,24 +61,35 @@ export class ProductForm {
 
           if (!id) {
             this.imagePreview.set([]);
+            this.loadError.set(null);
             return EMPTY;
           }
 
+          this.imagePreview.set([]);
+          this.loadError.set(null);
           this.loading.set(true);
-          return this.productService.getProduct(id).pipe(finalize(() => this.loading.set(false)));
+          return this.productService.getProduct(id).pipe(
+            catchError((err) => {
+              this.loading.set(false);
+              this.loadError.set(this.toErrorMessage(err));
+              return EMPTY;
+            }),
+            finalize(() => this.loading.set(false)),
+          );
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((product) => {
         if (!product) return;
 
+        this.loadError.set(null);
         this.form.patchValue({
           title: product.title,
           price: product.price,
           categoryId: product.categoryId,
           description: product.description,
           stock: product.stock,
-          featured: false,
+          featured: product.featured ?? false,
           visible: product.stock > 0,
         });
         this.imagePreview.set(this.normalizePreviewUrls(product.images));
@@ -110,6 +123,7 @@ export class ProductForm {
       categoryId: value.categoryId,
       description: value.description.trim(),
       stock: value.visible ? Number(value.stock) : 0,
+      featured: value.featured,
       images: this.selectedFiles(),
     };
 
@@ -178,8 +192,17 @@ export class ProductForm {
   private loadCategories(): void {
     this.productService
       .listCategories()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        catchError((err) => {
+          this.categoriesLoadError.set(this.toErrorMessage(err));
+          this.categories.set([]);
+          this.form.get('categoryId')?.disable();
+          return EMPTY;
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((categories) => {
+        this.categoriesLoadError.set(null);
         this.categories.set(categories);
         if (!this.form.controls.categoryId.value && categories[0]) {
           this.form.controls.categoryId.setValue(categories[0].id);

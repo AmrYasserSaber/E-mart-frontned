@@ -61,7 +61,9 @@
                 class="border-t border-surface-container-high/60 hover:bg-surface-container-high/30"
               >
                 <td class="px-6 py-5 font-bold text-primary">{{ orderNumber(order.id) }}</td>
-                <td class="px-6 py-5 text-on-surface-variant">Current customer</td>
+                <td class="px-6 py-5 text-on-surface-variant">
+                  {{ order.customer ?? 'Unknown customer' }}
+                </td>
                 <td class="px-6 py-5 font-mono font-bold text-orange-900">
                   {{ order.total | currency: 'USD' }}
                 </td>
@@ -73,6 +75,14 @@
                       'bg-blue-100 text-blue-700': order.status === 'confirmed',
                       'bg-amber-100 text-amber-700': order.status === 'shipped',
                       'bg-green-100 text-green-700': order.status === 'delivered',
+                      'bg-red-100 text-red-700': order.status === 'cancelled',
+                      'bg-slate-100 text-slate-700': ![
+                        'pending',
+                        'confirmed',
+                        'shipped',
+                        'delivered',
+                        'cancelled',
+                      ].includes(order.status),
                     }"
                   >
                     {{ statusLabel(order.status) }}

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, catchError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
@@ -57,18 +58,36 @@ export class OrderService {
         params: { page, limit },
       })
       .pipe(
-        catchError(() =>
-          this.api.get<OrdersListResponse>('/admin/orders', {
-            params: { page, limit },
-          }),
-        ),
+        catchError((err: unknown) => {
+          if (
+            err instanceof HttpErrorResponse &&
+            (err.status === 403 || err.status === 404)
+          ) {
+            return this.api.get<OrdersListResponse>('/admin/orders', {
+              params: { page, limit },
+            });
+          }
+
+          return throwError(() => err);
+        }),
       );
   }
 
   getOrder(id: string): Observable<OrderDetailsResponse> {
     return this.api
       .get<OrderDetailsResponse>(`/orders/seller/${id}`)
-      .pipe(catchError(() => this.api.get<OrderDetailsResponse>(`/orders/${id}`)));
+      .pipe(
+        catchError((err: unknown) => {
+          if (
+            err instanceof HttpErrorResponse &&
+            (err.status === 403 || err.status === 404)
+          ) {
+            return this.api.get<OrderDetailsResponse>(`/orders/${id}`);
+          }
+
+          return throwError(() => err);
+        }),
+      );
   }
 
   updateOrderStatus(
@@ -78,11 +97,19 @@ export class OrderService {
     return this.api
       .patch<UpdateOrderStatusResponse>(`/orders/seller/${id}/status`, { status })
       .pipe(
-        catchError(() =>
-          this.api.patch<UpdateOrderStatusResponse>(`/admin/orders/${id}/status`, {
-            status,
-          }),
-        ),
+        catchError((err: unknown) => {
+          if (
+            err instanceof HttpErrorResponse &&
+            (err.status === 403 || err.status === 404)
+          ) {
+            return this.api.patch<UpdateOrderStatusResponse>(
+              `/admin/orders/${id}/status`,
+              { status },
+            );
+          }
+
+          return throwError(() => err);
+        }),
       );
   }
 }

@@ -35,9 +35,11 @@ export class OrderDetails {
   readonly loading = signal(true);
   readonly updating = signal(false);
   readonly error = signal<string | null>(null);
+  readonly mutationError = signal<string | null>(null);
   readonly order = signal<OrderDetailsResponse | null>(null);
 
   readonly selectedStatus = signal<Exclude<OrderStatus, 'cancelled'>>('confirmed');
+  readonly isCancelled = computed(() => this.order()?.status === 'cancelled');
 
   readonly orderNumber = computed(() => {
     const id = this.order()?.id;
@@ -95,6 +97,7 @@ export class OrderDetails {
           }
           this.loading.set(true);
           this.error.set(null);
+          this.mutationError.set(null);
           return this.orderService.getOrder(id).pipe(finalize(() => this.loading.set(false)));
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -102,6 +105,7 @@ export class OrderDetails {
       .subscribe({
         next: (order) => {
           this.order.set(order);
+          this.mutationError.set(null);
           if (order.status !== 'cancelled') {
             this.selectedStatus.set(order.status as Exclude<OrderStatus, 'cancelled'>);
           }
@@ -118,6 +122,7 @@ export class OrderDetails {
       return;
     }
 
+    this.mutationError.set(null);
     this.updating.set(true);
 
     this.orderService
@@ -138,7 +143,7 @@ export class OrderDetails {
           );
         },
         error: () => {
-          this.error.set('Failed to update order status.');
+          this.mutationError.set('Failed to update order status.');
         },
       });
   }

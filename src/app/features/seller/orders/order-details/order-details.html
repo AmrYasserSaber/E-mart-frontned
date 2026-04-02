@@ -43,20 +43,29 @@
           <select
             class="neomorph-inset rounded-xl border-none bg-surface-container-high px-4 py-3 font-semibold text-on-surface-variant"
             [value]="selectedStatus()"
+            [disabled]="isCancelled()"
             (change)="selectedStatus.set($any($event.target).value)"
           >
+            <option value="pending">Pending</option>
             <option value="confirmed">Confirmed</option>
             <option value="shipped">Shipped</option>
             <option value="delivered">Delivered</option>
           </select>
           <button
             type="button"
-            [disabled]="updating()"
+            [disabled]="updating() || isCancelled()"
             (click)="updateStatus()"
             class="rounded-xl bg-primary-container px-6 py-3 font-bold text-on-primary shadow-lg shadow-orange-700/20"
           >
             Update Status
           </button>
+          @if (mutationError()) {
+            <p
+              class="ml-3 rounded-xl bg-error-container px-4 py-2 text-sm font-bold text-on-error-container"
+            >
+              {{ mutationError() }}
+            </p>
+          }
         </div>
       </div>
 

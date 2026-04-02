@@ -1,60 +1,4 @@
-<main class="min-h-screen bg-surface font-body text-on-surface antialiased">
-  <header
-    class="fixed left-0 right-0 top-0 z-50 flex w-full items-center justify-between bg-orange-50/80 px-6 py-4 shadow-[0px_4px_20px_rgba(139,114,102,0.08)] backdrop-blur-md"
-  >
-    <div class="font-display text-2xl font-black tracking-tight text-primary">E-mart</div>
-    <div class="hidden items-center gap-8 md:flex">
-      <nav class="flex gap-6">
-        <a
-          routerLink="/seller"
-          class="rounded-lg px-3 py-1 font-medium text-stone-500 transition-colors hover:bg-orange-100/50"
-          >Dashboard</a
-        >
-        <a
-          routerLink="/seller/products"
-          class="border-b-2 border-orange-700 px-3 py-1 font-bold text-orange-800"
-          >Inventory</a
-        >
-        <a
-          routerLink="/seller/orders"
-          class="rounded-lg px-3 py-1 font-medium text-stone-500 transition-colors hover:bg-orange-100/50"
-          >Orders</a
-        >
-      </nav>
-    </div>
-  </header>
-
-  <div class="flex min-h-screen pt-20">
-    <aside
-      class="sticky left-0 top-20 hidden h-[calc(100vh-5rem)] w-64 flex-col rounded-r-[2rem] bg-orange-100/30 py-8 pl-4 pr-0 shadow-[12px_0px_40px_rgba(139,114,102,0.04)] md:flex"
-    >
-      <div class="mb-8 px-4 font-display text-xl font-bold text-primary">Admin Portal</div>
-      <nav class="flex-1 space-y-2">
-        <a class="flex items-center gap-3 px-4 py-3 text-stone-600" routerLink="/seller">
-          <span class="material-symbols-outlined">dashboard</span>
-          <span class="font-medium">Dashboard</span>
-        </a>
-        <a
-          class="flex items-center gap-3 rounded-l-full border-r-4 border-orange-700 bg-orange-100 px-4 py-3 font-semibold text-orange-800"
-          routerLink="/seller/products"
-        >
-          <span class="material-symbols-outlined">inventory_2</span>
-          <span class="font-medium">Inventory</span>
-        </a>
-        <a class="flex items-center gap-3 px-4 py-3 text-stone-600" routerLink="/seller/orders">
-          <span class="material-symbols-outlined">shopping_cart</span>
-          <span class="font-medium">Orders</span>
-        </a>
-      </nav>
-      <div class="mt-auto px-4 pr-8">
-        <div class="neomorphic-outset-sm rounded-xl bg-surface-container-lowest p-4">
-          <p class="mb-1 text-xs font-bold uppercase tracking-widest text-orange-800/60">Status</p>
-          <p class="text-sm font-bold text-orange-800">Seller Central Active</p>
-        </div>
-      </div>
-    </aside>
-
-    <main class="mx-auto w-full max-w-5xl flex-1 px-6 py-8 pb-32 md:px-12">
+<main class="mx-auto w-full max-w-5xl flex-1 px-6 py-8 pb-32 md:px-12">
       <div class="mb-10">
         <nav class="mb-4 flex items-center gap-2 text-sm text-on-surface-variant">
           <span>Inventory</span>
@@ -72,7 +16,19 @@
         </p>
       </div>
 
-      @if (error()) {
+      @if (loadError()) {
+        <div
+          class="mb-6 rounded-xl bg-error-container px-5 py-3 text-sm font-medium text-on-error-container"
+        >
+          {{ loadError() }}
+        </div>
+      } @else if (categoriesLoadError()) {
+        <div
+          class="mb-6 rounded-xl bg-error-container px-5 py-3 text-sm font-medium text-on-error-container"
+        >
+          {{ categoriesLoadError() }}
+        </div>
+      } @else if (error()) {
         <div
           class="mb-6 rounded-xl bg-error-container px-5 py-3 text-sm font-medium text-on-error-container"
         >
@@ -89,7 +45,7 @@
                 >Product Imagery</label
               >
               <div
-                class="neomorphic-inset relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl bg-surface-container-high p-8 text-center transition-all hover:bg-surface-container"
+                class="neomorph-inset relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl bg-surface-container-high p-8 text-center transition-all hover:bg-surface-container"
               >
                 <input
                   type="file"
@@ -124,7 +80,7 @@
                 }
                 @if (!imagePreview().length) {
                   <div
-                    class="neomorphic-inset flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-surface-container-high text-stone-400"
+                    class="neomorph-inset flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-surface-container-high text-stone-400"
                   >
                     <span class="material-symbols-outlined">image</span>
                   </div>
@@ -135,10 +91,10 @@
 
           <div class="space-y-8 lg:col-span-7">
             <div
-              class="neomorphic-inset mb-8 flex w-max rounded-full bg-surface-container-high p-1"
+              class="neomorph-inset mb-8 flex w-max rounded-full bg-surface-container-high p-1"
             >
               <button
-                class="neomorphic-outset-sm rounded-full bg-surface-container-lowest px-6 py-2 text-sm font-bold text-orange-800"
+                class="neomorph-outset-sm rounded-full bg-surface-container-lowest px-6 py-2 text-sm font-bold text-orange-800"
                 type="button"
               >
                 General
@@ -154,7 +110,7 @@
                 <input
                   type="text"
                   formControlName="title"
-                  class="neomorphic-inset w-full rounded-2xl border-none bg-surface-container-high px-6 py-4 text-lg font-medium placeholder:text-stone-400 transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
+                  class="neomorph-inset w-full rounded-2xl border-none bg-surface-container-high px-6 py-4 text-lg font-medium placeholder:text-stone-400 transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
                   placeholder="e.g. Hand-Thrown Terra Cotta Vessel"
                 />
               </div>
@@ -172,7 +128,7 @@
                     <input
                       type="number"
                       formControlName="price"
-                      class="neomorphic-inset w-full rounded-2xl border-none bg-surface-container-high py-4 pl-10 pr-6 font-bold transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
+                      class="neomorph-inset w-full rounded-2xl border-none bg-surface-container-high py-4 pl-10 pr-6 font-bold transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
                       placeholder="0.00"
                     />
                   </div>
@@ -185,7 +141,7 @@
                   >
                   <select
                     formControlName="categoryId"
-                    class="neomorphic-inset w-full appearance-none rounded-2xl border-none bg-surface-container-high px-6 py-4 font-medium transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
+                    class="neomorph-inset w-full appearance-none rounded-2xl border-none bg-surface-container-high px-6 py-4 font-medium transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
                   >
                     @for (category of categories(); track category.id) {
                       <option [value]="category.id">{{ category.name }}</option>
@@ -202,7 +158,7 @@
                 <textarea
                   rows="5"
                   formControlName="description"
-                  class="neomorphic-inset w-full resize-none rounded-3xl border-none bg-surface-container-high px-6 py-4 placeholder:text-stone-400 transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
+                  class="neomorph-inset w-full resize-none rounded-3xl border-none bg-surface-container-high px-6 py-4 placeholder:text-stone-400 transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
                   placeholder="Describe the craftsmanship and soul of this piece..."
                 ></textarea>
               </div>
@@ -215,22 +171,30 @@
                 <input
                   type="number"
                   formControlName="stock"
-                  class="neomorphic-inset w-full rounded-2xl border-none bg-surface-container-high px-6 py-4 font-bold transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
+                  class="neomorph-inset w-full rounded-2xl border-none bg-surface-container-high px-6 py-4 font-bold transition-all focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-fixed-dim"
                   placeholder="0"
                 />
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-8 pt-4">
+            <div class="grid grid-cols-1 gap-8 pt-4 sm:grid-cols-2">
               <div
-                class="neomorphic-outset-sm flex items-center justify-between rounded-2xl bg-surface-container-low p-4"
+                class="neomorph-outset-sm flex items-center justify-between rounded-2xl bg-surface-container-low p-4"
               >
                 <div>
-                  <p class="font-bold text-orange-900">Featured Listing</p>
+                  <p
+                    id="featured-toggle-label"
+                    class="whitespace-nowrap font-bold text-orange-900"
+                  >
+                    Featured Listing
+                  </p>
                   <p class="text-xs text-stone-500">Show on homepage</p>
                 </div>
                 <button
                   type="button"
+                  role="switch"
+                  [attr.aria-checked]="form.controls.featured.value"
+                  aria-labelledby="featured-toggle-label"
                   class="relative h-6 w-12 rounded-full p-1 transition-colors"
                   [ngClass]="
                     form.controls.featured.value ? 'bg-primary-container' : 'bg-outline-variant'
@@ -245,14 +209,17 @@
               </div>
 
               <div
-                class="neomorphic-outset-sm flex items-center justify-between rounded-2xl bg-surface-container-low p-4"
+                class="neomorph-outset-sm flex items-center justify-between rounded-2xl bg-surface-container-low p-4"
               >
                 <div>
-                  <p class="font-bold text-orange-900">Visible</p>
+                  <p id="visible-toggle-label" class="font-bold text-orange-900">Visible</p>
                   <p class="text-xs text-stone-500">Active in store</p>
                 </div>
                 <button
                   type="button"
+                  role="switch"
+                  [attr.aria-checked]="form.controls.visible.value"
+                  aria-labelledby="visible-toggle-label"
                   class="relative h-6 w-12 rounded-full p-1 transition-colors"
                   [ngClass]="
                     form.controls.visible.value ? 'bg-primary-container' : 'bg-outline-variant'
@@ -279,13 +246,11 @@
           </button>
           <button
             type="submit"
-            [disabled]="saving() || loading()"
+            [disabled]="saving() || loading() || loadError() || categoriesLoadError()"
             class="w-full rounded-xl bg-linear-to-br from-primary to-primary-container px-12 py-5 text-lg font-bold text-white shadow-lg shadow-orange-700/30 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 md:w-auto"
           >
             {{ isEditMode() ? 'Update Listing' : 'Publish Listing' }}
           </button>
         </div>
       </form>
-    </main>
-  </div>
 </main>

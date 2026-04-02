@@ -9,7 +9,7 @@ import {
 import { CurrencyPipe, NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { EMPTY, expand, finalize, last } from 'rxjs';
 import { ProductCategory, ProductService, SellerProduct } from '../services/product.service';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { SkeletonLoader } from '../../../shared/components/skeleton-loader/skeleton-loader';
@@ -24,6 +24,8 @@ import { SkeletonLoader } from '../../../shared/components/skeleton-loader/skele
 export class Products {
   private readonly productService = inject(ProductService);
   private readonly destroyRef = inject(DestroyRef);
+
+  private readonly stockBackup = new Map<string, number>();
 
   readonly loading = signal(true);
   readonly deletingId = signal<string | null>(null);
@@ -82,18 +84,45 @@ export class Products {
   }
 
   toggleActive(product: SellerProduct): void {
-    const stock = product.stock > 0 ? 0 : 20;
+    const isCurrentlyActive = product.stock > 0;
+
+    let nextStock: number;
+    if (isCurrentlyActive) {
+      // Turning off: preserve existing stock in memory, then set to 0.
+      this.stockBackup.set(product.id, product.stock);
+      nextStock = 0;
+    } else {
+      // Turning on: restore previous stock if available; otherwise prompt for restock qty.
+      nextStock = this.stockBackup.get(product.id) ?? 0;
+
+      if (nextStock <= 0) {
+        const input = window.prompt(
+          `Enter restock quantity for "${product.title}"`,
+          '1',
+        );
+        if (input === null) return;
+
+        const parsed = Number(input);
+        if (!Number.isFinite(parsed) || parsed <= 0) return;
+
+        nextStock = Math.floor(parsed);
+      }
+    }
+
     this.productService
       .updateProduct(product.id, {
         title: product.title,
         description: product.description,
         price: product.price,
-        stock,
+        stock: nextStock,
         categoryId: product.categoryId,
         images: [],
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((updated) => {
+        if (updated.stock > 0) {
+          this.stockBackup.set(updated.id, updated.stock);
+        }
         this.products.update((items) => items.map((p) => (p.id === updated.id ? updated : p)));
       });
   }
@@ -122,8 +151,7 @@ export class Products {
   }
 
   productImage(product: SellerProduct): string {
-    const fallback =
-      'https://images.ncsl.org/image/upload/c_fill,g_auto,w_600/f_auto,q_auto/v1666843745/website/1320834676.jpg';
+    const fallback = '/product-placeholder.svg';
     const first = product.images?.[0]?.trim();
 
     if (!first) {
@@ -151,14 +179,32 @@ export class Products {
     this.loading.set(true);
     this.error.set(null);
 
+    const limit = 100;
+    const aggregated: SellerProduct[] = [];
+
     this.productService
-      .listProducts({ page: 1, limit: 100 })
+      .listProducts({ page: 1, limit })
       .pipe(
-        finalize(() => this.loading.set(false)),
+        expand((response, index) => {
+          aggregated.push(...response.data);
+
+          const shouldContinue =
+            aggregated.length < response.total && response.data.length === limit;
+
+          if (!shouldContinue) {
+            return EMPTY;
+          }
+
+          // index is 0-based; page 1 was emitted as index 0.
+          const nextPage = index + 2;
+          return this.productService.listProducts({ page: nextPage, limit });
+        }),
+        last(),
         takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
       )
       .subscribe({
-        next: (response) => this.products.set(response.data),
+        next: () => this.products.set(aggregated),
         error: () => this.error.set('Unable to load products.'),
       });
   }

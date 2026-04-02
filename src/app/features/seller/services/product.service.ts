@@ -18,6 +18,7 @@ export interface SellerProduct {
   description: string;
   price: number;
   stock: number;
+  featured?: boolean;
   images: string[];
   ratingAvg: number;
   ratingCount: number;
@@ -48,6 +49,7 @@ export interface ProductPayload {
   stock: number;
   categoryId: string;
   images: File[];
+  featured?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -66,6 +68,9 @@ export class ProductService {
     formData.append('price', String(payload.price));
     formData.append('stock', String(payload.stock));
     formData.append('categoryId', payload.categoryId);
+    if (payload.featured !== undefined) {
+      formData.append('featured', String(payload.featured));
+    }
 
     for (const file of payload.images) {
       formData.append('images', file, file.name);

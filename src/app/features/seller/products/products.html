@@ -166,6 +166,7 @@
                           <input
                             class="peer sr-only"
                             [checked]="product.stock > 0"
+                            [attr.aria-label]="'Toggle live status for ' + product.title"
                             (change)="toggleActive(product)"
                             type="checkbox"
                           />
