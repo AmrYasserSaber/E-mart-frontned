@@ -98,6 +98,10 @@ export class ProfileHome implements OnInit {
     this.router.navigate(['/profile/edit']);
   }
 
+  navigateToOrderDetails(orderId: string): void {
+    this.router.navigate(['/profile/orders', orderId]);
+  }
+
   onOrdersPageChange(page: number): void {
     this.loadOrders(page);
   }
