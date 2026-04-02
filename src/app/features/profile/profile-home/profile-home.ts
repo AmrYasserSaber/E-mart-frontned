@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProfileService } from '../services/profile.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { Modal } from '../../../shared/components/modal/modal';
@@ -59,6 +60,8 @@ export class ProfileHome implements OnInit {
     { key: 'addresses', label: 'Addresses', icon: 'location_on' },
   ];
 
+  private readonly toast = inject(ToastService);
+
   constructor(
     private readonly profileService: ProfileService,
     private readonly router: Router,
@@ -99,6 +102,7 @@ export class ProfileHome implements OnInit {
       next: () => {
         this.wishlist.update((list) => list.filter((w) => w.productId !== productId));
         this.removingWishlistId.set(null);
+        this.toast.success('Removed from wishlist.');
       },
       error: () => this.removingWishlistId.set(null),
     });
