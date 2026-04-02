@@ -13,22 +13,36 @@
         >
       </a>
       <nav class="hidden gap-5 text-sm font-medium md:flex">
-        <a routerLink="/home" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+        <a
+          routerLink="/home"
+          class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Home</a
         >
-        <a routerLink="/products" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+        <a
+          routerLink="/products"
+          class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Products</a
         >
-        <a routerLink="/cart" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+        <a
+          routerLink="/cart"
+          class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Cart</a
         >
-        <a routerLink="/profile" class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+        <a
+          routerLink="/orders"
+          class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
+          >Orders</a
+        >
+        <a
+          routerLink="/profile"
+          class="text-on-surface-variant hover:text-primary-container transition-colors px-3 py-1 rounded-lg hover:bg-primary-fixed/20"
           >Profile</a
         >
         @if (showAdmin$ | async) {
-          <a routerLink="/admin" class="text-primary-container font-bold px-3 py-1"
-            >Admin</a
-          >
+          <a routerLink="/admin" class="text-primary-container font-bold px-3 py-1">Admin</a>
+        }
+        @if (showSeller$ | async) {
+          <a routerLink="/seller" class="text-primary-container font-bold px-3 py-1">Seller</a>
         }
       </nav>
     </div>
@@ -39,7 +53,7 @@
         class="relative rounded-full p-2 text-on-surface-variant hover:bg-primary-fixed/20 hover:text-primary-container transition-colors"
       >
         <span class="material-symbols-outlined text-xl" aria-hidden="true">shopping_cart</span>
-        @if ((cartCount$ | async); as count) {
+        @if (cartCount$ | async; as count) {
           @if (count > 0) {
             <span
               class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-container px-1 text-[10px] font-bold text-on-primary"
@@ -50,9 +64,9 @@
       </a>
       @if (isAuth$ | async) {
         @if (user$ | async; as user) {
-          <span class="hidden text-on-surface-variant font-medium sm:inline"
-            >{{ user.firstName }}</span
-          >
+          <span class="hidden text-on-surface-variant font-medium sm:inline">{{
+            user.firstName
+          }}</span>
           <button
             type="button"
             (click)="logout()"
@@ -62,11 +76,7 @@
           </button>
         }
       } @else {
-        <a
-          routerLink="/auth/login"
-          class="btn-primary px-5 py-2.5 text-sm"
-          >Sign in</a
-        >
+        <a routerLink="/auth/login" class="btn-primary px-5 py-2.5 text-sm">Sign in</a>
       }
       <!-- Mobile menu toggle -->
       <button
@@ -77,7 +87,9 @@
         aria-controls="mobile-nav"
         aria-label="Toggle navigation menu"
       >
-        <span class="material-symbols-outlined" aria-hidden="true">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+        <span class="material-symbols-outlined" aria-hidden="true">{{
+          mobileMenuOpen() ? 'close' : 'menu'
+        }}</span>
       </button>
     </div>
   </div>
@@ -91,9 +103,23 @@
       <a routerLink="/home" (click)="closeMobileMenu()" class="mobile-nav-link">Home</a>
       <a routerLink="/products" (click)="closeMobileMenu()" class="mobile-nav-link">Products</a>
       <a routerLink="/cart" (click)="closeMobileMenu()" class="mobile-nav-link">Cart</a>
+      <a routerLink="/orders" (click)="closeMobileMenu()" class="mobile-nav-link">Orders</a>
       <a routerLink="/profile" (click)="closeMobileMenu()" class="mobile-nav-link">Profile</a>
       @if (showAdmin$ | async) {
-        <a routerLink="/admin" (click)="closeMobileMenu()" class="mobile-nav-link text-primary-container font-bold">Admin</a>
+        <a
+          routerLink="/admin"
+          (click)="closeMobileMenu()"
+          class="mobile-nav-link text-primary-container font-bold"
+          >Admin</a
+        >
+      }
+      @if (showSeller$ | async) {
+        <a
+          routerLink="/seller"
+          (click)="closeMobileMenu()"
+          class="mobile-nav-link text-primary-container font-bold"
+          >Seller</a
+        >
       }
     </nav>
   }

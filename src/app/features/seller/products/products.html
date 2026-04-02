@@ -1,4 +1,208 @@
-<section class="section-shell rounded-xl p-6">
-  <h1 class="text-xl font-bold text-on-surface">Seller products</h1>
-  <p class="mt-2 text-on-surface-variant">Product management view will appear here.</p>
-</section>
+<div class="mx-auto max-w-6xl space-y-8">
+  <section class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+    <div>
+      <h2 class="font-display text-4xl font-extrabold tracking-tight">Inventory Overview</h2>
+      <p class="max-w-2xl text-on-surface-variant">
+        Manage your product listings, stock levels, and performance.
+      </p>
+    </div>
+
+    <a
+      routerLink="/seller/products/new"
+      class="flex items-center space-x-2 rounded-xl bg-primary-container px-8 py-3 font-bold text-on-primary shadow-lg shadow-orange-700/30"
+    >
+      <span class="material-symbols-outlined">add_circle</span>
+      <span>Add Product</span>
+    </a>
+  </section>
+
+  @if (loading()) {
+    <div class="grid grid-cols-1 gap-4">
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <app-skeleton-loader variant="table-row" />
+      }
+    </div>
+  } @else if (error()) {
+    <app-empty-state
+      title="Error"
+      [message]="error()!"
+      actionLabel="Retry"
+      (action)="retryLoad()"
+    />
+  } @else {
+    <section class="rounded-lg bg-surface-container-low p-6 neomorph-flat">
+      <div class="flex flex-wrap items-center gap-4">
+        <div
+          class="neomorph-inset flex min-w-75 flex-1 items-center rounded-2xl bg-surface-container-high px-5 py-3"
+        >
+          <span class="material-symbols-outlined text-outline">search</span>
+          <input
+            class="ml-2 w-full border-none bg-transparent text-sm focus:ring-0"
+            placeholder="Filter by product name, SKU or description"
+            [value]="searchTerm()"
+            (input)="onSearch($any($event.target).value)"
+            type="text"
+          />
+        </div>
+
+        <div class="flex items-center gap-4">
+          <select
+            class="neomorph-inset cursor-pointer appearance-none rounded-2xl border-none bg-surface-container-high px-5 py-3 text-sm font-semibold text-on-surface-variant focus:ring-0"
+            [value]="selectedCategory()"
+            (change)="onCategory($any($event.target).value)"
+          >
+            <option value="">Category: All</option>
+            @for (category of categories(); track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+
+          <select
+            class="neomorph-inset cursor-pointer appearance-none rounded-2xl border-none bg-surface-container-high px-5 py-3 text-sm font-semibold text-on-surface-variant focus:ring-0"
+            [value]="selectedStock()"
+            (change)="onStock($any($event.target).value)"
+          >
+            <option value="all">Stock: All Levels</option>
+            <option value="healthy">Healthy</option>
+            <option value="low">Low Stock</option>
+            <option value="out">Out of Stock</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    @if (!filteredProducts().length) {
+      <app-empty-state title="No products found" message="Try changing your search or filters." />
+    } @else {
+      <section class="overflow-x-auto pb-12">
+        <div class="inline-block min-w-full align-middle">
+          <div class="overflow-hidden rounded-lg bg-surface-container-low neomorph-flat">
+            <table class="min-w-full divide-y-0">
+              <thead>
+                <tr class="bg-surface-container-high/50 text-left">
+                  <th
+                    class="py-5 pl-8 pr-3 text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                  >
+                    Product Details
+                  </th>
+                  <th
+                    class="px-3 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                  >
+                    Category
+                  </th>
+                  <th
+                    class="px-3 py-5 text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                  >
+                    Price
+                  </th>
+                  <th
+                    class="px-3 py-5 text-center text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                  >
+                    Stock Status
+                  </th>
+                  <th
+                    class="px-3 py-5 text-center text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                  >
+                    Live Status
+                  </th>
+                  <th class="relative py-5 pl-3 pr-8"><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y-0">
+                @for (product of filteredProducts(); track product.id) {
+                  <tr class="group transition-colors hover:bg-surface-container-high/30">
+                    <td class="whitespace-nowrap py-6 pl-8 pr-3">
+                      <div class="flex items-center">
+                        <div
+                          class="neomorph-flat h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-white p-1"
+                        >
+                          <img
+                            class="h-full w-full rounded-lg object-cover"
+                            [src]="productImage(product)"
+                            alt="Product image"
+                            title="Product image"
+                          />
+                        </div>
+                        <div class="ml-4">
+                          <div class="text-lg font-bold text-on-surface">
+                            {{ product.title }}
+                          </div>
+                          <div class="text-sm text-on-surface-variant">
+                            {{ toSku(product.id) }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-6">
+                      <span
+                        class="inline-flex items-center rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-800"
+                      >
+                        {{ product.category?.name || 'Category' }}
+                      </span>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-6 font-mono font-bold text-orange-900">
+                      {{ product.price | currency: 'USD' }}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-6 text-center">
+                      <div class="flex flex-col items-center">
+                        <span class="text-sm font-bold text-on-surface"
+                          >{{ product.stock }} Units</span
+                        >
+                        <span
+                          class="text-[10px] font-bold uppercase tracking-tighter"
+                          [ngClass]="{
+                            'text-green-600': stockState(product.stock) === 'Healthy',
+                            'text-orange-600': stockState(product.stock) === 'Low Stock',
+                            'text-red-600': stockState(product.stock) === 'Out of Stock',
+                          }"
+                        >
+                          {{ stockState(product.stock) }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-6">
+                      <div class="flex justify-center">
+                        <label class="relative inline-flex cursor-pointer items-center">
+                          <input
+                            class="peer sr-only"
+                            [checked]="product.stock > 0"
+                            [attr.aria-label]="'Toggle live status for ' + product.title"
+                            (change)="toggleActive(product)"
+                            type="checkbox"
+                          />
+                          <div
+                            class="neomorph-inset peer h-6 w-11 rounded-full bg-surface-container-high after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary-container peer-checked:after:translate-x-full peer-checked:after:border-white"
+                          ></div>
+                        </label>
+                      </div>
+                    </td>
+                    <td class="whitespace-nowrap py-6 pl-3 pr-8 text-right text-sm font-medium">
+                      <div class="flex items-center justify-end gap-3">
+                        <a
+                          class="rounded-full p-2 text-stone-500 transition-colors hover:bg-orange-100/50 hover:text-primary"
+                          [routerLink]="['/seller/products', product.id, 'edit']"
+                          title="Edit product"
+                        >
+                          <span class="material-symbols-outlined">edit</span>
+                        </a>
+                        <button
+                          class="rounded-full p-2 text-stone-500 transition-colors hover:bg-red-100 hover:text-red-600 disabled:opacity-50"
+                          (click)="deleteProduct(product.id)"
+                          [disabled]="deletingId() === product.id"
+                          title="Delete product"
+                          type="button"
+                        >
+                          <span class="material-symbols-outlined">delete</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    }
+  }
+</div>

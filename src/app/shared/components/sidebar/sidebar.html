@@ -1,33 +1,37 @@
 <aside
-  class="sticky top-4 flex h-[calc(100vh-2rem)] min-w-[240px] flex-col rounded-r-[2rem] border border-outline-variant/20 bg-orange-50 px-3 py-6 shadow-[12px_0px_40px_rgba(139,114,102,0.04)]"
+  class="sticky top-4 flex h-[calc(100vh-2rem)] min-w-60 flex-col rounded-r-[2rem] border border-outline-variant/20 bg-orange-50 px-3 py-6 shadow-[12px_0px_40px_rgba(139,114,102,0.04)]"
   [class.w-16]="collapsed()"
   [class.min-w-0]="collapsed()"
 >
   <div class="mb-6 px-4">
-    <h3 class="font-display text-lg font-black uppercase tracking-tight text-orange-800">Admin Portal</h3>
-    <p class="text-[11px] font-medium uppercase tracking-wider text-on-surface-variant">Seller Central</p>
+    <h3 class="font-display text-lg font-black uppercase tracking-tight text-orange-800">
+      {{ title() }}
+    </h3>
+    <p class="text-[11px] font-medium uppercase tracking-wider text-on-surface-variant">
+      {{ subtitle() }}
+    </p>
   </div>
 
   <nav class="flex-1 space-y-1">
-  @for (item of items(); track item.path) {
-    <a
-      [routerLink]="item.path"
-      [attr.aria-label]="item.label"
-      routerLinkActive="panel-chip-active"
-      class="flex items-center gap-3 rounded-l-full border border-transparent px-4 py-3 text-sm font-semibold text-on-surface-variant transition hover:translate-x-0.5 hover:bg-orange-100 hover:text-orange-800"
-    >
-      @if (!collapsed()) {
-        <span class="material-symbols-outlined text-[20px]">{{ item.icon ?? 'chevron_right' }}</span>
-        <span>{{ item.label }}</span>
-      } @else {
-        <span class="sr-only">{{ item.label }}</span>
-        <span
-          class="block truncate text-center text-xs"
-          aria-hidden="true"
-          >{{ item.icon ?? item.label.charAt(0) }}</span
-        >
-      }
-    </a>
-  }
+    @for (item of items(); track item.path) {
+      <a
+        [routerLink]="item.path"
+        [attr.aria-label]="item.label"
+        routerLinkActive="panel-chip-active"
+        class="flex items-center gap-3 rounded-l-full border border-transparent px-4 py-3 text-sm font-semibold text-on-surface-variant transition hover:translate-x-0.5 hover:bg-orange-100 hover:text-orange-800"
+      >
+        @if (!collapsed()) {
+          <span class="material-symbols-outlined text-[20px]">{{
+            item.icon ?? 'chevron_right'
+          }}</span>
+          <span>{{ item.label }}</span>
+        } @else {
+          <span class="sr-only">{{ item.label }}</span>
+          <span class="block truncate text-center text-xs" aria-hidden="true">{{
+            item.icon ?? item.label.charAt(0)
+          }}</span>
+        }
+      </a>
+    }
   </nav>
 </aside>
