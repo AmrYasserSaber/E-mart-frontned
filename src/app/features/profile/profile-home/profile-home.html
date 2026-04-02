@@ -177,14 +177,14 @@
       @for (item of wishlist(); track item.wishlistId) {
         <div
           class="wishlist-item-wrap"
-          [class.wishlist-item-wrap--removing]="removingWishlistId() === item.wishlistId"
+          [class.wishlist-item-wrap--removing]="removingWishlistId() === item.productId"
         >
           <app-product-card [product]="toProduct(item)" />
           <button
             class="wishlist-remove-btn"
             title="Remove from wishlist"
-            [disabled]="removingWishlistId() === item.wishlistId"
-            (click)="removeFromWishlist($event, item.wishlistId)"
+            [disabled]="removingWishlistId() === item.productId"
+            (click)="removeFromWishlist($event, item.productId)"
           >
             <span
               class="material-symbols-outlined"
