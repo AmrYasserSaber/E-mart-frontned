@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { map, type Observable } from 'rxjs';
 import { API_BASE_URL } from '../tokens/app.tokens';
@@ -32,11 +32,13 @@ export class ApiService {
     path: string,
     options?: {
       params?: Record<string, string | number | boolean>;
+      context?: HttpContext;
     },
   ): Observable<T> {
     return this.http
       .get<ApiResponse<T>>(this.url(path), {
         params: toHttpParams(options?.params),
+        context: options?.context,
       })
       .pipe(map((r) => r.data));
   }

@@ -28,6 +28,8 @@ export class CheckoutComponent implements OnInit {
   private readonly checkoutService = inject(CheckoutService);
   private readonly route = inject(ActivatedRoute);
   private readonly orderService = inject(OrderService);
+  private readonly uuidPattern =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   readonly currentStep = this.checkoutService.currentStep;
   readonly STEP = CheckoutStep;
@@ -37,31 +39,86 @@ export class CheckoutComponent implements OnInit {
     return status === 'paid' || status === 'success';
   }
 
-  private async hydrateOrderFromReturn(orderId: string): Promise<void> {
-    try {
-      const order = await firstValueFrom(this.orderService.getOrderDetails(orderId));
-      if (!this.isPaidOrder(order)) {
-        this.checkoutService.setStep(CheckoutStep.PAYMENT);
-        return;
-      }
+  private isUuid(value: string | null | undefined): value is string {
+    return Boolean(value && this.uuidPattern.test(value));
+  }
 
-      this.checkoutService.setOrderId(orderId);
-      this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
-    } catch {
+  private isSuccessfulReturn(): boolean {
+    const status =
+      this.route.snapshot.queryParamMap.get('paymentStatus') ??
+      this.route.snapshot.queryParamMap.get('status') ??
+      this.route.snapshot.queryParamMap.get('payment_status');
+
+    if (!status) return false;
+
+    const normalized = status.trim().toLowerCase();
+    return normalized === 'success' || normalized === 'paid';
+  }
+
+  private getOrderCandidates(): string[] {
+    const query = this.route.snapshot.queryParamMap;
+    const allOrderIds = query.getAll('orderId');
+    const allSnakeOrderIds = query.getAll('order_id');
+    const allOrderAliases = query.getAll('order');
+    const queryCandidates = [
+      query.get('merchantOrderId'),
+      query.get('merchant_order_id'),
+      query.get('merchantOrder'),
+      ...allOrderIds,
+      ...allSnakeOrderIds,
+      ...allOrderAliases,
+      query.get('reference'),
+      query.get('orderReference'),
+    ].filter((value): value is string => this.isUuid(value));
+
+    const sessionOrderId = sessionStorage.getItem('checkout_order_id');
+    const storedCandidate = this.isUuid(sessionOrderId) ? [sessionOrderId] : [];
+
+    return [...new Set([...queryCandidates, ...storedCandidate])];
+  }
+
+  private async hydrateOrderFromReturn(
+    orderIds: string[],
+    fallbackToPayment = true,
+  ): Promise<void> {
+    for (const orderId of orderIds) {
+      try {
+        const order = await firstValueFrom(
+          this.orderService.getOrderDetails(orderId, true),
+        );
+        if (!this.isPaidOrder(order)) {
+          continue;
+        }
+
+        this.checkoutService.setOrderId(orderId);
+        this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
+        sessionStorage.setItem('checkout_order_id', orderId);
+        return;
+      } catch {
+        continue;
+      }
+    }
+
+    if (fallbackToPayment) {
       this.checkoutService.setStep(CheckoutStep.PAYMENT);
     }
   }
 
   ngOnInit(): void {
-    const query = this.route.snapshot.queryParamMap;
-    const orderId =
-      query.get('orderId') ||
-      query.get('order_id') ||
-      query.get('order') ||
-      sessionStorage.getItem('checkout_order_id');
+    const orderCandidates = this.getOrderCandidates();
+    if (orderCandidates.length > 0) {
+      const successfulReturn = this.isSuccessfulReturn();
 
-    if (orderId) {
-      void this.hydrateOrderFromReturn(orderId);
+      if (successfulReturn) {
+        const preferredOrderId = orderCandidates[0];
+        this.checkoutService.setOrderId(preferredOrderId);
+        this.checkoutService.setStep(CheckoutStep.CONFIRMATION);
+        sessionStorage.setItem('checkout_order_id', preferredOrderId);
+        void this.hydrateOrderFromReturn([preferredOrderId], false);
+        return;
+      }
+
+      void this.hydrateOrderFromReturn(orderCandidates, !successfulReturn);
     }
   }
 }

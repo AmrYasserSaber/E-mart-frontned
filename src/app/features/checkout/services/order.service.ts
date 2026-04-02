@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiService } from '../../../core/services/api.service';
+import { SUPPRESS_ERROR_TOAST } from '../../../core/tokens/http.tokens';
 
 export interface ShippingAddress {
   firstName: string;
@@ -36,7 +38,11 @@ export class OrderService {
     });
   }
 
-  getOrderDetails(id: string): Observable<any> {
-    return this.api.get<any>(`/orders/${id}`);
+  getOrderDetails(id: string, silentErrors = false): Observable<any> {
+    const context = silentErrors
+      ? new HttpContext().set(SUPPRESS_ERROR_TOAST, true)
+      : undefined;
+
+    return this.api.get<any>(`/orders/${id}`, { context });
   }
 }
