@@ -179,7 +179,7 @@
           class="wishlist-item-wrap"
           [class.wishlist-item-wrap--removing]="removingWishlistId() === item.productId"
         >
-          <app-product-card [product]="toProduct(item)" />
+          <app-product-card [product]="toProduct(item)" (addToCart)="onAddToCart($event)" />
           <button
             class="wishlist-remove-btn"
             title="Remove from wishlist"

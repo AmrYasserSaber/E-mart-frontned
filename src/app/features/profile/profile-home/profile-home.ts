@@ -2,8 +2,12 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { take } from 'rxjs';
 import { ProfileService } from '../services/profile.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { CartActions } from '../../../shared/store/cart/cart.actions';
+import { selectIsAuthenticated } from '../../../shared/store/auth/auth.selectors';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { Modal } from '../../../shared/components/modal/modal';
@@ -74,6 +78,7 @@ export class ProfileHome implements OnInit {
   ];
 
   private readonly toast = inject(ToastService);
+  private readonly store = inject(Store);
 
   constructor(
     private readonly profileService: ProfileService,
@@ -105,6 +110,19 @@ export class ProfileHome implements OnInit {
       images: item.images,
       ratingAvg: item.ratingAvg ?? undefined,
     };
+  }
+
+  onAddToCart(product: Product): void {
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(take(1))
+      .subscribe((isAuthenticated) => {
+        if (!isAuthenticated) {
+          this.toast.error('Please log in to add items to your cart.');
+          return;
+        }
+        this.store.dispatch(CartActions.addToCart({ productId: product.id }));
+      });
   }
 
   removeFromWishlist(event: Event, productId: string): void {
