@@ -27,18 +27,28 @@ export interface OrderDetailsItem {
   price: number;
 }
 
+export interface OrderShippingAddress {
+  id: string;
+  label: string | null;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  street: string;
+  city: string;
+  isPrimary: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface OrderDetailsResponse {
   id: string;
   items: OrderDetailsItem[];
   total: number;
   status: BackendOrderStatus;
-  shippingAddress: {
-    street: string;
-    city: string;
-    zip: string;
-    country: string;
-  };
+  shippingAddressId: string | null;
+  shippingAddress: OrderShippingAddress | null;
   payment: {
+    method: string;
     provider: 'kashier' | 'cash_on_delivery';
     status: string;
   };

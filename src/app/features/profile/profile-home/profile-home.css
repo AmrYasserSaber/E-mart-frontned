@@ -620,6 +620,43 @@
   font-weight: 700;
 }
 
+.timeline-card--clickable {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.timeline-card--clickable:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-neomorphic-flat),
+    0 0 0 2px color-mix(in srgb, var(--color-primary-container) 30%, transparent);
+}
+
+.timeline-card--clickable:active {
+  transform: translateY(0);
+}
+
+.timeline-card-right {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.view-details-icon {
+  font-size: 1.25rem;
+  color: var(--color-primary-container);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.timeline-card--clickable:hover .view-details-icon {
+  opacity: 1;
+}
+
 /* Skeleton loader */
 @keyframes shimmer {
   from {

@@ -1,14 +1,16 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Store } from '@ngrx/store';
-import { distinctUntilChanged, map, take } from 'rxjs/operators';
+import { distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
 import type { Product } from '../../../core/models/product.model';
 import type { Category } from '../../../core/models/category.model';
 import { sanitizeReturnUrl } from '../../../core/utils/url.utils';
 import { ProductsService } from '../../../core/services/products.service';
+import { ProfileService } from '../../profile/services/profile.service';
 import { ProductCard } from '../../../shared/components/product-card/product-card';
 import { Pagination } from '../../../shared/components/pagination/pagination';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
@@ -23,6 +25,7 @@ import {
   selectProductsPages,
 } from '../../../shared/store/products/products.selectors';
 import { appIcons } from '../../../shared/icons/font-awesome-icons';
+import { ToastService } from '../../../core/services/toast.service';
 
 interface ProductsFilters {
   page: number;
@@ -52,6 +55,8 @@ export class ProductList {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly productsService = inject(ProductsService);
+  private readonly profileService = inject(ProfileService);
+  private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly products$ = this.store.select(selectAllProducts);
@@ -63,6 +68,7 @@ export class ProductList {
   protected searchValue = '';
   protected selectedCategoryId = '';
   protected categories: Category[] = [];
+  protected readonly wishlistedIds = signal<Set<string>>(new Set());
   protected readonly checkCircleIcon = appIcons['checkCircle'];
   protected readonly chevronRightIcon = appIcons['chevronRight'];
   protected readonly chevronDownIcon = appIcons['chevronDown'];
@@ -103,6 +109,23 @@ export class ProductList {
           }),
         );
       });
+
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(
+        take(1),
+        switchMap((isAuthenticated) =>
+          isAuthenticated ? this.profileService.getWishlistProductIds() : of([]),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((ids) => {
+        this.wishlistedIds.set(new Set(ids));
+      });
+  }
+
+  isProductInWishlist(productId: string): boolean {
+    return this.wishlistedIds().has(productId);
   }
 
   onSearchSubmit(searchInput: string): void {
@@ -143,6 +166,40 @@ export class ProductList {
         this.router.navigate(['/auth/login'], {
           queryParams: { returnUrl: sanitizeReturnUrl(this.router.url) },
         });
+      });
+  }
+
+  onToggleWishlist(product: Product): void {
+    this.store
+      .select(selectIsAuthenticated)
+      .pipe(take(1))
+      .subscribe((isAuthenticated) => {
+        if (!isAuthenticated) {
+          this.router.navigate(['/auth/login'], {
+            queryParams: { returnUrl: sanitizeReturnUrl(this.router.url) },
+          });
+          return;
+        }
+        const isInWishlist = this.wishlistedIds().has(product.id);
+        if (isInWishlist) {
+          this.profileService.removeFromWishlist(product.id).subscribe({
+            next: () => {
+              this.wishlistedIds.update((ids) => {
+                const updated = new Set(ids);
+                updated.delete(product.id);
+                return updated;
+              });
+              this.toast.success('Removed from wishlist.');
+            },
+          });
+        } else {
+          this.profileService.addToWishlist(product.id).subscribe({
+            next: () => {
+              this.wishlistedIds.update((ids) => new Set([...ids, product.id]));
+              this.toast.success('Added to wishlist.');
+            },
+          });
+        }
       });
   }
 

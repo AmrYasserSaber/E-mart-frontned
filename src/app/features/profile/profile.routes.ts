@@ -9,4 +9,9 @@ export const profileRoutes: Routes = [
     path: 'edit',
     loadComponent: () => import('./edit-profile/edit-profile').then((m) => m.EditProfile),
   },
+  {
+    path: 'orders/:orderId',
+    loadComponent: () =>
+      import('./order-history/order-details/order-details').then((m) => m.OrderDetailsComponent),
+  },
 ];

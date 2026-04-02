@@ -94,7 +94,11 @@
                 <span class="material-symbols-outlined">{{ getStatusIcon(order.status) }}</span>
               </div>
 
-              <div class="timeline-card">
+              <button
+              type="button"
+              class="timeline-card timeline-card--clickable"
+              (click)="navigateToOrderDetails(order.id)"
+            >
                 <div class="timeline-card-header">
                   <div>
                     <p
@@ -106,15 +110,18 @@
                     <h3 class="order-number">Order #{{ order.id.slice(0, 8).toUpperCase() }}</h3>
                     <p class="order-date">{{ order.createdAt | date: 'mediumDate' }}</p>
                   </div>
-                  <span class="shipping-badge"
-                    >{{ order.itemsCount }} item{{ order.itemsCount === 1 ? '' : 's' }}</span
-                  >
+                  <div class="timeline-card-right">
+                    <span class="shipping-badge"
+                      >{{ order.itemsCount }} item{{ order.itemsCount === 1 ? '' : 's' }}</span
+                    >
+                    <span class="material-symbols-outlined view-details-icon">chevron_right</span>
+                  </div>
                 </div>
 
                 <div class="order-total">
                   Total: <strong>{{ order.total | currency: 'USD' }}</strong>
                 </div>
-              </div>
+            </button>
             </div>
           }
 
@@ -177,14 +184,14 @@
       @for (item of wishlist(); track item.wishlistId) {
         <div
           class="wishlist-item-wrap"
-          [class.wishlist-item-wrap--removing]="removingWishlistId() === item.wishlistId"
+          [class.wishlist-item-wrap--removing]="removingWishlistId() === item.productId"
         >
-          <app-product-card [product]="toProduct(item)" />
+          <app-product-card [product]="toProduct(item)" (addToCart)="onAddToCart($event)" />
           <button
             class="wishlist-remove-btn"
             title="Remove from wishlist"
-            [disabled]="removingWishlistId() === item.wishlistId"
-            (click)="removeFromWishlist($event, item.wishlistId)"
+            [disabled]="removingWishlistId() === item.productId"
+            (click)="removeFromWishlist($event, item.productId)"
           >
             <span
               class="material-symbols-outlined"
@@ -201,7 +208,8 @@
 <!-- Tab content: Addresses -->
 @if (activeTab() === 'addresses') {
   <div class="addr-grid">
-    <!-- Add New Address -->
+    <!-- Add New Address (hidden when the 3-address limit is reached) -->
+    @if (canAddNewAddress()) {
     <button class="addr-add-card" (click)="openAddAddressModal()">
       <div class="addr-add-icon">
         <span class="material-symbols-outlined">add_location</span>
@@ -209,6 +217,7 @@
       <span class="addr-add-title">Add New Address</span>
       <span class="addr-add-hint">Securely save a new shipping point</span>
     </button>
+    }
 
     <!-- Address Cards -->
     @for (addr of addresses(); track addr.id) {
@@ -245,7 +254,7 @@
           <button
             class="addr-btn-delete"
             [disabled]="deletingAddressId() === addr.id"
-            (click)="deleteAddress(addr.id)"
+            (click)="requestDeleteAddress(addr)"
           >
             <span class="material-symbols-outlined">delete</span>
           </button>
@@ -447,3 +456,15 @@
     </div>
   </form>
 </app-modal>
+
+<!-- Delete Address Confirmation -->
+<app-confirm-dialog
+  [open]="deleteConfirmationOpen()"
+  title="Delete Address"
+  [message]="deleteConfirmationMessage()"
+  confirmLabel="Delete"
+  [dangerous]="true"
+  [cancelLabel]="deletingAddressId() ? 'Close' : 'Cancel'"
+  (confirmed)="confirmDeleteAddress()"
+  (cancelled)="cancelDeleteAddress()"
+/>

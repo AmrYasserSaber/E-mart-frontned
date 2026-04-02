@@ -7,7 +7,9 @@
         class="section-shell rounded-2xl p-4"
         (submit)="$event.preventDefault(); onSearchSubmit(searchInput.value)"
       >
-        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-outline">Search</label>
+        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-outline"
+          >Search</label
+        >
         <div class="rounded-full bg-surface-container-high px-4 py-2 inner-shadow">
           <input
             #searchInput
@@ -20,7 +22,13 @@
         </div>
         <div class="mt-4 grid grid-cols-2 gap-2">
           <button type="submit" class="btn-primary py-2 text-xs font-bold">Apply</button>
-          <button type="button" class="btn-secondary py-2 text-xs font-bold" (click)="clearFilters()">Clear</button>
+          <button
+            type="button"
+            class="btn-secondary py-2 text-xs font-bold"
+            (click)="clearFilters()"
+          >
+            Clear
+          </button>
         </div>
       </form>
 
@@ -81,7 +89,9 @@
       </div>
       <div class="flex items-center gap-3">
         <span class="text-sm font-medium text-outline">Sort by</span>
-        <div class="tactile-card flex cursor-default items-center gap-2 rounded-full border border-outline-variant/10 px-4 py-2">
+        <div
+          class="tactile-card flex cursor-default items-center gap-2 rounded-full border border-outline-variant/10 px-4 py-2"
+        >
           <span class="text-sm font-bold text-on-surface">Curated Popularity</span>
           <fa-icon [icon]="chevronDownIcon" class="text-sm" />
         </div>
@@ -89,7 +99,9 @@
     </header>
 
     @if (loading$ | async) {
-      <div class="card bg-surface-container-low p-8 text-center text-secondary">Loading products...</div>
+      <div class="card bg-surface-container-low p-8 text-center text-secondary">
+        Loading products...
+      </div>
     } @else if (error$ | async; as error) {
       <app-empty-state
         title="Could not load products"
@@ -103,8 +115,10 @@
           @for (product of (products$ | async) ?? []; track product.id) {
             <app-product-card
               [product]="product"
+              [isInWishlist]="isProductInWishlist(product.id)"
               (addToCart)="onAddToCart($event)"
               (open)="openProductDetails($event)"
+              (toggleWishlist)="onToggleWishlist($event)"
             />
           }
         </div>
