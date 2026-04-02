@@ -9,7 +9,7 @@ import {
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { EMPTY, catchError, distinctUntilChanged, map, switchMap } from 'rxjs';
 import { OrdersService, type OrderDetailsResponse } from '../../../orders/services/orders.service';
 import { SkeletonLoader } from '../../../../shared/components/skeleton-loader/skeleton-loader';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
@@ -56,19 +56,21 @@ export class OrderDetailsComponent {
           if (!orderId) {
             this.loading.set(false);
             this.error.set('No order ID provided.');
-            return [];
+            return EMPTY;
           }
-          return this.ordersService.getOrderById(orderId);
+          return this.ordersService.getOrderById(orderId).pipe(
+            catchError(() => {
+              this.error.set('Could not load this order. Please try again.');
+              this.loading.set(false);
+              return EMPTY;
+            }),
+          );
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (orderData) => {
           this.order.set(orderData);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.error.set('Could not load this order. Please try again.');
           this.loading.set(false);
         },
       });
