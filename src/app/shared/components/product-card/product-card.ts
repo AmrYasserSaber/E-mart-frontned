@@ -15,9 +15,12 @@ export class ProductCard {
   readonly imagePlaceholder =
     'https://img.freepik.com/premium-vector/picture-icon-isolated-white-background-vector-illustration_736051-240.jpg?semt=ais_incoming&w=740&q=80';
   readonly product = input.required<Product>();
+  readonly isInWishlist = input<boolean>(false);
   readonly addToCart = output<Product>();
   readonly open = output<Product>();
+  readonly toggleWishlist = output<Product>();
   readonly favoriteIcon = appIcons['favorite'];
+  readonly favoriteOutlineIcon = appIcons['favoriteOutline'];
 
   onOpen(): void {
     this.open.emit(this.product());
@@ -26,6 +29,11 @@ export class ProductCard {
   onAdd(event?: Event): void {
     event?.stopPropagation();
     this.addToCart.emit(this.product());
+  }
+
+  onToggleWishlist(event: Event): void {
+    event.stopPropagation();
+    this.toggleWishlist.emit(this.product());
   }
 
   onImageError(event: Event): void {

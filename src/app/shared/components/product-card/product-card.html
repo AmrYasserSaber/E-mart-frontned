@@ -26,9 +26,10 @@
       type="button"
       aria-label="Favorite"
       class="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-primary inner-shadow opacity-0 transition-opacity group-hover:opacity-100"
-      (click)="$event.stopPropagation()"
+      [class.opacity-100]="isInWishlist()"
+      (click)="onToggleWishlist($event)"
     >
-      <fa-icon [icon]="favoriteIcon" class="text-sm" />
+      <fa-icon [icon]="isInWishlist() ? favoriteIcon : favoriteOutlineIcon" class="text-sm" />
     </button>
   </div>
   <div class="mt-6 flex flex-1 flex-col gap-2">

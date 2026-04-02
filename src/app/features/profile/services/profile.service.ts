@@ -94,6 +94,16 @@ export class ProfileService {
       .pipe(map((r) => r.data.map(toWishlistItem)));
   }
 
+  getWishlistProductIds(): Observable<string[]> {
+    return this.api
+      .get<{ productIds: string[] }>('/wishlist/ids')
+      .pipe(map((r) => r.productIds));
+  }
+
+  addToWishlist(productId: string): Observable<void> {
+    return this.api.post<void>('/wishlist', { productId });
+  }
+
   removeFromWishlist(productId: string): Observable<void> {
     return this.api.deleteRaw(`/wishlist/${productId}`);
   }

@@ -21,6 +21,7 @@ import {
   faUserCircle,
   faUserShield,
 } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as faHeartOutline } from '@fortawesome/free-regular-svg-icons';
 
 export const appIcons: Record<string, IconDefinition> = {
   search: faMagnifyingGlass,
@@ -31,6 +32,7 @@ export const appIcons: Record<string, IconDefinition> = {
   chevronRight: faChevronRight,
   chevronDown: faChevronDown,
   favorite: faHeart,
+  favoriteOutline: faHeartOutline,
   checkCircle: faCheckCircle,
   email: faEnvelope,
   lock: faLock,
