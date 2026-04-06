@@ -27,6 +27,7 @@ import {
   mapZodIssuesToMessage,
 } from '../../../core/validation/auth-error.utils';
 import { appIcons } from '../../../shared/icons/font-awesome-icons';
+import { Role } from '../../../core/models/user.model';
 
 const DIGIT_COUNT = 6;
 const RESEND_SECONDS = 60;
@@ -61,6 +62,8 @@ export class VerifyEmail implements AfterViewInit, OnDestroy {
 
   /** Email passed from the post-registration redirect as a query param. */
   readonly email: string | null = this.route.snapshot.queryParamMap.get('email');
+  readonly accountType: string | null = this.route.snapshot.queryParamMap.get('accountType');
+  readonly isSellerSignup = this.accountType === Role.SELLER;
 
   resendSecondsRemaining = RESEND_SECONDS;
   isSubmitting = false;

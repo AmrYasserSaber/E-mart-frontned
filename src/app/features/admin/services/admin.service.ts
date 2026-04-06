@@ -85,6 +85,13 @@ export interface ApproveSellerResponse {
   approvedAt: string;
 }
 
+export interface RejectSellerResponse {
+  id: string;
+  userId: string;
+  status: string;
+  rejectedAt: string;
+}
+
 export type RevenueAnalyticsPeriod = '12m' | '7d';
 
 export interface RevenueAnalyticsPoint {
@@ -194,6 +201,10 @@ export class AdminService {
 
   approveSellerStore(id: string): Observable<ApproveSellerResponse> {
     return this.api.patch<ApproveSellerResponse>(`/admin/sellers/${id}/approve`, {});
+  }
+
+  rejectSellerStore(id: string): Observable<RejectSellerResponse> {
+    return this.api.patch<RejectSellerResponse>(`/admin/sellers/${id}/reject`, {});
   }
 
   getRevenueAnalytics(

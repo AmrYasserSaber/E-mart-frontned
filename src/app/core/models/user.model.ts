@@ -25,6 +25,9 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
+  role: Role;
+  storeName?: string;
+  description?: string;
 }
 
 export interface AuthTokensResponse {

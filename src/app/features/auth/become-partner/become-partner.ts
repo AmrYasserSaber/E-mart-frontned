@@ -12,12 +12,12 @@ import { appIcons } from '../../../shared/icons/font-awesome-icons';
 import { Role } from '../../../core/models/user.model';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-become-partner',
   imports: [AsyncPipe, FormsModule, RouterLink, FontAwesomeModule],
-  templateUrl: './register.html',
-  styleUrl: './register.scss',
+  templateUrl: './become-partner.html',
+  styleUrl: './become-partner.scss',
 })
-export class Register {
+export class BecomePartner {
   private readonly store = inject(Store);
   readonly loading$ = this.store.select(selectAuthLoading);
   readonly error$ = this.store.select(selectAuthError);
@@ -27,6 +27,8 @@ export class Register {
   email = '';
   password = '';
   confirmPassword = '';
+  storeName = '';
+  description = '';
   formError = '';
   readonly ecoIcon = appIcons['eco'];
 
@@ -44,7 +46,9 @@ export class Register {
       lastName: this.lastName,
       email: this.email,
       password: this.password,
-      role: Role.USER,
+      role: Role.SELLER,
+      storeName: this.storeName,
+      description: this.description,
     });
 
     if (!result.success) {

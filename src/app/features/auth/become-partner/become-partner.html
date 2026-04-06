@@ -10,27 +10,25 @@
   <main
     class="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-12"
   >
-    <!-- Left column -->
     <div class="hidden flex-col space-y-8 pr-0 md:flex md:pr-12 pt-24">
       <div class="space-y-4">
         <span
           class="font-display text-sm font-bold uppercase tracking-widest text-primary-container"
         >
-          E‑Mart ecosystem
+          E‑Mart partners
         </span>
         <h1
           class="font-display text-5xl font-extrabold leading-tight tracking-tight text-on-surface"
         >
-          Join the <span class="text-primary-container">E‑Mart market</span>.
+          Become an <span class="text-primary-container">E‑Mart Partner</span>.
         </h1>
         <p class="max-w-md text-lg leading-relaxed text-on-surface-variant">
-          Access a curated selection of sustainable, earth-conscious products designed for modern
-          high-performance living.
+          Open your store, submit your profile, and start selling once your request is approved by
+          our admin team.
         </p>
       </div>
     </div>
 
-    <!-- Form column -->
     <div class="flex w-full justify-center">
       <div
         class="neomorphic-card w-full max-w-2xl min-w-xl rounded-xl bg-surface-container-low p-8 md:p-12"
@@ -42,9 +40,11 @@
             <fa-icon [icon]="ecoIcon" class="text-3xl" aria-hidden="true" />
           </div>
           <h2 class="font-display text-3xl font-bold tracking-tight text-on-surface">
-            Create Account
+            Become a Partner
           </h2>
-          <p class="mt-2 text-on-surface-variant">Start your sustainable journey today.</p>
+          <p class="mt-2 text-on-surface-variant">
+            Fill in your account and store details to request seller access.
+          </p>
         </div>
 
         <form class="space-y-6" (ngSubmit)="submit()" novalidate>
@@ -52,15 +52,15 @@
             <div class="space-y-2">
               <label
                 class="block px-1 text-sm font-semibold text-on-surface-variant"
-                for="register-first-name"
+                for="partner-first-name"
               >
                 First Name
               </label>
               <div
-                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest focus-within:ring-0 focus-within:outline-none focus-within:shadow-none focus:ring-0"
+                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
               >
                 <input
-                  id="register-first-name"
+                  id="partner-first-name"
                   name="firstName"
                   type="text"
                   [(ngModel)]="firstName"
@@ -74,21 +74,19 @@
             <div class="space-y-2">
               <label
                 class="block px-1 text-sm font-semibold text-on-surface-variant"
-                for="register-last-name"
+                for="partner-last-name"
               >
                 Last Name
               </label>
               <div
-                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest focus-within:ring-0 focus-within:outline-none focus-within:shadow-none focus:ring-0"
+                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
               >
                 <input
-                  id="register-last-name"
+                  id="partner-last-name"
                   name="lastName"
                   type="text"
                   [(ngModel)]="lastName"
                   autocomplete="family-name"
-                  required
-                  minlength="1"
                   placeholder="Doe"
                   class="w-full border-none bg-transparent font-medium text-on-surface placeholder:text-outline/50 focus:ring-0 outline-none"
                 />
@@ -99,15 +97,15 @@
           <div class="space-y-2">
             <label
               class="block px-1 text-sm font-semibold text-on-surface-variant"
-              for="register-email"
+              for="partner-email"
             >
               Email Address
             </label>
             <div
-              class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary-fixed-dim/30"
+              class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
             >
               <input
-                id="register-email"
+                id="partner-email"
                 name="email"
                 type="email"
                 [(ngModel)]="email"
@@ -118,19 +116,63 @@
             </div>
           </div>
 
+          <div class="grid grid-cols-1 gap-4">
+            <div class="space-y-2">
+              <label
+                class="block px-1 text-sm font-semibold text-on-surface-variant"
+                for="partner-store-name"
+              >
+                Store Name
+              </label>
+              <div
+                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
+              >
+                <input
+                  id="partner-store-name"
+                  name="storeName"
+                  type="text"
+                  [(ngModel)]="storeName"
+                  placeholder="Green Cart"
+                  class="w-full border-none bg-transparent font-medium text-on-surface placeholder:text-outline/50 focus:ring-0 outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                class="block px-1 text-sm font-semibold text-on-surface-variant"
+                for="partner-store-description"
+              >
+                Store Description
+              </label>
+              <div
+                class="neomorphic-inset rounded-2xl bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
+              >
+                <textarea
+                  id="partner-store-description"
+                  name="description"
+                  [(ngModel)]="description"
+                  rows="3"
+                  placeholder="Tell customers what your store sells..."
+                  class="w-full resize-y border-none bg-transparent font-medium text-on-surface placeholder:text-outline/50 focus:ring-0 outline-none"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 gap-6">
             <div class="space-y-2">
               <label
                 class="block px-1 text-sm font-semibold text-on-surface-variant"
-                for="register-password"
+                for="partner-password"
               >
                 Password
               </label>
               <div
-                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary-fixed-dim/30"
+                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
               >
                 <input
-                  id="register-password"
+                  id="partner-password"
                   name="password"
                   type="password"
                   [(ngModel)]="password"
@@ -144,15 +186,15 @@
             <div class="space-y-2">
               <label
                 class="block px-1 text-sm font-semibold text-on-surface-variant"
-                for="register-confirm"
+                for="partner-confirm"
               >
                 Confirm Password
               </label>
               <div
-                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary-fixed-dim/30"
+                class="neomorphic-inset rounded-full bg-surface-container-high px-5 py-4 transition-all focus-within:bg-surface-container-lowest"
               >
                 <input
-                  id="register-confirm"
+                  id="partner-confirm"
                   name="confirmPassword"
                   type="password"
                   [(ngModel)]="confirmPassword"
@@ -177,22 +219,21 @@
               class="extruded-button w-full cursor-pointer rounded-full bg-primary-container py-5 font-display text-lg font-bold text-on-primary transition-all hover:bg-primary active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
               [disabled]="loading$ | async"
             >
-              Create Account
+              Submit Partner Request
             </button>
           </div>
-
-          <p class="text-center text-sm text-on-surface-variant">
-            Want to become a partner?
-            <a
-              routerLink="/auth/become-partner"
-              class="ml-1 font-bold text-primary-container hover:underline"
-            >
-              Become a Partner
-            </a>
-          </p>
         </form>
 
-        <div class="mt-8 flex flex-col items-center space-y-4">
+        <div class="mt-8 flex flex-col items-center space-y-3">
+          <p class="text-sm text-on-surface-variant">
+            Want a standard customer account?
+            <a
+              routerLink="/auth/register"
+              class="ml-1 font-bold text-primary-container hover:underline"
+            >
+              Create Account
+            </a>
+          </p>
           <p class="text-sm text-on-surface-variant">
             Already have an account?
             <a
@@ -202,44 +243,6 @@
               Login
             </a>
           </p>
-          <div class="flex w-full items-center space-x-4">
-            <div class="h-px flex-1 bg-outline-variant/30"></div>
-            <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-outline"
-              >or join with</span
-            >
-            <div class="h-px flex-1 bg-outline-variant/30"></div>
-          </div>
-          <div class="flex w-full justify-center">
-            <button
-              type="button"
-              class="neomorphic-button-social flex h-14 w-14 cursor-pointer items-center justify-center rounded-full bg-surface-container-lowest transition-opacity hover:opacity-90"
-              aria-label="Continue with Google"
-            >
-              <svg
-                class="h-6 w-6 shrink-0"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
     </div>
