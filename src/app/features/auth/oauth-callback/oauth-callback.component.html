@@ -1,0 +1,28 @@
+<div
+  class="relative flex min-h-dvh flex-col items-center justify-center bg-background p-6 font-body text-on-surface"
+>
+  <main class="w-full max-w-md">
+    <div class="neomorphic-card bg-surface-container-low rounded-xl p-10">
+      <h2 class="font-display font-bold text-2xl text-on-surface mb-2">Signing you in…</h2>
+      <p class="text-on-surface-variant text-sm">
+        Please wait while we finish connecting your Google account.
+      </p>
+      @if (loading$ | async) {
+        <p class="mt-6 text-sm font-semibold text-primary">Working…</p>
+      }
+      @if (error$ | async; as serverError) {
+        @if (serverError) {
+          <p class="state-error rounded-lg px-4 py-2 text-sm font-medium mt-6">
+            {{ serverError }}
+          </p>
+          <a
+            routerLink="/auth/login"
+            class="mt-6 inline-block text-primary font-bold hover:underline underline-offset-4"
+          >
+            Back to login
+          </a>
+        }
+      }
+    </div>
+  </main>
+</div>

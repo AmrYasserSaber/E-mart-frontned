@@ -26,27 +26,47 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActions.login),
       switchMap(({ email, password }) =>
-        this.api
-          .post<unknown>('/auth/login', { email, password })
-          .pipe(
-            map((raw) => {
-              const result = authTokensOnlySchema.safeParse(raw);
-              if (!result.success) {
-                throw new Error('Invalid login response from server.');
-              }
-              return AuthActions.loginSuccess(result.data);
-            }),
-            catchError((err) =>
-              of(AuthActions.loginFailure({ error: parseHttpAuthError(err) })),
+        this.api.post<unknown>('/auth/login', { email, password }).pipe(
+          map((raw) => {
+            const result = authTokensOnlySchema.safeParse(raw);
+            if (!result.success) {
+              throw new Error('Invalid login response from server.');
+            }
+            return AuthActions.loginSuccess(result.data);
+          }),
+          catchError((err) => of(AuthActions.loginFailure({ error: parseHttpAuthError(err) }))),
+        ),
+      ),
+    ),
+  );
+
+  exchangeOAuthCode$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.exchangeOAuthCode),
+      switchMap(({ code }) =>
+        this.api.post<unknown>('/auth/oauth/exchange', { code }).pipe(
+          map((raw) => {
+            const result = authTokensOnlySchema.safeParse(raw);
+            if (!result.success) {
+              throw new Error('Invalid OAuth exchange response from server.');
+            }
+            return AuthActions.exchangeOAuthCodeSuccess(result.data);
+          }),
+          catchError((err) =>
+            of(
+              AuthActions.exchangeOAuthCodeFailure({
+                error: parseHttpAuthError(err),
+              }),
             ),
           ),
+        ),
       ),
     ),
   );
 
   persistTokensAndLoadUser$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(AuthActions.loginSuccess),
+      ofType(AuthActions.loginSuccess, AuthActions.exchangeOAuthCodeSuccess),
       tap(({ accessToken, refreshToken }) => {
         this.storage.setAccessToken(accessToken);
         this.storage.setRefreshToken(refreshToken);
@@ -67,9 +87,7 @@ export class AuthEffects {
             }
             return AuthActions.registerSuccess(result.data);
           }),
-          catchError((err) =>
-            of(AuthActions.registerFailure({ error: parseHttpAuthError(err) })),
-          ),
+          catchError((err) => of(AuthActions.registerFailure({ error: parseHttpAuthError(err) }))),
         ),
       ),
     ),
@@ -92,9 +110,7 @@ export class AuthEffects {
       switchMap(() =>
         this.api.get<User>('/auth/me').pipe(
           map((user) => AuthActions.loadUserSuccess({ user })),
-          catchError((err) =>
-            of(AuthActions.loadUserFailure({ error: parseHttpAuthError(err) })),
-          ),
+          catchError((err) => of(AuthActions.loadUserFailure({ error: parseHttpAuthError(err) }))),
         ),
       ),
     ),
@@ -154,12 +170,10 @@ export class AuthEffects {
         if (!refresh) {
           return of(AuthActions.logoutSuccess());
         }
-        return this.api
-          .post<{ success: true }>('/auth/logout', { refreshToken: refresh })
-          .pipe(
-            map(() => AuthActions.logoutSuccess()),
-            catchError(() => of(AuthActions.logoutSuccess())),
-          );
+        return this.api.post<{ success: true }>('/auth/logout', { refreshToken: refresh }).pipe(
+          map(() => AuthActions.logoutSuccess()),
+          catchError(() => of(AuthActions.logoutSuccess())),
+        );
       }),
     ),
   );

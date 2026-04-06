@@ -26,18 +26,22 @@ export const authReducer = createReducer(
     refreshToken,
     user,
   })),
-  on(AuthActions.login, AuthActions.register, (state) => ({
+  on(AuthActions.login, AuthActions.register, AuthActions.exchangeOAuthCode, (state) => ({
     ...state,
     loading: true,
     error: null,
   })),
-  on(AuthActions.loginSuccess, (state, { accessToken, refreshToken }) => ({
-    ...state,
-    accessToken,
-    refreshToken,
-    loading: false,
-    error: null,
-  })),
+  on(
+    AuthActions.loginSuccess,
+    AuthActions.exchangeOAuthCodeSuccess,
+    (state, { accessToken, refreshToken }) => ({
+      ...state,
+      accessToken,
+      refreshToken,
+      loading: false,
+      error: null,
+    }),
+  ),
   on(AuthActions.registerSuccess, (state, { accessToken, refreshToken, user }) => ({
     ...state,
     accessToken,
@@ -46,11 +50,16 @@ export const authReducer = createReducer(
     loading: false,
     error: null,
   })),
-  on(AuthActions.loginFailure, AuthActions.registerFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
+  on(
+    AuthActions.loginFailure,
+    AuthActions.registerFailure,
+    AuthActions.exchangeOAuthCodeFailure,
+    (state, { error }) => ({
+      ...state,
+      loading: false,
+      error,
+    }),
+  ),
   on(AuthActions.loadUser, (state) => ({ ...state, loading: true, error: null })),
   on(AuthActions.loadUserSuccess, (state, { user }) => ({
     ...state,

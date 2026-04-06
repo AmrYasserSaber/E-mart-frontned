@@ -20,6 +20,7 @@ const AUTH_PATHS = [
   '/auth/logout',
   '/auth/verify-email',
   '/auth/resend-verification',
+  '/auth/oauth/exchange',
 ];
 
 function isAuthPath(url: string): boolean {
