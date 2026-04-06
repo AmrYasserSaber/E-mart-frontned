@@ -85,7 +85,10 @@ export class AuthEffects {
             if (!result.success) {
               throw new Error('Invalid register response from server.');
             }
-            return AuthActions.registerSuccess(result.data);
+            return AuthActions.registerSuccess({
+              ...result.data,
+              requestedRole: body.role,
+            });
           }),
           catchError((err) => of(AuthActions.registerFailure({ error: parseHttpAuthError(err) }))),
         ),
@@ -153,9 +156,12 @@ export class AuthEffects {
     () =>
       this.actions$.pipe(
         ofType(AuthActions.registerSuccess),
-        tap(({ user }) => {
+        tap(({ user, requestedRole }) => {
           void this.router.navigate(['/auth/verify-email'], {
-            queryParams: { email: user.email },
+            queryParams: {
+              email: user.email,
+              accountType: requestedRole,
+            },
           });
         }),
       ),

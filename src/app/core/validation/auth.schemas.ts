@@ -45,6 +45,39 @@ export const registerBodySchema = z.object({
     .max(64, 'Last name must be at most 64 characters.'),
   email: emailSchema,
   password: plainPasswordSchema,
+  role: z.nativeEnum(Role),
+  storeName: z
+    .string()
+    .trim()
+    .min(2, 'Store name must be at least 2 characters.')
+    .max(150, 'Store name must be at most 150 characters.')
+    .optional(),
+  description: z
+    .string()
+    .trim()
+    .min(5, 'Store description must be at least 5 characters.')
+    .max(2000, 'Store description must be at most 2000 characters.')
+    .optional(),
+}).superRefine((data, ctx) => {
+  if (data.role !== Role.SELLER) {
+    return;
+  }
+
+  if (!data.storeName) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['storeName'],
+      message: 'Store name is required when signing up as seller.',
+    });
+  }
+
+  if (!data.description) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['description'],
+      message: 'Store description is required when signing up as seller.',
+    });
+  }
 });
 
 export type RegisterBody = z.infer<typeof registerBodySchema>;

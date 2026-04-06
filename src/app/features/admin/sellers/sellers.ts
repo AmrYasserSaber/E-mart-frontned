@@ -36,6 +36,9 @@ export class Sellers implements OnInit {
   readonly approveOpen = signal(false);
   readonly approving = signal<PendingSeller | null>(null);
   readonly approveLoading = signal(false);
+  readonly rejectOpen = signal(false);
+  readonly rejecting = signal<PendingSeller | null>(null);
+  readonly rejectLoading = signal(false);
 
   ngOnInit(): void {
     this.load();
@@ -71,6 +74,17 @@ export class Sellers implements OnInit {
     this.approving.set(null);
   }
 
+  openReject(seller: PendingSeller): void {
+    this.rejecting.set(seller);
+    this.rejectOpen.set(true);
+  }
+
+  closeReject(): void {
+    this.rejectLoading.set(false);
+    this.rejectOpen.set(false);
+    this.rejecting.set(null);
+  }
+
   confirmApprove(): void {
     const s = this.approving();
     if (!s) return;
@@ -84,6 +98,22 @@ export class Sellers implements OnInit {
           this.load();
         },
         error: () => this.approveLoading.set(false),
+      });
+  }
+
+  confirmReject(): void {
+    const s = this.rejecting();
+    if (!s) return;
+    this.rejectLoading.set(true);
+    this.admin
+      .rejectSellerStore(s.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.closeReject();
+          this.load();
+        },
+        error: () => this.rejectLoading.set(false),
       });
   }
 }

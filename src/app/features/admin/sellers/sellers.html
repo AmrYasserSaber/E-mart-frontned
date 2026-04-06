@@ -30,13 +30,22 @@
             </div>
             <div class="col-span-2 text-sm text-on-surface-variant font-medium">{{ s.createdAt | timeAgo }}</div>
             <div class="col-span-1 text-right">
-              <button
-                type="button"
-                (click)="openApprove(s)"
-                class="text-sm font-bold text-primary-container hover:text-primary transition-colors"
-              >
-                Approve
-              </button>
+              <div class="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  (click)="openApprove(s)"
+                  class="text-sm font-bold text-primary-container hover:text-primary transition-colors"
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  (click)="openReject(s)"
+                  class="text-sm font-bold text-error hover:opacity-80 transition-opacity"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           </div>
         }
@@ -59,5 +68,14 @@
     confirmLabel="Approve"
     (confirmed)="confirmApprove()"
     (cancelled)="closeApprove()"
+  />
+
+  <app-confirm-dialog
+    [open]="rejectOpen()"
+    title="Reject seller"
+    [message]="'Reject &quot;' + (rejecting()?.storeName ?? '') + '&quot; seller request?'"
+    confirmLabel="Reject"
+    (confirmed)="confirmReject()"
+    (cancelled)="closeReject()"
   />
 </div>

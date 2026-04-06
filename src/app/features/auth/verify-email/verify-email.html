@@ -22,6 +22,20 @@
         </p>
       </header>
 
+      @if (isSellerSignup) {
+        <div
+          class="mb-8 rounded-xl border border-primary-fixed-dim/30 bg-primary-fixed/20 px-4 py-3 text-sm text-on-surface"
+          role="status"
+          aria-live="polite"
+        >
+          <p class="font-semibold text-primary-container">Seller request submitted.</p>
+          <p class="mt-1 text-on-surface-variant">
+            After you verify your email, your seller account request will stay pending until an
+            admin reviews and approves it.
+          </p>
+        </div>
+      }
+
       @if (!email) {
         <div
           class="mb-8 flex items-start gap-3 rounded-xl bg-error-container px-4 py-3 text-sm text-on-error-container"

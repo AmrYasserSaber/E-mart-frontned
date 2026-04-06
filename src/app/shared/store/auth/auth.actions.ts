@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import type { User } from '../../../core/models/user.model';
 import type { AuthTokensOnlyResponse, AuthTokensResponse } from '../../../core/models/user.model';
+import { Role } from '../../../core/models/user.model';
 
 export const AuthActions = {
   hydrateFromStorage: createAction(
@@ -33,9 +34,15 @@ export const AuthActions = {
       lastName: string;
       email: string;
       password: string;
+      role: Role;
+      storeName?: string;
+      description?: string;
     }>(),
   ),
-  registerSuccess: createAction('[Auth] Register Success', props<AuthTokensResponse>()),
+  registerSuccess: createAction(
+    '[Auth] Register Success',
+    props<AuthTokensResponse & { requestedRole: Role }>(),
+  ),
   registerFailure: createAction('[Auth] Register Failure', props<{ error: string }>()),
 
   loadUser: createAction('[Auth] Load User'),

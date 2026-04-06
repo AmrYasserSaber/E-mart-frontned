@@ -22,6 +22,14 @@ export const authRoutes: Routes = [
         data: { animation: 'authRegister' },
       },
       {
+        path: 'become-partner',
+        loadComponent: () =>
+          import('./become-partner/become-partner').then(
+            (m) => m.BecomePartner,
+          ),
+        data: { animation: 'authRegister' },
+      },
+      {
         path: 'forgot-password',
         loadComponent: () =>
           import('./forgot-password/forgot-password').then((m) => m.ForgotPassword),
