@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthActions } from '../../../shared/store/auth/auth.actions';
@@ -10,6 +10,8 @@ import { selectAuthError, selectAuthLoading } from '../../../shared/store/auth/a
 import { loginBodySchema } from '../../../core/validation/auth.schemas';
 import { mapZodIssuesToFieldErrors } from '../../../core/validation/auth-error.utils';
 import { appIcons } from '../../../shared/icons/font-awesome-icons';
+import { sanitizeReturnUrl } from '../../../core/utils/url.utils';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +22,7 @@ import { appIcons } from '../../../shared/icons/font-awesome-icons';
 export class LoginComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly store = inject(Store);
+  private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
 
   readonly loading$ = this.store.select(selectAuthLoading);
@@ -62,6 +65,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.store.dispatch(AuthActions.login(result.data));
+  }
+
+  continueWithGoogle(): void {
+    const tree = this.router.parseUrl(this.router.url);
+    const returnUrl = sanitizeReturnUrl(tree.queryParams['returnUrl']);
+    const target = new URL('/auth/google', environment.apiBaseUrl);
+    target.searchParams.set('returnUrl', returnUrl);
+    window.location.href = target.toString();
   }
 
   get emailError(): string | null {

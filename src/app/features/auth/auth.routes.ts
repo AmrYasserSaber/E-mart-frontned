@@ -32,6 +32,12 @@ export const authRoutes: Routes = [
         loadComponent: () => import('./verify-email/verify-email').then((m) => m.VerifyEmail),
         data: { animation: 'authPlain' },
       },
+      {
+        path: 'oauth-callback',
+        loadComponent: () =>
+          import('./oauth-callback/oauth-callback.component').then((m) => m.OAuthCallbackComponent),
+        data: { animation: 'authPlain' },
+      },
     ],
   },
 ];
